@@ -1,0 +1,32 @@
+{
+  "name": "autochrome",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GofSoftware/autochrome.git"
+  },
+  "description": "The Chrome Extension for the Automation",
+  "main": "content.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js --progress --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chrome-types": "^0.1.169",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.3",
+    "less": "^4.2.0",
+    "less-loader": "11.1.3",
+    "mini-css-extract-plugin": "^2.7.6",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.4.2",
+    "tslint": "^6.1.3",
+    "typescript": "^4.9.5",
+    "webpack": "^5.79.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "rxjs": "^7.8.0"
+  }
+}

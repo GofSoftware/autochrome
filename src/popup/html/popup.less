@@ -1,0 +1,271 @@
+html {
+  min-width: 350px;
+  background: whitesmoke;
+  color: #2b2b2b;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  border-bottom: 1px solid #bebebe;
+  font: 20px "Roboto", monospace;
+  text-shadow: #0a2956a3 1px 1px 2px;
+  color: #811010;
+  padding: 15px 10px 15px 45px;
+  background-color: #def1ff;
+}
+
+.logo-icon {
+  position: absolute;
+  top: 13px;
+  left: 10px;
+  width: 25px;
+  height: 25px;
+}
+
+.program-button {
+  border-radius: 4px;
+  border: 1px solid #126cfc;
+  cursor: pointer;
+  background-color: #2878ff;
+  font-weight: bold;
+  text-shadow: #0a2956a3 1px 1px 1px;
+  color: white;
+  position: relative;
+}
+.program-button:hover {
+  background: #126cfc;
+  border: 1px solid #1062e7;
+}
+
+.program-button:disabled:hover {
+  background-color: #a6a6a6;
+  border: 1px solid #838383;
+}
+
+.program-button:active:hover {
+  top: 1px;
+}
+
+.program-button:disabled:hover {
+  top: 0;
+}
+
+.program-button:disabled {
+  background-color: #a6a6a6;
+  border: 1px solid #838383;
+}
+
+
+.program-square-button {
+  height: 24px;
+  width: 24px;
+}
+
+.program-square-button-small {
+  height: 16px;
+  width: 16px;
+  padding: 0;
+  font-size: 10px;
+}
+
+#program-edit-button {
+
+}
+
+#close-window {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.content {
+  margin: 10px;
+  font: bold 14px "Roboto", monospace;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  font: bold 14px "Roboto", monospace;
+  background-color: beige;
+}
+
+.file-upload-with-options {
+  margin-top: 10px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input-label-option {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.input-label-option input {
+}
+
+.input-label-option label {
+  margin: 0 0 0 2px;
+}
+
+.auto-program {
+  margin-top: 10px;
+}
+
+.auto-program-text {
+  width: 98%;
+  height: 300px;
+  white-space: nowrap;
+  overflow: auto;
+}
+
+.action-button-holder {
+  border-top: 1px solid #bebebe;
+  background-color: #def1ff;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 10px 10px 10px 10px;
+}
+
+.action-button {
+  height: 30px;
+  min-width: 60px;
+  margin-left: 10px;
+}
+
+select {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #D3D3D3FF;
+}
+
+.browsers-tabs-holder {
+  // padding-top: 10px;
+}
+
+.browsers-tabs-holder select {
+  margin-top: 5px;
+}
+
+.browsers-tabs-holder label {
+  padding-left: 1px;
+}
+
+.uploaded-programs-holder {
+  background-color: #ffffff;
+  margin-top: 10px;
+  height: 300px;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid #D3D3D3FF;
+}
+
+.uploaded-programs-holder .uploaded-program {
+  border: 1px solid #D3D3D3FF;
+  min-height: 50px;
+  // width: 100%;
+  padding: 5px;
+  overflow: hidden;
+  white-space: normal;
+  margin: 5px;
+  background: #fff4e3
+}
+
+.uploaded-program {
+  position: relative;
+}
+
+.uploaded-program .close-button {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+}
+
+.uploaded-program .tab-id {
+  color: #808080;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.uploaded-program .tab-id a {
+  color: blue;
+  font-size: 12px;
+  // margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.uploaded-program .name {
+  padding-bottom: 5px;
+}
+
+.uploaded-program .description {
+  font-size: 12px;
+  color: gray;
+  padding-bottom: 5px;
+}
+
+.uploaded-program .action-description {
+  font-size: 12px;
+  color: gray;
+  padding-bottom: 5px;
+}
+
+.uploaded-program .success {
+  color: #008000;
+}
+
+.uploaded-program-actions {
+  margin-top: 10px;
+  text-align: right;
+}
+.uploaded-program-actions button {
+  margin-left: 10px;
+}
+
+.program-progress-bar-holder {
+  margin-top: 10px;
+}
+
+.program-progress-bar {
+  background-color: #d1d5db;
+  height: 5px;
+  border-radius: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.program-progress-bar-progress {
+  background-color: #3b82f6;
+  border-radius: 2px;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  width: 50%;
+}
+
+.error {
+  color: red!important;
+}
+
+.hidden {
+  display: none;
+}
+
+.pointer {
+  cursor: pointer;
+}
