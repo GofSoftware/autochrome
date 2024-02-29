@@ -4,6 +4,26 @@ import { InterruptibleUtility } from '../../common/interruptible-utility';
 import { IQuerySelector, QuerySelectorHelper } from '../../common/query-selector-helper';
 import { Guid } from '../../common/guid';
 import { AutoActionFactory } from './auto-action-factory';
+import { cloneDeep } from 'lodash-es';
+
+export const ParameterLinkTypeName = 'ParameterLink';
+
+export type ParameterLinkType = 'ParameterLink';
+
+export interface IParameterLink {
+	type: ParameterLinkType;
+	name: string;
+}
+
+export type IAutoParameterValue = string | number | boolean | IQuerySelector;
+
+export interface IAutoParameter {
+	name: string;
+	value: IAutoParameterValue;
+}
+
+export type AnyQuerySelector = string | IQuerySelector;
+export type QuerySelectorWithPropertyLink = AnyQuerySelector | IParameterLink;
 
 /**
  * The base interface for all actions, includes fields that can be set in any nested action.
@@ -17,6 +37,7 @@ export interface IAutoAction {
 	continueAfterFail?: boolean;
 	timeout?: number;
 	children?: IAutoAction[];
+	parameters?: IAutoParameter[];
 }
 
 export abstract class AutoAction implements IAutoAction {
@@ -31,23 +52,14 @@ export abstract class AutoAction implements IAutoAction {
 	public continueAfterFail: boolean;
 	public timeout: number;
 	public children: AutoAction[];
+	public parameters: IAutoParameter[];
 
 	protected static idSet: Set<string> = new Set();
 	protected static prop<T = any>(value: T, defaultValue: T): T {
 		return value == null ? defaultValue : value;
 	}
 
- /**
-  * The constructor function for the AutoAction class.
-  *
-  *
-  * @param jsonAction: IAutoAction Create a new AutoAction object
-  *
-  * @return An instance of the class
-  *
-  * @docauthor Trelent
-  */
- protected constructor(jsonAction: IAutoAction) {
+	protected constructor(jsonAction: IAutoAction) {
 		if (AutoAction.idSet.has(jsonAction.id)) {
 			throw new Error(`Not unique id: ${jsonAction.id}`);
 		}
@@ -67,6 +79,8 @@ export abstract class AutoAction implements IAutoAction {
 			prevAction = nextAction;
 			return nextAction;
 		});
+
+		this.parameters = cloneDeep((jsonAction.parameters || []))
 	}
 
 	public toString(): string {
@@ -80,7 +94,8 @@ export abstract class AutoAction implements IAutoAction {
 			description: this.description,
 			continueAfterFail: this.continueAfterFail,
 			timeout: this.timeout,
-			children: (Array.isArray(this.children) ? this.children.map((c) => c.toJson()) : null)
+			children: (Array.isArray(this.children) ? this.children.map((c) => c.toJson()) : null),
+			parameters: cloneDeep(this.parameters)
 		};
 	}
 
@@ -99,22 +114,32 @@ export abstract class AutoAction implements IAutoAction {
 		}
 	}
 
-	protected async querySelector(selector: string | IQuerySelector, wait: boolean, silent: boolean = false): Promise<Element[]> {
+	public getLastAction(): AutoAction {
+		if (this.next == null) {
+			return this;
+		}
+		return this.next.getLastAction();
+	}
+
+	protected async querySelector(selector: QuerySelectorWithPropertyLink, wait: boolean, silent: boolean = false): Promise<Element[]> {
 		let elements: Element[];
+
+		const querySelector = this.processParameterLink(selector as IParameterLink) as AnyQuerySelector;
+
 		try {
 			if (wait) {
 				await InterruptibleUtility.wait(
-					`Getting element: ${QuerySelectorHelper.convertToString(selector)}`,
+					`Getting element: ${QuerySelectorHelper.convertToString(querySelector)}`,
 					() => {
-						elements = QuerySelectorHelper.querySelector(selector);
+						elements = QuerySelectorHelper.querySelector(querySelector);
 						return elements.length > 0;
 					},
 					this.timeout,
 					100);
 			} else {
-				elements = QuerySelectorHelper.querySelector(selector);
+				elements = QuerySelectorHelper.querySelector(querySelector);
 				if (elements.length === 0) {
-					throw new Error(`Element: ${QuerySelectorHelper.convertToString(selector)} is not found.`);
+					throw new Error(`Element: ${QuerySelectorHelper.convertToString(querySelector)} is not found.`);
 				}
 			}
 		} catch (error) {
@@ -132,5 +157,17 @@ export abstract class AutoAction implements IAutoAction {
 			return autoAction;
 		}
 		return autoAction.children[autoAction.children.length - 1];
+	}
+
+	protected processParameterLink(parameterLink: IParameterLink): any {
+		if (typeof parameterLink === 'object' && (parameterLink as IParameterLink)?.type === ParameterLinkTypeName) {
+			const linkedParameter = this.parameters.find((parameter) => parameter.name === (parameterLink as IParameterLink).name);
+			if(linkedParameter == null) {
+				throw new Error(`Cannot find the parameter with the name ${(parameterLink as IParameterLink).name}`);
+			}
+			return linkedParameter.value;
+		}
+
+		return parameterLink;
 	}
 }

@@ -11,6 +11,8 @@ import { AutoActionSetValue } from './auto-action-set-value';
 import { AutoActionCase } from './auto-action-case';
 import { AutoActionDragNDrop } from './auto-action-drag-n-drop';
 import { AutoActionUrl } from './auto-action-url';
+import { AutoActionProcedure } from './auto-action-procedure';
+import { AutoActionFocus } from './auto-action-focus';
 
 export enum AutoActionName {
 	AutoActionRoot = 'AutoActionRoot',
@@ -27,12 +29,13 @@ export enum AutoActionName {
 	AutoActionCase= 'AutoActionCase',
 	AutoActionDragNDrop= 'AutoActionDragNDrop',
 	AutoActionUrl= 'AutoActionUrl',
-	AutoActionFocus= 'AutoActionFocus'
+	AutoActionFocus= 'AutoActionFocus',
+	AutoActionProcedure= 'AutoActionProcedure'
 }
 
 export type AutoAnyAction = AutoAction | AutoActionCheck | AutoActionCheckGroup | AutoActionClick | AutoActionGetText |
 	AutoActionWait | AutoActionScrollIntoView | AutoActionSelectFile | AutoActionWaitUntil | AutoActionSetValue | AutoActionCase |
-	AutoActionDragNDrop | AutoActionUrl;
+	AutoActionDragNDrop | AutoActionUrl | AutoActionFocus | AutoActionProcedure;
 
 export enum AutoActionResult {
 	Success = 'Success',

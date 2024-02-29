@@ -1,18 +1,18 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
+import { IAutoAction, AutoAction, IParameterLink, QuerySelectorWithPropertyLink } from './auto-action';
 import { Cursor } from '../../common/cursor';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { IQuerySelector } from '../../common/query-selector-helper';
+import { QuerySelectorHelper } from '../../common/query-selector-helper';
 
 export interface IAutoActionClick extends IAutoAction {
-	selector: string | IQuerySelector;
+	selector: QuerySelectorWithPropertyLink;
 	smoothMouse?: boolean;
 	wait?: boolean;
 }
 
 export class AutoActionClick extends AutoAction implements IAutoActionClick {
 	public name = AutoActionName.AutoActionClick;
-	public selector: string | IQuerySelector;
+	public selector: QuerySelectorWithPropertyLink;
 	public smoothMouse: boolean;
 	public wait: boolean;
 
@@ -51,17 +51,20 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 	private async clickOn(element: Element, smoothMouse: boolean = false): Promise<void> {
 		const box = element.getBoundingClientRect();
 		if (box != null) {
-			Logger.instance.debug(`Robot ClickOn [${this.selector}], box: `, box);
-			const coordX = box.left + (box.right - box.left) / 2;
-			const coordY = box.top + (box.bottom - box.top) / 2;
+			Logger.instance.debug(`Robot ClickOn [${
+				QuerySelectorHelper.convertToString(this.processParameterLink(this.selector as IParameterLink))
+			}], box: `, box);
 
-			await Cursor.moveTo(coordX, coordY, smoothMouse);
+			const coordinateX = box.left + (box.right - box.left) / 2;
+			const coordinateY = box.top + (box.bottom - box.top) / 2;
 
-			this.simulateMouseEvent(element, "mousedown", coordX, coordY);
+			await Cursor.moveTo(coordinateX, coordinateY, smoothMouse);
+
+			this.simulateMouseEvent(element, "mousedown", coordinateX, coordinateY);
 			if((element as HTMLElement).focus != null) {
 				(element as HTMLElement).focus();
 			}
-			this.simulateMouseEvent(element, "mouseup", coordX, coordY);
+			this.simulateMouseEvent(element, "mouseup", coordinateX, coordinateY);
 			this.simulatePointerEvent(element);
 		} else {
 			throw new Error(`Robot ClickOn [${this.selector}], box is undetermined...`);

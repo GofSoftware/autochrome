@@ -2,3 +2,5 @@
 /plugin
 /node_modules
 *.drawio.bkp
+/program-examples/apps
+

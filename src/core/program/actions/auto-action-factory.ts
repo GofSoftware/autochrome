@@ -15,6 +15,7 @@ import { AutoActionDragNDrop } from './auto-action-drag-n-drop';
 import { AutoActionRoot } from './auto-action-root';
 import { AutoActionUrl } from './auto-action-url';
 import { AutoActionFocus } from './auto-action-focus';
+import { AutoActionProcedure } from './auto-action-procedure';
 
 export class AutoActionFactory {
 
@@ -42,6 +43,7 @@ export class AutoActionFactory {
 		this.registry.set(AutoActionName.AutoActionDragNDrop, AutoActionDragNDrop);
 		this.registry.set(AutoActionName.AutoActionUrl, AutoActionUrl);
 		this.registry.set(AutoActionName.AutoActionFocus, AutoActionFocus);
+		this.registry.set(AutoActionName.AutoActionProcedure, AutoActionProcedure);
 	}
 
 	public fromJson(actionJson: IAutoAction): AutoAction {
