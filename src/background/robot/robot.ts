@@ -143,6 +143,10 @@ export class Robot {
 
 		if (nextActionId != null) {
 			nextAction = activeProgramContainer.program.getActionById(nextActionId);
+			if (nextAction == null) {
+				await this.completeProgram(activeProgramContainer, `Cannot find an Action with id ${nextActionId}`);
+				return;
+			}
 		}
 
 		if (nextAction == null) {

@@ -21,7 +21,7 @@ export class AutoProgram implements IAutoProgram {
 		program.version = CURRENT_VERSION;
 		program.name = '';
 		program.description = '';
-		program.rootAction = null;
+		program.rootAction = AutoActionFactory.instance.fromJson({name: AutoActionName.AutoActionEmpty});
 		program.procedures = [];
 		return program;
 	}
