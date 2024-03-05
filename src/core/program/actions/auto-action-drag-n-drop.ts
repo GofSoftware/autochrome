@@ -1,19 +1,18 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
+import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { IQuerySelector } from '../../common/query-selector-helper';
 
 export interface IAutoActionDragNDrop extends IAutoAction {
-	sourceSelector: string | IQuerySelector;
-	targetSelector: string | IQuerySelector;
+	sourceSelector: QuerySelectorWithPropertyLink;
+	targetSelector: QuerySelectorWithPropertyLink;
 	wait?: boolean;
 	dataTransfer?: string;
 }
 
 export class AutoActionDragNDrop extends AutoAction implements IAutoActionDragNDrop {
 	public name = AutoActionName.AutoActionDragNDrop;
-	public sourceSelector: string | IQuerySelector;
-	public targetSelector: string | IQuerySelector;
+	public sourceSelector: QuerySelectorWithPropertyLink;
+	public targetSelector: QuerySelectorWithPropertyLink;
 	public wait = false;
 	public dataTransfer: string;
 

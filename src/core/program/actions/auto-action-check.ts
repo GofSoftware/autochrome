@@ -1,6 +1,6 @@
-import { IAutoAction, AutoAction } from './auto-action';
+import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { IQuerySelector, QuerySelectorHelper } from '../../common/query-selector-helper';
+import { QuerySelectorHelper } from '../../common/query-selector-helper';
 
 export enum IAutoActionCheckType {
 	Exists = 'Exists',
@@ -8,7 +8,7 @@ export enum IAutoActionCheckType {
 }
 
 export interface IAutoActionCheck extends IAutoAction {
-	selector: string | IQuerySelector;
+	selector: QuerySelectorWithPropertyLink;
 	wait?: boolean;
 	type: IAutoActionCheckType;
 	silent?: boolean;
@@ -18,7 +18,7 @@ export interface IAutoActionCheck extends IAutoAction {
 export class AutoActionCheck extends AutoAction implements IAutoActionCheck {
 	public name = AutoActionName.AutoActionCheck;
 	public type: IAutoActionCheckType;
-	public selector: string | IQuerySelector;
+	public selector: QuerySelectorWithPropertyLink;
 	public wait?: boolean;
 	public silent?: boolean;
 	public highlight?: boolean;
@@ -55,7 +55,9 @@ export class AutoActionCheck extends AutoAction implements IAutoActionCheck {
 				throw new Error(`Unknown AutoActionCheck type: ${this.type}`);
 		}
 		if (this.result !== AutoActionResult.Success && this.silent === false) {
-			throw new Error(`${this.name}: Check by the selector ${QuerySelectorHelper.convertToString(this.selector)} is failed.`);
+			throw new Error(`${this.name}: Check by the selector ${
+				QuerySelectorHelper.convertToString(this.replaceParameters(this.selector))
+			} is failed.`);
 		}
 	}
 

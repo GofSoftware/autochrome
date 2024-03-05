@@ -72,7 +72,9 @@ export class AutoProgram implements IAutoProgram {
 				autoActionProcedure.next = procedureDescription.action;
 				const lastProcedureAction = procedureDescription.action.getLastAction();
 				lastProcedureAction.next = procNextAction;
-				procNextAction.previous = lastProcedureAction;
+				if (procNextAction != null) { // can be null if the proc is the last action in the program.
+					procNextAction.previous = lastProcedureAction;
+				}
 			}
 			return true;
 		});

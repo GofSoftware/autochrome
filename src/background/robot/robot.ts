@@ -42,33 +42,6 @@ export class Robot {
 	private constructor() {
 	}
 
-	// public async start(programJson: IAutoProgram): Promise<void> {
-	// 	const program = AutoProgram.fromJson(programJson);
-	// 	Logger.instance.log(`Got program: ${program.name} (v${program.version}).\n${program.description}`);
-	//
-	// 	let action: AutoAction = program.rootAction;
-	// 	while (action != null) {
-	// 		Logger.instance.log(`Start invoke: ${action.toString()}`);
-	// 		try {
-	// 			await action.invoke();
-	//
-	// 			Logger.instance.log(`Invocation ${action.result === AutoActionResult.Success ? 'success' : 'failed'}.`);
-	// 		} catch (error) {
-	// 			Logger.instance.error('Invocation failed:', error);
-	// 		} finally {
-	// 			InterruptibleUtility.clearAll('After all action.');
-	//
-	// 			const canContinue = action.result === AutoActionResult.Success ||
-	// 				(action.result === AutoActionResult.Failed && action.continueAfterFail);
-	// 			if (canContinue) {
-	// 				action = action.next;
-	// 			} else {
-	// 				action = null;
-	// 			}
-	// 		}
-	// 	}
-	// }
-
 	public async incomingEvent(senderId: number, type: RobotEventType, data: RobotEventDataType): Promise<void> {
 		try {
 			switch (type) {

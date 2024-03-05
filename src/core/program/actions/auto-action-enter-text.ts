@@ -52,7 +52,7 @@ export class AutoActionEnterText extends AutoAction implements IAutoActionEnterT
 			} else {
 				elements = QuerySelectorHelper.querySelector(this.selector);
 				if (elements.length === 0) {
-					throw new Error(`Element: ${ QuerySelectorHelper.convertToString(this.selector)} is not found.`);
+					throw new Error(`Element: ${ QuerySelectorHelper.convertToString(this.selector)} has not been found.`);
 				}
 			}
 			const element: HTMLElement =  elements[0] as HTMLElement;

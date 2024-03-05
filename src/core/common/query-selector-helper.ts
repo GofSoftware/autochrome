@@ -1,13 +1,7 @@
-export interface IQuerySelector {
-	selector: string;
-	innerText?: string;
-	textContent?: string;
-	all?: boolean;
-	child?: string | IQuerySelector;
-}
+import { AnyQuerySelector, IQuerySelector } from '../program/actions/auto-action';
 
 export class QuerySelectorHelper {
-	public static querySelector(selector: string | IQuerySelector, root: Element = document.documentElement): Element[] {
+	public static querySelector(selector: AnyQuerySelector, root: Element = document.documentElement): Element[] {
 		if (typeof selector === "string") {
 			return Array.from(root.querySelectorAll(selector));
 		}
@@ -45,7 +39,7 @@ export class QuerySelectorHelper {
 		}, [] as Element[]);
 	}
 
-	public static convertToString(selector: string | IQuerySelector): string {
+	public static convertToString(selector: AnyQuerySelector): string {
 		if (typeof selector === "string") {
 			return selector;
 		}

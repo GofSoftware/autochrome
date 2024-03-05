@@ -1,7 +1,7 @@
 import { AutoActionName, AutoActionResult, AutoAnyAction } from './action-types';
 import { Config } from '../config/config';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { IQuerySelector, QuerySelectorHelper } from '../../common/query-selector-helper';
+import { QuerySelectorHelper } from '../../common/query-selector-helper';
 import { Guid } from '../../common/guid';
 import { AutoActionFactory } from './auto-action-factory';
 import { cloneDeep } from 'lodash-es';
@@ -20,6 +20,14 @@ export type IAutoParameterValue = string | number | boolean | IQuerySelector;
 export interface IAutoParameter {
 	name: string;
 	value: IAutoParameterValue;
+}
+
+export interface IQuerySelector {
+	selector: string | IParameterLink;
+	innerText?: string | IParameterLink;
+	textContent?: string| IParameterLink;
+	all?: boolean | IParameterLink;
+	child?: AnyQuerySelector | IParameterLink;
 }
 
 export type AnyQuerySelector = string | IQuerySelector;
@@ -124,7 +132,7 @@ export abstract class AutoAction implements IAutoAction {
 	protected async querySelector(selector: QuerySelectorWithPropertyLink, wait: boolean, silent: boolean = false): Promise<Element[]> {
 		let elements: Element[];
 
-		const querySelector = this.processParameterLink(selector as IParameterLink) as AnyQuerySelector;
+		const querySelector = this.replaceParameters(selector) as AnyQuerySelector;
 
 		try {
 			if (wait) {
@@ -139,7 +147,7 @@ export abstract class AutoAction implements IAutoAction {
 			} else {
 				elements = QuerySelectorHelper.querySelector(querySelector);
 				if (elements.length === 0) {
-					throw new Error(`Element: ${QuerySelectorHelper.convertToString(querySelector)} is not found.`);
+					throw new Error(`Element: ${QuerySelectorHelper.convertToString(querySelector)} has not been found.`);
 				}
 			}
 		} catch (error) {
@@ -159,15 +167,23 @@ export abstract class AutoAction implements IAutoAction {
 		return autoAction.children[autoAction.children.length - 1];
 	}
 
-	protected processParameterLink(parameterLink: IParameterLink): any {
-		if (typeof parameterLink === 'object' && (parameterLink as IParameterLink)?.type === ParameterLinkTypeName) {
-			const linkedParameter = this.parameters.find((parameter) => parameter.name === (parameterLink as IParameterLink).name);
+	protected replaceParameters(value: any): any {
+		if (value == null || typeof value !== 'object') {
+			return value;
+		}
+
+		if ((value as IParameterLink)?.type === ParameterLinkTypeName) {
+			const linkedParameter = this.parameters.find((parameter) => parameter.name === (value as IParameterLink).name);
 			if(linkedParameter == null) {
-				throw new Error(`Cannot find the parameter with the name ${(parameterLink as IParameterLink).name}`);
+				throw new Error(`Cannot find the parameter with the name ${(value as IParameterLink).name}`);
 			}
 			return linkedParameter.value;
 		}
 
-		return parameterLink;
+		Object.keys(value).forEach((key: string) => {
+			value[key] = this.replaceParameters(value[key]);
+		});
+
+		return value;
 	}
 }

@@ -1,7 +1,6 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
+import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { IQuerySelector } from '../../common/query-selector-helper';
 
 export enum AutoValueType {
 	attribute = 'attribute',
@@ -11,21 +10,21 @@ export enum AutoValueType {
 }
 
 export interface IAutoValue {
-	selector: string | IQuerySelector;
+	selector:QuerySelectorWithPropertyLink;
 	wait: boolean;
 	type: AutoValueType;
 	attributeName: string;
 }
 
 export interface IAutoActionSetValue extends IAutoAction {
-	selector: string | IQuerySelector;
+	selector: QuerySelectorWithPropertyLink;
 	wait: boolean;
 	value: any | IAutoValue;
 }
 
 export class AutoActionSetValue extends AutoAction implements IAutoActionSetValue {
 	public name = AutoActionName.AutoActionSetValue;
-	public selector: string | IQuerySelector;
+	public selector: QuerySelectorWithPropertyLink;
 	public value: any;
 	public wait: boolean;
 

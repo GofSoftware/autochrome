@@ -1,8 +1,8 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
+import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { IQuerySelector, QuerySelectorHelper } from '../../common/query-selector-helper';
+import { QuerySelectorHelper } from '../../common/query-selector-helper';
 
 export enum AutoActionWaitUntilType {
 	appear = 'appear',
@@ -10,13 +10,13 @@ export enum AutoActionWaitUntilType {
 }
 export interface IAutoActionWaitUntil extends IAutoAction {
 	untilType: AutoActionWaitUntilType;
-	selector: IQuerySelector | string;
+	selector: QuerySelectorWithPropertyLink;
 }
 
 export class AutoActionWaitUntil extends AutoAction implements IAutoActionWaitUntil {
 	public name = AutoActionName.AutoActionWaitUntil;
 	public untilType: AutoActionWaitUntilType;
-	public selector: IQuerySelector | string;
+	public selector: QuerySelectorWithPropertyLink;
 
 	public static fromJson(jsonAction: IAutoActionWaitUntil): AutoActionWaitUntil {
 		return new AutoActionWaitUntil(jsonAction);
@@ -33,11 +33,12 @@ export class AutoActionWaitUntil extends AutoAction implements IAutoActionWaitUn
 	}
 
 	public async invoke(): Promise<void> {
+		const selector = this.replaceParameters(this.selector);
 		try {
 			await InterruptibleUtility.wait(
-				`Wait until ${QuerySelectorHelper.convertToString(this.selector)} ${this.untilType}`,
+				`Wait until ${QuerySelectorHelper.convertToString(selector)} ${this.untilType}`,
 				() => {
-					const elements = QuerySelectorHelper.querySelector(this.selector);
+					const elements = QuerySelectorHelper.querySelector(selector);
 					if (this.untilType === AutoActionWaitUntilType.appear) {
 						return elements.length > 0;
 					}

@@ -52,7 +52,7 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 		const box = element.getBoundingClientRect();
 		if (box != null) {
 			Logger.instance.debug(`Robot ClickOn [${
-				QuerySelectorHelper.convertToString(this.processParameterLink(this.selector as IParameterLink))
+				QuerySelectorHelper.convertToString(this.replaceParameters(this.selector as IParameterLink))
 			}], box: `, box);
 
 			const coordinateX = box.left + (box.right - box.left) / 2;

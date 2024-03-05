@@ -1,10 +1,9 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
+import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { IQuerySelector } from '../../common/query-selector-helper';
 
 export interface IAutoActionCase extends IAutoAction {
-	selector: string | IQuerySelector;
+	selector: QuerySelectorWithPropertyLink;
 	wait?: boolean;
 	thenActionId: string;
 	elseActionId: string;
@@ -12,7 +11,7 @@ export interface IAutoActionCase extends IAutoAction {
 
 export class AutoActionCase extends AutoAction implements IAutoActionCase {
 	public name = AutoActionName.AutoActionCase;
-	public selector: string | IQuerySelector;
+	public selector: QuerySelectorWithPropertyLink;
 	public wait = false;
 	public thenActionId: string;
 	public elseActionId: string;
