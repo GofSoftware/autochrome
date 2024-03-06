@@ -1,7 +1,11 @@
-import { AnyQuerySelector, IQuerySelector } from '../program/actions/auto-action';
+import {
+	StringOrIQuerySelectorWithParameters,
+	IQuerySelector,
+	StringOrIQuerySelector
+} from '../program/actions/auto-action';
 
 export class QuerySelectorHelper {
-	public static querySelector(selector: AnyQuerySelector, root: Element = document.documentElement): Element[] {
+	public static querySelector(selector: StringOrIQuerySelector, root: Element = document.documentElement): Element[] {
 		if (typeof selector === "string") {
 			return Array.from(root.querySelectorAll(selector));
 		}
@@ -29,17 +33,21 @@ export class QuerySelectorHelper {
 				: [root.querySelector(querySelector.selector)];
 		}
 
-		if (selector.child == null) {
-			return elements;
+		if (selector.child != null) {
+			return elements.reduce((childElements, element) => {
+				const result = QuerySelectorHelper.querySelector(selector.child, element);
+				return childElements.concat(result);
+			}, [] as Element[]);
 		}
 
-		return elements.reduce((childElements, element) => {
-			const result = QuerySelectorHelper.querySelector(selector.child, element);
-			return childElements.concat(result);
-		}, [] as Element[]);
+		if (selector.parent != null && elements.length > 0) {
+			return QuerySelectorHelper.querySelector(selector.parent, elements[0].parentElement);
+		}
+
+		return elements;
 	}
 
-	public static convertToString(selector: AnyQuerySelector): string {
+	public static convertToString(selector: StringOrIQuerySelectorWithParameters): string {
 		if (typeof selector === "string") {
 			return selector;
 		}
@@ -47,6 +55,7 @@ export class QuerySelectorHelper {
 			`${selector.innerText == null ? '' : ', innerText: ' + selector.innerText}` +
 			`${selector.textContent == null ? '' : ', textContent: ' + selector.textContent}` +
 			`${selector.child == null ? '' : ', child: (' + QuerySelectorHelper.convertToString(selector.child) + ')'}` +
+			`${selector.parent == null ? '' : ', child: (' + QuerySelectorHelper.convertToString(selector.parent) + ')'}` +
 			`${selector.all ? ', all' : ''}`;
 	}
 }

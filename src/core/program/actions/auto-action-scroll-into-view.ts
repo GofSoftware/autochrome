@@ -29,7 +29,7 @@ export class AutoActionScrollIntoView extends AutoAction implements IAutoActionS
 		}
 
 		this.selector = jsonAction.selector;
-		this.wait = jsonAction.wait;
+		this.wait = AutoAction.prop(jsonAction.wait, false);
 		this.behavior = jsonAction.behavior;
 		this.block = jsonAction.block;
 		this.inline = jsonAction.inline;

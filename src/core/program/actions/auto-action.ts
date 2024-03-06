@@ -15,7 +15,7 @@ export interface IParameterLink {
 	name: string;
 }
 
-export type IAutoParameterValue = string | number | boolean | IQuerySelector;
+export type IAutoParameterValue = string | number | boolean | IQuerySelectorWithParameters;
 
 export interface IAutoParameter {
 	name: string;
@@ -23,15 +23,27 @@ export interface IAutoParameter {
 }
 
 export interface IQuerySelector {
-	selector: string | IParameterLink;
-	innerText?: string | IParameterLink;
-	textContent?: string| IParameterLink;
-	all?: boolean | IParameterLink;
-	child?: AnyQuerySelector | IParameterLink;
+	selector: string;
+	innerText?: string;
+	textContent?: string;
+	all?: boolean;
+	child?: string | IQuerySelector;
+	parent?: string | IQuerySelector;
 }
 
-export type AnyQuerySelector = string | IQuerySelector;
-export type QuerySelectorWithPropertyLink = AnyQuerySelector | IParameterLink;
+export type StringOrIQuerySelector = string | IQuerySelector;
+
+export interface IQuerySelectorWithParameters {
+	selector: StringOrIQuerySelector | IParameterLink;
+	innerText?: string | IParameterLink;
+	textContent?: string | IParameterLink;
+	all?: boolean | IParameterLink;
+	child?: StringOrIQuerySelectorWithParameters;
+	parent?: StringOrIQuerySelectorWithParameters;
+}
+
+export type StringOrIQuerySelectorWithParameters = string | IQuerySelectorWithParameters;
+export type QuerySelectorWithPropertyLink = StringOrIQuerySelectorWithParameters | IParameterLink;
 
 /**
  * The base interface for all actions, includes fields that can be set in any nested action.
@@ -132,7 +144,7 @@ export abstract class AutoAction implements IAutoAction {
 	protected async querySelector(selector: QuerySelectorWithPropertyLink, wait: boolean, silent: boolean = false): Promise<Element[]> {
 		let elements: Element[];
 
-		const querySelector = this.replaceParameters(selector) as AnyQuerySelector;
+		const querySelector = this.replaceParameters(selector) as StringOrIQuerySelector;
 
 		try {
 			if (wait) {
