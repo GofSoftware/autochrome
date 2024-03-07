@@ -17,6 +17,8 @@ import { AutoActionUrl } from './auto-action-url';
 import { AutoActionFocus } from './auto-action-focus';
 import { AutoActionProcedure } from './auto-action-procedure';
 import { AutoActionEmpty } from './auto-action-empty';
+import { AutoActionConsoleLog } from './auto-action-console-log';
+import { AutoActionGoTo } from './auto-action-go-to';
 
 export class AutoActionFactory {
 
@@ -46,6 +48,8 @@ export class AutoActionFactory {
 		this.registry.set(AutoActionName.AutoActionFocus, AutoActionFocus);
 		this.registry.set(AutoActionName.AutoActionProcedure, AutoActionProcedure);
 		this.registry.set(AutoActionName.AutoActionEmpty, AutoActionEmpty);
+		this.registry.set(AutoActionName.AutoActionConsoleLog, AutoActionConsoleLog);
+		this.registry.set(AutoActionName.AutoActionGoTo, AutoActionGoTo);
 	}
 
 	public fromJson(actionJson: IAutoAction): AutoAction {

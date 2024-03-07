@@ -14,6 +14,8 @@ import { AutoActionUrl } from './auto-action-url';
 import { AutoActionProcedure } from './auto-action-procedure';
 import { AutoActionFocus } from './auto-action-focus';
 import { AutoActionEmpty } from './auto-action-empty';
+import { AutoActionConsoleLog } from './auto-action-console-log';
+import { AutoActionGoTo } from './auto-action-go-to';
 
 export enum AutoActionName {
 	AutoActionRoot = 'AutoActionRoot',
@@ -26,18 +28,20 @@ export enum AutoActionName {
 	AutoActionScrollIntoView  = 'AutoActionScrollIntoView',
 	AutoActionSelectFile  = 'AutoActionSelectFile',
 	AutoActionWaitUntil  = 'AutoActionWaitUntil',
-	AutoActionSetValue= 'AutoActionSetValue',
-	AutoActionCase= 'AutoActionCase',
-	AutoActionDragNDrop= 'AutoActionDragNDrop',
-	AutoActionUrl= 'AutoActionUrl',
-	AutoActionFocus= 'AutoActionFocus',
-	AutoActionProcedure= 'AutoActionProcedure',
-	AutoActionEmpty= 'AutoActionEmpty'
+	AutoActionSetValue = 'AutoActionSetValue',
+	AutoActionCase = 'AutoActionCase',
+	AutoActionDragNDrop = 'AutoActionDragNDrop',
+	AutoActionUrl = 'AutoActionUrl',
+	AutoActionFocus = 'AutoActionFocus',
+	AutoActionProcedure = 'AutoActionProcedure',
+	AutoActionEmpty = 'AutoActionEmpty',
+	AutoActionConsoleLog = 'AutoActionConsoleLog',
+	AutoActionGoTo = 'AutoActionGoTo'
 }
 
 export type AutoAnyAction = AutoAction | AutoActionCheck | AutoActionCheckGroup | AutoActionClick | AutoActionGetText |
 	AutoActionWait | AutoActionScrollIntoView | AutoActionSelectFile | AutoActionWaitUntil | AutoActionSetValue | AutoActionCase |
-	AutoActionDragNDrop | AutoActionUrl | AutoActionFocus | AutoActionProcedure | AutoActionEmpty;
+	AutoActionDragNDrop | AutoActionUrl | AutoActionFocus | AutoActionProcedure | AutoActionEmpty | AutoActionConsoleLog | AutoActionGoTo;
 
 export enum AutoActionResult {
 	Success = 'Success',

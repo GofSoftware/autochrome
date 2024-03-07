@@ -3,6 +3,8 @@ import { AutoActionFactory } from './actions/auto-action-factory';
 import { AutoProcedure, IAutoProcedure } from './auto-procedure';
 import { AutoActionName } from './actions/action-types';
 import { AutoActionProcedure } from './actions/auto-action-procedure';
+import { AutoActionCase } from './actions/auto-action-case';
+import { AutoActionGoTo } from './actions/auto-action-go-to';
 
 export interface IAutoProgram {
 	name: string;
@@ -62,10 +64,43 @@ export class AutoProgram implements IAutoProgram {
 					return;
 				}
 				const procedureDescription = AutoProcedure.fromJson(procedureMap.get(autoActionProcedure.procedureName));
+
+				// Set the Parameters to each action and preppend all procedure action ids with the root actionId,
+				// so we will not have the same ids for the user created ids
+				const rootActionId = procedureDescription.action.id;
+				const idMap = new Map<string, string>();
 				procedureDescription.action.traverse((action: AutoAction) => {
+					if (rootActionId !== action.id) {
+						const newId = `Proc[${rootActionId}]:${action.id}`;
+						idMap.set(action.id, newId);
+						action.id = newId;
+					}
 					action.parameters = autoActionProcedure.parameters;
 					return true;
 				});
+
+				// Replace ids in the Case and GoTo actions
+				procedureDescription.action.traverse((action: AutoAction) => {
+					switch (action.name) {
+						case AutoActionName.AutoActionCase:
+							const caseAction = action as AutoActionCase;
+							if (!idMap.has(caseAction.elseActionId) || !idMap.has(caseAction.thenActionId)) {
+								throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for elseActionId: ${caseAction.elseActionId} or thenActionId: ${caseAction.thenActionId}`);
+							}
+							caseAction.elseActionId = idMap.get(caseAction.elseActionId);
+							caseAction.thenActionId = idMap.get(caseAction.thenActionId);
+						break;
+						case AutoActionName.AutoActionGoTo:
+							const goToAction = action as AutoActionGoTo;
+							if (!idMap.has(goToAction.goToActionId)) {
+								throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for goToActionId: ${goToAction.goToActionId}`);
+							}
+							goToAction.goToActionId = idMap.get(goToAction.goToActionId);
+						break;
+					}
+					return true;
+				});
+
 				autoActionProcedure.children.push(procedureDescription.action);
 				procedureDescription.action.previous = autoActionProcedure;
 				const procNextAction = autoActionProcedure.next;

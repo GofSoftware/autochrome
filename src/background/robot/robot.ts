@@ -240,6 +240,8 @@ export class Robot {
 		switch (activeProgramContainer.activeAction.name) {
 			case AutoActionName.AutoActionCase:
 				return contentProgramResultData.resultValue;
+			case AutoActionName.AutoActionGoTo:
+				return contentProgramResultData.resultValue;
 			default:
 				return null;
 		}
