@@ -21,6 +21,9 @@ export class AutoActionProcedure extends AutoAction implements IAutoActionProced
 		}
 		this.procedureName = jsonAction.procedureName;
 		this.parameters = cloneDeep(jsonAction.parameters || []);
+		if (Array.isArray(jsonAction.children) && jsonAction.children.length > 0) {
+			throw new Error(`${jsonAction.name} doesn't support "children" at the moment.`);
+		}
 	}
 
 	public async invoke(): Promise<void> {
@@ -32,7 +35,7 @@ export class AutoActionProcedure extends AutoAction implements IAutoActionProced
 		basicJson.procedureName = this.procedureName;
 		basicJson.parameters = cloneDeep(this.parameters);
 		// Clear the children because they are populated from the Procedure Description when instantiate the ActionProcedure
-		basicJson.children = []; 
+		basicJson.children = [];
 		return basicJson;
 	}
 }

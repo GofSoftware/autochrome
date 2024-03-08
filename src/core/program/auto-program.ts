@@ -5,6 +5,7 @@ import { AutoActionName } from './actions/action-types';
 import { AutoActionProcedure } from './actions/auto-action-procedure';
 import { AutoActionCase } from './actions/auto-action-case';
 import { AutoActionGoTo } from './actions/auto-action-go-to';
+import { Guid } from '../common/guid';
 
 export interface IAutoProgram {
 	name: string;
@@ -53,8 +54,8 @@ export class AutoProgram implements IAutoProgram {
 
 		program.rootAction = AutoActionFactory.instance.fromJson(programJson.rootAction);
 
+		// We need the Map of the "not instantiated" IAutoProcedure-s because we will instantiate them for each AutoActionProcedure call.
 		const procedureMap = new Map<string, IAutoProcedure>();
-		// We need the Map of the not instantiated IAutoProcedure-s because we will instantiate them for each AutoActionProcedure call.
 		(programJson.procedures || []).forEach((procedure) => procedureMap.set(procedure.name, procedure));
 
 		program.rootAction.traverse((action) => {
@@ -65,16 +66,15 @@ export class AutoProgram implements IAutoProgram {
 				}
 				const procedureDescription = AutoProcedure.fromJson(procedureMap.get(autoActionProcedure.procedureName));
 
-				// Set the Parameters to each action and preppend all procedure action ids with the root actionId,
+				// Set the Parameters to each action and prepend all procedure action ids with the root actionId,
 				// so we will not have the same ids for the user created ids
-				const rootActionId = procedureDescription.action.id;
+				const procUniqueId = Guid.v4();
 				const idMap = new Map<string, string>();
 				procedureDescription.action.traverse((action: AutoAction) => {
-					if (rootActionId !== action.id) {
-						const newId = `Proc[${rootActionId}]:${action.id}`;
-						idMap.set(action.id, newId);
-						action.id = newId;
-					}
+					const newId = `Proc[${procUniqueId}]:${action.id}`;
+					idMap.set(action.id, newId);
+					action.id = newId;
+
 					action.parameters = autoActionProcedure.parameters;
 					return true;
 				});
