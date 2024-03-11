@@ -41,7 +41,14 @@ export class QuerySelectorHelper {
 		}
 
 		if (selector.parent != null && elements.length > 0) {
-			return QuerySelectorHelper.querySelector(selector.parent, elements[0].parentElement);
+			const parentLevel = selector.parentLevel || 0;
+
+			let parent = elements[0].parentElement;
+			for (let i = 0; i < parentLevel; i++) {
+				parent = parent.parentElement;
+			}
+
+			return QuerySelectorHelper.querySelector(selector.parent, parent);
 		}
 
 		return elements;

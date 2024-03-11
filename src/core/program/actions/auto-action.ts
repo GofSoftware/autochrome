@@ -29,6 +29,7 @@ export interface IQuerySelector {
 	all?: boolean;
 	child?: string | IQuerySelector;
 	parent?: string | IQuerySelector;
+	parentLevel?: number;
 }
 
 export type StringOrIQuerySelector = string | IQuerySelector;
@@ -40,6 +41,7 @@ export interface IQuerySelectorWithParameters {
 	all?: boolean | IParameterLink;
 	child?: StringOrIQuerySelectorWithParameters;
 	parent?: StringOrIQuerySelectorWithParameters;
+	parentLevel?: number | IParameterLink;
 }
 
 export type StringOrIQuerySelectorWithParameters = string | IQuerySelectorWithParameters;

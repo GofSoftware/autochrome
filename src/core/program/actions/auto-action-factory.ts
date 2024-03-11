@@ -19,6 +19,7 @@ import { AutoActionProcedure } from './auto-action-procedure';
 import { AutoActionEmpty } from './auto-action-empty';
 import { AutoActionConsoleLog } from './auto-action-console-log';
 import { AutoActionGoTo } from './auto-action-go-to';
+import { AutoActionGroup } from './auto-action-group';
 
 export class AutoActionFactory {
 
@@ -50,6 +51,7 @@ export class AutoActionFactory {
 		this.registry.set(AutoActionName.AutoActionEmpty, AutoActionEmpty);
 		this.registry.set(AutoActionName.AutoActionConsoleLog, AutoActionConsoleLog);
 		this.registry.set(AutoActionName.AutoActionGoTo, AutoActionGoTo);
+		this.registry.set(AutoActionName.AutoActionGroup, AutoActionGroup);
 	}
 
 	public fromJson(actionJson: IAutoAction): AutoAction {
