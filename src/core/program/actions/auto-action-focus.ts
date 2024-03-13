@@ -6,6 +6,7 @@ export interface IAutoActionFocus extends IAutoAction {
 	selector: QuerySelectorWithPropertyLink;
 	smoothMouse?: boolean;
 	wait?: boolean;
+	blur?: boolean;
 }
 
 export class AutoActionFocus extends AutoAction implements IAutoActionFocus {
@@ -13,6 +14,7 @@ export class AutoActionFocus extends AutoAction implements IAutoActionFocus {
 	public selector: QuerySelectorWithPropertyLink;
 	public smoothMouse: boolean;
 	public wait: boolean;
+	public blur: boolean;
 
 	public static fromJson(jsonAction: IAutoActionFocus): AutoActionFocus {
 		return new AutoActionFocus(jsonAction);
@@ -26,6 +28,7 @@ export class AutoActionFocus extends AutoAction implements IAutoActionFocus {
 		this.selector = jsonAction.selector;
 		this.smoothMouse = AutoAction.prop(jsonAction.smoothMouse, false);
 		this.wait = AutoAction.prop(jsonAction.wait, false);
+		this.blur = AutoAction.prop(jsonAction.blur, false);
 	}
 
 	public async invoke(): Promise<void> {
@@ -33,7 +36,11 @@ export class AutoActionFocus extends AutoAction implements IAutoActionFocus {
 
 		await this.moveCursorTo(elements[0]);
 
-		(elements[0] as HTMLElement).focus();
+		if (this.blur === true) {
+			(elements[0] as HTMLElement).blur();
+		} else {
+			(elements[0] as HTMLElement).focus();
+		}
 
 		this.result = AutoActionResult.Success;
 	}
@@ -43,6 +50,7 @@ export class AutoActionFocus extends AutoAction implements IAutoActionFocus {
 		basicJson.selector = this.selector;
 		basicJson.smoothMouse = this.smoothMouse;
 		basicJson.wait = this.wait;
+		basicJson.blur = this.blur;
 		return basicJson;
 	}
 

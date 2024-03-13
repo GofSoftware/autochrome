@@ -4,10 +4,16 @@ import { Cursor } from '../../common/cursor';
 import { AutoActionName, AutoActionResult } from './action-types';
 import { QuerySelectorHelper } from '../../common/query-selector-helper';
 
+export enum AutoActionClickType {
+	MouseDownFocusMouseUp = 'MouseDownFocusMouseUp',
+	Click = 'Click'
+}
+
 export interface IAutoActionClick extends IAutoAction {
 	selector: QuerySelectorWithPropertyLink;
 	smoothMouse?: boolean;
 	wait?: boolean;
+	clickType?: AutoActionClickType;
 }
 
 export class AutoActionClick extends AutoAction implements IAutoActionClick {
@@ -15,6 +21,7 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 	public selector: QuerySelectorWithPropertyLink;
 	public smoothMouse: boolean;
 	public wait: boolean;
+	public clickType: AutoActionClickType;
 
 	public static fromJson(jsonAction: IAutoActionClick): AutoActionClick {
 		return new AutoActionClick(jsonAction);
@@ -28,13 +35,14 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 		this.selector = jsonAction.selector;
 		this.smoothMouse = AutoAction.prop(jsonAction.smoothMouse, false);
 		this.wait = AutoAction.prop(jsonAction.wait, false);
+		this.clickType = AutoAction.prop(jsonAction.clickType, AutoActionClickType.MouseDownFocusMouseUp);
 	}
 
 	public async invoke(): Promise<void> {
 		const elements: Element[] = await this.querySelector(this.selector, this.wait, false);
 
 		for(const element of elements) {
-			await this.clickOn(element, this.smoothMouse);
+			await this.clickOn(element as HTMLElement, this.smoothMouse);
 		}
 
 		this.result = AutoActionResult.Success;
@@ -45,10 +53,11 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 		basicJson.selector = this.selector;
 		basicJson.smoothMouse = this.smoothMouse;
 		basicJson.wait = this.wait;
+		basicJson.clickType = this.clickType;
 		return basicJson;
 	}
 
-	private async clickOn(element: Element, smoothMouse: boolean = false): Promise<void> {
+	private async clickOn(element: HTMLElement, smoothMouse: boolean = false): Promise<void> {
 		const box = element.getBoundingClientRect();
 		if (box != null) {
 			Logger.instance.debug(`Robot ClickOn [${
@@ -60,12 +69,18 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 
 			await Cursor.moveTo(coordinateX, coordinateY, smoothMouse);
 
-			this.simulateMouseEvent(element, "mousedown", coordinateX, coordinateY);
-			if((element as HTMLElement).focus != null) {
-				(element as HTMLElement).focus();
+			switch (this.clickType) {
+				case AutoActionClickType.Click:
+					element.click();
+					break;
+				default:
+					this.simulateMouseEvent(element, "mousedown", coordinateX, coordinateY);
+					if (element.focus != null) {
+						element.focus();
+					}
+					this.simulateMouseEvent(element, "mouseup", coordinateX, coordinateY);
+					this.simulatePointerEvent(element);
 			}
-			this.simulateMouseEvent(element, "mouseup", coordinateX, coordinateY);
-			this.simulatePointerEvent(element);
 		} else {
 			throw new Error(`Robot ClickOn [${this.selector}], box is undetermined...`);
 		}
