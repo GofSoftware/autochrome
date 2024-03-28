@@ -83,6 +83,7 @@ export class AutoProgram implements IAutoProgram {
 				procedureDescription.action.traverse((action: AutoAction) => {
 					switch (action.name) {
 						case AutoActionName.AutoActionCase:
+						case AutoActionName.AutoActionCaseParameter:
 							const caseAction = action as AutoActionCase;
 							if (!idMap.has(caseAction.elseActionId) || !idMap.has(caseAction.thenActionId)) {
 								throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for elseActionId: ${caseAction.elseActionId} or thenActionId: ${caseAction.thenActionId}`);

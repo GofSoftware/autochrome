@@ -5,7 +5,7 @@ import { AutoActionName, AutoActionResult } from './action-types';
 export interface IAutoActionScrollIntoView extends IAutoAction {
 	selector: string;
 	wait?: boolean;
-	behavior : string; 	// auto or smooth. Defaults to auto.
+	behavior : string; 	// auto, instant or smooth. Defaults to auto.
 	block : string; 	// start, center, end, or nearest. Defaults to start.
 	inline: string;		// start, center, end, or nearest. Defaults to nearest.
 }

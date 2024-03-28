@@ -17,6 +17,7 @@ import { AutoActionEmpty } from './auto-action-empty';
 import { AutoActionConsoleLog } from './auto-action-console-log';
 import { AutoActionGoTo } from './auto-action-go-to';
 import { AutoActionGroup } from './auto-action-group';
+import { AutoActionCaseParameter } from './auto-action-case-parameter';
 
 export enum AutoActionName {
 	AutoActionRoot = 'AutoActionRoot',
@@ -38,13 +39,14 @@ export enum AutoActionName {
 	AutoActionEmpty = 'AutoActionEmpty',
 	AutoActionConsoleLog = 'AutoActionConsoleLog',
 	AutoActionGoTo = 'AutoActionGoTo',
-	AutoActionGroup = 'AutoActionGroup'
+	AutoActionGroup = 'AutoActionGroup',
+	AutoActionCaseParameter = 'AutoActionCaseParameter'
 }
 
 export type AutoAnyAction = AutoAction | AutoActionCheck | AutoActionCheckGroup | AutoActionClick | AutoActionGetText |
 	AutoActionWait | AutoActionScrollIntoView | AutoActionSelectFile | AutoActionWaitUntil | AutoActionSetValue | AutoActionCase |
 	AutoActionDragNDrop | AutoActionUrl | AutoActionFocus | AutoActionProcedure | AutoActionEmpty | AutoActionConsoleLog | AutoActionGoTo |
-	AutoActionGroup;
+	AutoActionGroup | AutoActionCaseParameter;
 
 export enum AutoActionResult {
 	Success = 'Success',

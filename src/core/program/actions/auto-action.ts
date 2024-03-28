@@ -187,11 +187,7 @@ export abstract class AutoAction implements IAutoAction {
 		}
 
 		if ((value as IParameterLink)?.type === ParameterLinkTypeName) {
-			const linkedParameter = this.parameters.find((parameter) => parameter.name === (value as IParameterLink).name);
-			if(linkedParameter == null) {
-				throw new Error(`Cannot find the parameter with the name ${(value as IParameterLink).name}`);
-			}
-			return linkedParameter.value;
+			return this.getParameterValue((value as IParameterLink).name);
 		}
 
 		Object.keys(value).forEach((key: string) => {
@@ -199,5 +195,13 @@ export abstract class AutoAction implements IAutoAction {
 		});
 
 		return value;
+	}
+
+	protected getParameterValue(name: string): any {
+		const linkedParameter = this.parameters.find((parameter) => parameter.name === name);
+		if(linkedParameter == null) {
+			throw new Error(`Cannot find the parameter with the name ${name}`);
+		}
+		return linkedParameter.value;
 	}
 }
