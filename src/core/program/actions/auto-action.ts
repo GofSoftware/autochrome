@@ -29,6 +29,7 @@ export interface IQuerySelector {
 	all?: boolean;
 	child?: string | IQuerySelector;
 	parent?: string | IQuerySelector;
+	iframe?: string | IQuerySelector;
 	parentLevel?: number;
 }
 
@@ -41,6 +42,7 @@ export interface IQuerySelectorWithParameters {
 	all?: boolean | IParameterLink;
 	child?: StringOrIQuerySelectorWithParameters;
 	parent?: StringOrIQuerySelectorWithParameters;
+	iframe?: StringOrIQuerySelectorWithParameters;
 	parentLevel?: number | IParameterLink;
 }
 

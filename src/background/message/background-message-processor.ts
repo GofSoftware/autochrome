@@ -11,7 +11,6 @@ import { Robot, RobotEventDataType } from '../robot/robot';
 import { ProgramContainer } from '../../core/program/container/program-container';
 import { AutoLinkServer } from '../../core/auto-link/auto-link-server';
 import { ExtractedProgramContainerManager } from '../../core/auto-link/extracted-program-container-manager';
-import { ExtractedProgramContainer } from '../../core/program/container/extracted-program-container';
 
 export class BackgroundMessageProcessor {
 	private static contentMessageProcessorInstance: BackgroundMessageProcessor;
@@ -70,10 +69,7 @@ export class BackgroundMessageProcessor {
 		}
 	}
 
-	private async processContainerMessage(
-		message: IAutoMessage,
-		sender: chrome.runtime.MessageSender
-	): Promise<boolean> {
+	private async processContainerMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender): Promise<boolean> {
 		switch (message?.type) {
 			case AutoMessageType.ContainerNew:
 				const programContainerJson = (message as IAutoMessage<IAutoMessageDataNewContainer>).data.container;
@@ -105,10 +101,7 @@ export class BackgroundMessageProcessor {
 		}
 	}
 
-	private async processContentMessage(
-		message: IAutoMessage,
-		sender: chrome.runtime.MessageSender
-	): Promise<boolean> {
+	private async processContentMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender): Promise<boolean> {
 		try {
 			switch (message?.type) {
 				case AutoMessageType.ContentAwake:
@@ -123,10 +116,7 @@ export class BackgroundMessageProcessor {
 		}
 	}
 
-	private async processGlobalSettingsMessage(
-		message: IAutoMessage,
-		sender: chrome.runtime.MessageSender
-	): Promise<boolean> {
+	private async processGlobalSettingsMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender): Promise<boolean> {
 		try {
 			switch (message?.type) {
 				case AutoMessageType.SetGlobalSettings:

@@ -51,6 +51,13 @@ export class QuerySelectorHelper {
 			return QuerySelectorHelper.querySelector(selector.parent, parent);
 		}
 
+		if (selector.iframe != null && elements.length > 0) {
+			const iframeBody = (elements[0] as HTMLIFrameElement).contentDocument?.body;
+			if (iframeBody != null) {
+				return QuerySelectorHelper.querySelector(selector.iframe, iframeBody);
+			}
+		}
+
 		return elements;
 	}
 

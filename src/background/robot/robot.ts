@@ -249,10 +249,7 @@ export class Robot {
 		}
 	}
 
-	private async processSetGlobalSettings(
-		senderId: number,
-		globalSettingsData: IAutoMessageDataSetGlobalSettings
-	): Promise<void> {
+	private async processSetGlobalSettings(senderId: number, globalSettingsData: IAutoMessageDataSetGlobalSettings): Promise<void> {
 		await RobotSettingsGlobal.instance.setSettings(globalSettingsData.globalSettings);
 	}
 
