@@ -5,49 +5,15 @@ import { QuerySelectorHelper } from '../../common/query-selector-helper';
 import { Guid } from '../../common/guid';
 import { AutoActionFactory } from './auto-action-factory';
 import { cloneDeep } from 'lodash-es';
+import {
+	AutoValueSourceType,
+	AutoValueTypeName, IAutoParameter,
+	IAutoValue,
+	IParameterLink,
+	ParameterLinkTypeName,
+	QuerySelectorWithPropertyLink, StringOrIQuerySelector
+} from './i-interfaces';
 
-export const ParameterLinkTypeName = 'ParameterLink';
-
-export type ParameterLinkType = 'ParameterLink';
-
-export interface IParameterLink {
-	type: ParameterLinkType;
-	name: string;
-}
-
-export type IAutoParameterValue = string | number | boolean | IQuerySelectorWithParameters;
-
-export interface IAutoParameter {
-	name: string;
-	value: IAutoParameterValue;
-}
-
-export interface IQuerySelector {
-	selector: string;
-	innerText?: string;
-	textContent?: string;
-	all?: boolean;
-	child?: string | IQuerySelector;
-	parent?: string | IQuerySelector;
-	iframe?: string | IQuerySelector;
-	parentLevel?: number;
-}
-
-export type StringOrIQuerySelector = string | IQuerySelector;
-
-export interface IQuerySelectorWithParameters {
-	selector: StringOrIQuerySelector | IParameterLink;
-	innerText?: string | IParameterLink;
-	textContent?: string | IParameterLink;
-	all?: boolean | IParameterLink;
-	child?: StringOrIQuerySelectorWithParameters;
-	parent?: StringOrIQuerySelectorWithParameters;
-	iframe?: StringOrIQuerySelectorWithParameters;
-	parentLevel?: number | IParameterLink;
-}
-
-export type StringOrIQuerySelectorWithParameters = string | IQuerySelectorWithParameters;
-export type QuerySelectorWithPropertyLink = StringOrIQuerySelectorWithParameters | IParameterLink;
 
 /**
  * The base interface for all actions, includes fields that can be set in any nested action.
@@ -197,6 +163,35 @@ export abstract class AutoAction implements IAutoAction {
 		});
 
 		return value;
+	}
+
+	protected async replaceActionValue(value: any): Promise<any> {
+		if (value == null || typeof value !== 'object' || (value as IAutoValue).type !== AutoValueTypeName) {
+			return value;
+		}
+
+		const autoValue = (value as IAutoValue);
+
+		if (autoValue.selector == null) {
+			throw new Error(`Auto Value must have a selector. Value: ${JSON.stringify(autoValue.selector)}`);
+		}
+		const elements: Element[] = await this.querySelector(autoValue.selector, autoValue.wait === true);
+		if (elements.length === 0) {
+			return null;
+		}
+		const element = elements[0] as HTMLElement;
+		switch (autoValue.valueType) {
+			case AutoValueSourceType.attribute:
+				return element.getAttribute(autoValue.attributeName);
+			case AutoValueSourceType.innerHTML:
+				return element.innerHTML;
+			case AutoValueSourceType.innerText:
+				return element.innerText;
+			case AutoValueSourceType.textContent:
+				return element.textContent;
+			default:
+				throw new Error(`Unknown AutoValueType ${autoValue.type}. Value: ${JSON.stringify(autoValue.selector)}`);
+		}
 	}
 
 	protected getParameterValue(name: string): any {

@@ -1,6 +1,7 @@
-import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink } from './auto-action';
+import { IAutoAction, AutoAction } from './auto-action';
 import { Cursor } from '../../common/cursor';
 import { AutoActionName, AutoActionResult } from './action-types';
+import { QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export interface IAutoActionFocus extends IAutoAction {
 	selector: QuerySelectorWithPropertyLink;

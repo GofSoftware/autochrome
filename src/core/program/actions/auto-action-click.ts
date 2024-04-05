@@ -1,8 +1,9 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction, IParameterLink, QuerySelectorWithPropertyLink } from './auto-action';
+import { IAutoAction, AutoAction } from './auto-action';
 import { Cursor } from '../../common/cursor';
 import { AutoActionName, AutoActionResult } from './action-types';
 import { QuerySelectorHelper } from '../../common/query-selector-helper';
+import { IParameterLink, QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export enum AutoActionClickType {
 	MouseDownFocusMouseUp = 'MouseDownFocusMouseUp',

@@ -1,6 +1,7 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink } from './auto-action';
+import { IAutoAction, AutoAction } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
+import { QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export interface IAutoActionDragNDrop extends IAutoAction {
 	sourceSelector: QuerySelectorWithPropertyLink;

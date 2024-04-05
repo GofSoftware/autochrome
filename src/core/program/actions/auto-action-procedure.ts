@@ -1,4 +1,4 @@
-import { IAutoAction, AutoAction, IAutoParameter } from './auto-action';
+import { IAutoAction, AutoAction } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
 import { cloneDeep } from 'lodash-es';
 

@@ -1,20 +1,7 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink, IParameterLink } from './auto-action';
+import { IAutoAction, AutoAction } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
-
-export enum AutoValueType {
-	attribute = 'attribute',
-	innerText = 'innerText',
-	textContent = 'textContent',
-	innerHTML = 'innerHTML',
-}
-
-export interface IAutoValue {
-	selector: QuerySelectorWithPropertyLink;
-	wait: boolean;
-	type: AutoValueType;
-	attributeName: string;
-}
+import { IAutoValue, IParameterLink, QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export interface IAutoActionSetValue extends IAutoAction {
 	selector: QuerySelectorWithPropertyLink;
@@ -25,7 +12,7 @@ export interface IAutoActionSetValue extends IAutoAction {
 export class AutoActionSetValue extends AutoAction implements IAutoActionSetValue {
 	public name = AutoActionName.AutoActionSetValue;
 	public selector: QuerySelectorWithPropertyLink;
-	public value: any;
+	public value: any | IAutoValue | IParameterLink;
 	public wait: boolean;
 
 	public static fromJson(jsonAction: IAutoActionSetValue): AutoActionSetValue {
@@ -68,34 +55,7 @@ export class AutoActionSetValue extends AutoAction implements IAutoActionSetValu
 	}
 
 	private async getValue(): Promise<any> {
-
 		const processedValue = this.replaceParameters(this.value);
-
-		if (processedValue == null) {
-			return processedValue;
-		}
-
-		if (processedValue.type != null && processedValue.selector != null) {
-			const elements: Element[] = await this.querySelector(processedValue.selector, processedValue.wait === true);
-			if (elements.length === 0) {
-				return null;
-			}
-			const element = elements[0] as HTMLElement;
-			switch (processedValue.type) {
-				case AutoValueType.attribute:
-					return element.getAttribute(processedValue.attributeName);
-				case AutoValueType.innerHTML:
-					return element.innerHTML;
-				case AutoValueType.innerText:
-					return element.innerText;
-				case AutoValueType.textContent:
-					return element.textContent;
-				default:
-					console.error(`Unknown AutoValueType ${processedValue.type} fallback to innerText`);
-					return element.innerText;
-			}
-		}
-
-		return processedValue;
+		return await this.replaceActionValue(processedValue);
 	}
 }

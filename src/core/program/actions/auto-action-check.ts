@@ -1,6 +1,7 @@
-import { IAutoAction, AutoAction, QuerySelectorWithPropertyLink } from './auto-action';
+import { IAutoAction, AutoAction } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
 import { QuerySelectorHelper } from '../../common/query-selector-helper';
+import { QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export enum IAutoActionCheckType {
 	Exists = 'Exists',

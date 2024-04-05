@@ -1,8 +1,4 @@
-import {
-	StringOrIQuerySelectorWithParameters,
-	IQuerySelector,
-	StringOrIQuerySelector
-} from '../program/actions/auto-action';
+import { IQuerySelector, StringOrIQuerySelector, StringOrIQuerySelectorWithParameters } from '../program/actions/i-interfaces';
 
 export class QuerySelectorHelper {
 	public static querySelector(selector: StringOrIQuerySelector, root: Element = document.documentElement): Element[] {
@@ -30,7 +26,7 @@ export class QuerySelectorHelper {
 		} else {
 			elements = (querySelector.all === true)
 				? Array.from(root.querySelectorAll(querySelector.selector))
-				: [root.querySelector(querySelector.selector)];
+				: [root.querySelector(querySelector.selector)].filter((e) => e != null);
 		}
 
 		if (selector.child != null) {

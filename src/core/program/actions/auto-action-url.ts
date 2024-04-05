@@ -1,14 +1,15 @@
 import { IAutoAction, AutoAction } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
+import { IAutoValue, IParameterLink } from './i-interfaces';
 
 export interface IAutoActionUrl extends IAutoAction {
-	url: string;
+	url: string | IAutoValue | IParameterLink;
 }
 
 export class AutoActionUrl extends AutoAction implements IAutoActionUrl {
 	public name = AutoActionName.AutoActionUrl;
-	public url: string;
+	public url: string | IAutoValue | IParameterLink;
 
 	public static fromJson(jsonAction: IAutoActionUrl): AutoActionUrl {
 		return new AutoActionUrl(jsonAction);
@@ -23,8 +24,13 @@ export class AutoActionUrl extends AutoAction implements IAutoActionUrl {
 	}
 
 	public async invoke(): Promise<void> {
-		document.location = this.url;
-		await InterruptibleUtility.justWait(this.timeout, 'Wait until browser reloads');
+
+		let url = this.replaceParameters(this.url);
+		url = await this.replaceActionValue(url);
+
+		document.location = url;
+		await InterruptibleUtility.justWait(this.timeout, 'Wait until browser reloads.');
+
 		// If we are here then browser for some reason didn't refresh the page, so we have to send failed result.
 		this.result = AutoActionResult.Failed;
 	}
