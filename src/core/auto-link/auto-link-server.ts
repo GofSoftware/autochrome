@@ -15,6 +15,10 @@ export class AutoLinkServer {
 
 	public async sendContainerUpdate(containerId: string, type: IAutoMessageContainerChangeType): Promise<boolean> {
 		const message: IAutoMessage<IAutoMessageDataContainerChanged> = {type: AutoMessageType.ContainerUpdate, data: {containerId, type}};
+		const contexts = await (chrome.runtime as any).getContexts({contextTypes: ['POPUP']});
+		if (!Array.isArray(contexts) || contexts.length === 0) {
+			return  true; // assume the popup isn't opened.
+		}
 		const result = await chrome.runtime.sendMessage(message);
 		return result === true;
 	}
