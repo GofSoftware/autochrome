@@ -26,7 +26,7 @@ export class AutoActionUrl extends AutoAction implements IAutoActionUrl {
 	public async invoke(): Promise<void> {
 
 		let url = this.replaceParameters(this.url);
-		url = await this.replaceActionValue(url);
+		url = await this.replaceAutoValue(url);
 
 		document.location = url;
 		await InterruptibleUtility.justWait(this.timeout, 'Wait until browser reloads.');

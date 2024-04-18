@@ -1,4 +1,4 @@
-import { IQuerySelector, StringOrIQuerySelector, StringOrIQuerySelectorWithParameters } from '../program/actions/i-interfaces';
+import { IQuerySelector, StringOrIQuerySelector } from '../program/actions/i-interfaces';
 
 export class QuerySelectorHelper {
 	public static querySelector(selector: StringOrIQuerySelector, root: Element = document.documentElement): Element[] {
@@ -57,7 +57,7 @@ export class QuerySelectorHelper {
 		return elements;
 	}
 
-	public static convertToString(selector: StringOrIQuerySelectorWithParameters): string {
+	public static convertToString(selector: StringOrIQuerySelector): string {
 		if (typeof selector === "string") {
 			return selector;
 		}

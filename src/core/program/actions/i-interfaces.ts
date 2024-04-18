@@ -28,7 +28,7 @@ export type StringOrIQuerySelector = string | IQuerySelector;
 
 export interface IQuerySelectorWithParameters {
 	selector: StringOrIQuerySelector | IParameterLink;
-	innerText?: string | IParameterLink;
+	innerText?: string | IParameterLink  | IAutoValue;
 	textContent?: string | IParameterLink;
 	all?: boolean | IParameterLink;
 	child?: StringOrIQuerySelectorWithParameters;
@@ -44,7 +44,7 @@ export enum AutoValueSourceType {
 	attribute = 'attribute',
 	innerText = 'innerText',
 	textContent = 'textContent',
-	innerHTML = 'innerHTML',
+	innerHTML = 'innerHTML'
 }
 
 export const AutoValueTypeName = 'AutoValue';

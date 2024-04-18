@@ -56,6 +56,6 @@ export class AutoActionSetValue extends AutoAction implements IAutoActionSetValu
 
 	private async getValue(): Promise<any> {
 		const processedValue = this.replaceParameters(this.value);
-		return await this.replaceActionValue(processedValue);
+		return await this.replaceAutoValue(processedValue);
 	}
 }

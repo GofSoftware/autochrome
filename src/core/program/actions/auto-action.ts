@@ -115,6 +115,7 @@ export abstract class AutoAction implements IAutoAction {
 		let elements: Element[];
 
 		const querySelector = this.replaceParameters(selector) as StringOrIQuerySelector;
+		await this.replaceSelectorAutoValues(querySelector);
 
 		try {
 			if (wait) {
@@ -165,7 +166,19 @@ export abstract class AutoAction implements IAutoAction {
 		return value;
 	}
 
-	protected async replaceActionValue(value: any): Promise<any> {
+	protected async replaceSelectorAutoValues(selector: StringOrIQuerySelector): Promise<void> {
+		if (selector == null || typeof selector !== 'object') {
+			return;
+		}
+
+		if(selector.innerText != null ||
+			typeof selector.innerText === 'object' ||
+			(selector.innerText as unknown as IAutoValue).type === AutoValueTypeName) {
+			selector.innerText = await this.replaceAutoValue(selector.innerText);
+		}
+	}
+
+	protected async replaceAutoValue(value: any): Promise<any> {
 		if (value == null || typeof value !== 'object' || (value as IAutoValue).type !== AutoValueTypeName) {
 			return value;
 		}
