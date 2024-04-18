@@ -171,8 +171,8 @@ export abstract class AutoAction implements IAutoAction {
 			return;
 		}
 
-		if(selector.innerText != null ||
-			typeof selector.innerText === 'object' ||
+		if(selector.innerText != null &&
+			typeof selector.innerText === 'object' &&
 			(selector.innerText as unknown as IAutoValue).type === AutoValueTypeName) {
 			selector.innerText = await this.replaceAutoValue(selector.innerText);
 		}
