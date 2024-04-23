@@ -2,7 +2,7 @@ import './html/popup.less';
 import { ProgramItemCollection } from './program/program-item-collection';
 import { AutoLinkClient } from '../core/auto-link/auto-link-client';
 import { Logger } from '../core/common/logger';
-import {TabManager} from "../core/common/tab-manager";
+import { TabManager } from "../core/common/tab-manager";
 import { RobotSettingsGlobal } from '../core/settings/robot-settings-global';
 
 /**
@@ -56,6 +56,16 @@ class Popup {
 			const autoPlay = (document.getElementById('auto-play') as HTMLInputElement).checked;
 			await AutoLinkClient.instance().setGlobalSettings({autoPlay});
 		};
+
+		document.getElementById('a-set-current').onclick = async () => {
+			const [currentTab] = await chrome.tabs.query( { active: true });
+			if (currentTab != null) {
+				ProgramItemCollection.instance().forEach((item) => {
+					item.programItem.extractedProgramContainer.programContainer.tabId = currentTab.id;
+					AutoLinkClient.instance().updateContainer(item.programItem.extractedProgramContainer.programContainer);
+				})
+			}
+		}
 
 		const settings = await RobotSettingsGlobal.instance.getSettings();
 		if (settings.autoPlay === true) {

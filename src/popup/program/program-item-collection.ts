@@ -53,6 +53,12 @@ export class ProgramItemCollection {
 		this.autoLinkSubscription?.unsubscribe();
 	}
 
+	public forEach(
+		callback: (programItem: IProgramItemCollectionElement, key:string, map: Map<string, IProgramItemCollectionElement>) => void
+	): void {
+		this.programItemMap.forEach(callback);
+	}
+
 	public async addItem(serializedProgram: string, tabId: number): Promise<void> {
 		const programContainer = ProgramContainer.create(serializedProgram, tabId);
 		const result = await AutoLinkClient.instance().newContainer(programContainer);
@@ -77,7 +83,7 @@ export class ProgramItemCollection {
 		const items =  Array.from(this.programItemMap.values()).sort((a, b) =>
 			a.programItem.extractedProgramContainer.programContainer.order - b.programItem.extractedProgramContainer.programContainer.order
 		).map((item) => {
-			return  item.programItem.render();
+			return item.programItem.render();
 		});
 
 		items.forEach((programItem: HTMLElement) => {

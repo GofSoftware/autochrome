@@ -31,6 +31,7 @@ export class ProgramItem {
 	private containerChangeSubscription: Subscription;
 	private itemChangedSubject$ = new BehaviorSubject<IProgramItemUpdateInfo>(null);
 	private programItem: HTMLElement;
+	private isSelected = false;
 
 	private constructor(programContainer: ProgramContainer) {
 		try {
@@ -57,6 +58,10 @@ export class ProgramItem {
 
 	public render(): HTMLElement {
 		return this.error ? this.renderError() : this.renderItem();
+	}
+
+	public setSelected(selected: boolean): void {
+		this.isSelected = selected;
 	}
 
 	private renderError(): HTMLElement {
@@ -90,13 +95,14 @@ export class ProgramItem {
 		const actionIndex = this.extractedProgramContainer.activeAction?.index || 0;
 		const count = this.extractedProgramContainer.program.count;
 		const progressBarValue = count === 0 ? 0 : (100 * actionIndex / count);
+		const isActive = this.isProgressBarVisible() || this.isSelected;
 
 		const content = HtmlElementHelper.createElementFromHTML(
 			`
-			<div class="uploaded-program">
+			<div class="uploaded-program ${isActive ? '' : 'not-active'}">
 				<div class="close-button"><button class="program-button program-square-button-small" title="Remove the item">x</button></div>
 				<div class="tab-id ${tabExists ? '' : 'error pointer'}" title="${tabTitle}">Tab id: ${this.extractedProgramContainer.programContainer.tabId} <a>[set current]</a></div>
-				<div class="name">(${this.extractedProgramContainer.programContainer.order}) ${this.extractedProgramContainer.program.name}</div>
+				<div class="name">${this.extractedProgramContainer.program.name}</div>
 				<div class="description">${this.extractedProgramContainer.program.description}</div>
 				${this.extractedProgramContainer.programContainer.error != null ? `<div class="error">${this.extractedProgramContainer.programContainer.error}</div>` : ''}
 				${this.extractedProgramContainer.programContainer.status === ProgramContainerStatus.Completed ? `<div class="success">Success.</div>` : ''}
@@ -127,6 +133,7 @@ export class ProgramItem {
 						<i class="fa-solid fa-stop"></i>
 					</button>
 				</div>
+				<div class="expand-collapse"><i class="fa ${isActive ? 'fa-angle-up' : 'fa-angle-down'}"></i></div>
 			</div>
 			`
 		);
@@ -144,6 +151,15 @@ export class ProgramItem {
 		};
 		(this.programItem.querySelector('.pause-button') as HTMLElement).onclick = async () => {
 			await AutoLinkClient.instance().doContainerAction(this.extractedProgramContainer.programContainer.id, ProgramContainerAction.Pause);
+		};
+		(this.programItem.querySelector('.expand-collapse') as HTMLElement).onclick = async () => {
+			this.isSelected = !this.isSelected;
+			if (this.isSelected) {
+				this.programItem.querySelector('.uploaded-program').classList.remove('not-active');
+			} else {
+				this.programItem.querySelector('.uploaded-program').classList.add('not-active');
+			}
+
 		};
 		((this.programItem.querySelector('.tab-id a') as HTMLElement) || {onclick}).onclick = async () => {
 			const [currentTab] = await chrome.tabs.query( { active: true });
