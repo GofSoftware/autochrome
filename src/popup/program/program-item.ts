@@ -96,16 +96,22 @@ export class ProgramItem {
 		const count = this.extractedProgramContainer.program.count;
 		const progressBarValue = count === 0 ? 0 : (100 * actionIndex / count);
 		const isActive = this.isProgressBarVisible() || this.isSelected;
+		const isSuccess = this.extractedProgramContainer.programContainer.status === ProgramContainerStatus.Completed;
+		const hasError = this.extractedProgramContainer.programContainer.error != null;
 
 		const content = HtmlElementHelper.createElementFromHTML(
 			`
 			<div class="uploaded-program ${isActive ? '' : 'not-active'}">
 				<div class="close-button"><button class="program-button program-square-button-small" title="Remove the item">x</button></div>
 				<div class="tab-id ${tabExists ? '' : 'error pointer'}" title="${tabTitle}">Tab id: ${this.extractedProgramContainer.programContainer.tabId} <a>[set current]</a></div>
-				<div class="name">${this.extractedProgramContainer.program.name}</div>
+				<div class="name">
+					${hasError ? '<i class="error">X</i>' : ''}
+					${isSuccess ? '<i class="success">V</i>' : ''}
+					${this.extractedProgramContainer.program.name}
+				</div>
 				<div class="description">${this.extractedProgramContainer.program.description}</div>
-				${this.extractedProgramContainer.programContainer.error != null ? `<div class="error">${this.extractedProgramContainer.programContainer.error}</div>` : ''}
-				${this.extractedProgramContainer.programContainer.status === ProgramContainerStatus.Completed ? `<div class="success">Success.</div>` : ''}
+				${hasError ? `<div class="description-error error">${this.extractedProgramContainer.programContainer.error}</div>` : ''}
+				${isSuccess ? `<div class="description-success success">Success.</div>` : ''}
 				<div class="program-progress-bar-holder ${this.isProgressBarVisible() ? '' : 'hidden'}">
 					<div>${this.extractedProgramContainer.activeAction ? this.extractedProgramContainer.activeAction.name : ''}</div>
 					<div class="action-description">${this.extractedProgramContainer.activeAction ? this.extractedProgramContainer.activeAction.description : ''}</div>
@@ -156,8 +162,12 @@ export class ProgramItem {
 			this.isSelected = !this.isSelected;
 			if (this.isSelected) {
 				this.programItem.querySelector('.uploaded-program').classList.remove('not-active');
+				this.programItem.querySelector('.expand-collapse i').classList.add('fa-angle-up');
+				this.programItem.querySelector('.expand-collapse i').classList.remove('fa-angle-down');
 			} else {
 				this.programItem.querySelector('.uploaded-program').classList.add('not-active');
+				this.programItem.querySelector('.expand-collapse i').classList.add('fa-angle-down');
+				this.programItem.querySelector('.expand-collapse i').classList.remove('fa-angle-up');
 			}
 
 		};
