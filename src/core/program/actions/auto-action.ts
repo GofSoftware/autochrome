@@ -4,7 +4,7 @@ import { InterruptibleUtility } from '../../common/interruptible-utility';
 import { QuerySelectorHelper } from '../../common/query-selector-helper';
 import { Guid } from '../../common/guid';
 import { AutoActionFactory } from './auto-action-factory';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, replace } from 'lodash-es';
 import {
 	AutoValueSourceType,
 	AutoValueTypeName, IAutoParameter,
@@ -114,8 +114,9 @@ export abstract class AutoAction implements IAutoAction {
 	protected async querySelector(selector: QuerySelectorWithPropertyLink, wait: boolean, silent: boolean = false): Promise<Element[]> {
 		let elements: Element[];
 
-		const querySelector = this.replaceParameters(selector) as StringOrIQuerySelector;
+		let querySelector = this.replaceParameters(selector) as StringOrIQuerySelector;
 		await this.replaceSelectorAutoValues(querySelector);
+		querySelector = this.replaceParameterMacro(querySelector);
 
 		try {
 			if (wait) {
@@ -166,16 +167,37 @@ export abstract class AutoAction implements IAutoAction {
 		return value;
 	}
 
+	protected replaceParameterMacro(selector: StringOrIQuerySelector): StringOrIQuerySelector {
+		if (selector == null) {
+			return selector;
+		}
+
+		if (typeof selector === 'object') {
+			return this.replaceParameterMacro(selector.selector);
+		}
+
+		if (typeof selector === 'string') {
+			let result;
+			let watchDog = 0;
+			while ((result = /\{parameter:(.*?)\}/g.exec(selector as string)) !== null) {
+				const paramValue = this.getParameterValue(result[1]);
+				selector = selector.replace(result[0], paramValue);
+				if (watchDog++ > 1000) {
+					throw new Error(`replaceParameterMacro watchDog > 1000`);
+				}
+			}
+		}
+
+		return selector;
+	}
+
 	protected async replaceSelectorAutoValues(selector: StringOrIQuerySelector): Promise<void> {
 		if (selector == null || typeof selector !== 'object') {
 			return;
 		}
 
-		if(selector.innerText != null &&
-			typeof selector.innerText === 'object' &&
-			(selector.innerText as unknown as IAutoValue).type === AutoValueTypeName) {
-			selector.innerText = await this.replaceAutoValue(selector.innerText);
-		}
+		selector.innerText = await this.replaceAutoValue(selector.innerText);
+		selector.textContent = await this.replaceAutoValue(selector.textContent);
 	}
 
 	protected async replaceAutoValue(value: any): Promise<any> {
