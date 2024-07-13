@@ -1,0 +1,23 @@
+{
+  "name": "content",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/content/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/content"],
+      "options": {
+      },
+      "configurations": {
+        "production": {
+          "command": "node ./apps/content/esbuild.js --production"
+        },
+        "development": {
+          "command": "node ./apps/content/esbuild.js --development"
+        }
+      }
+    }
+  }
+}

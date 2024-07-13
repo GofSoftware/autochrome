@@ -1,6 +1,10 @@
 /.idea
 /plugin
+/dist
 /node_modules
 *.drawio.bkp
 /program-examples/apps
 
+.nx/cache
+.nx/workspace-data
+.angular

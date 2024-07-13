@@ -1,0 +1,131 @@
+.uploaded-program {
+  border: 1px solid #D3D3D3FF;
+  // min-height: 50px;
+  padding: 5px 5px 15px 5px;
+  overflow: hidden;
+  white-space: normal;
+  margin: 5px;
+  background: #fff4e3;
+  position: relative;
+
+  &.not-active {
+    height: 35px;
+    div.description {
+      display: none;
+    }
+    div.uploaded-program-actions {
+      display: none;
+    }
+    div.description-error {
+      display: none;
+    }
+    div.description-success {
+      display: none;
+    }
+    div.program-progress-bar-holder {
+      display: none;
+    }
+    div.uploaded-program-actions {
+      display: none;
+    }
+  }
+
+  .expand-collapse {
+    text-align: center;
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 10px;
+  }
+
+  .expand-collapse:hover {
+    text-align: center;
+    background-color: rgba(220, 220, 220, 0.24);
+  }
+
+  .close-button {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+  }
+
+  .tab-id {
+    color: #808080;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .tab-id a {
+    color: blue;
+    font-size: 12px;
+    // margin-bottom: 5px;
+    cursor: pointer;
+  }
+
+  .name {
+    padding-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .description {
+    font-size: 12px;
+    color: gray;
+    padding-bottom: 5px;
+  }
+
+  .action-description {
+    font-size: 12px;
+    color: gray;
+    padding-bottom: 5px;
+  }
+
+  .success {
+    color: #008000;
+  }
+
+  .uploaded-program-actions {
+    margin-top: 10px;
+    text-align: right;
+  }
+  .uploaded-program-actions button {
+    margin-left: 10px;
+  }
+
+  .program-progress-bar-holder {
+    margin-top: 10px;
+  }
+
+  .program-progress-bar {
+    background-color: #d1d5db;
+    height: 5px;
+    border-radius: 1px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .program-progress-bar-progress {
+    background-color: #3b82f6;
+    border-radius: 2px;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 50%;
+  }
+
+  .error {
+    color: red!important;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+}
