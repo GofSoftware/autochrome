@@ -18,7 +18,7 @@
     "baseUrl": ".",
     "types": ["chrome"],
     "paths": {
-      "@autochrome/core/*": ["libs/core/src/*"],
+      "@autochrome/core/*": ["libs/core/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

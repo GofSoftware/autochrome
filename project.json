@@ -1,7 +1,7 @@
 {
   "name": "autochrome",
   "$schema": "node_modules/nx/schemas/project-schema.json",
-  "implicitDependencies": ["popup","content", "background"],
+  "implicitDependencies": ["popup","content", "background", "editor"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
