@@ -171,6 +171,7 @@ export class InterruptibleUtility {
 		timeout: number,
 		checkInterval: number = 100
 	): Promise<void> {
+		Logger.instance.debug(subject);
 		const initialState = conditionDelegate();
 		if (initialState === true) {
 			return Promise.resolve();

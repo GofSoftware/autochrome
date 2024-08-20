@@ -2,7 +2,6 @@ import { Logger } from '../../common/logger';
 import { IAutoAction, AutoAction } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { QuerySelectorHelper } from '../../common/query-selector-helper';
 import { QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export enum AutoActionWaitUntilType {
@@ -34,12 +33,14 @@ export class AutoActionWaitUntil extends AutoAction implements IAutoActionWaitUn
 	}
 
 	public async invoke(): Promise<void> {
-		const selector = this.replaceParameters(this.selector);
+		const selector = await this.preProcessQuerySelector(this.selector);
+		const querySelectorString = await this.convertQuerySelectorToString(this.selector);
+
 		try {
 			await InterruptibleUtility.wait(
-				`Wait until ${QuerySelectorHelper.convertToString(selector)} ${this.untilType}`,
+				`Wait until ${querySelectorString} ${this.untilType}`,
 				() => {
-					const elements = QuerySelectorHelper.querySelector(selector);
+					const elements = this.invokeQuerySelector(selector);
 					if (this.untilType === AutoActionWaitUntilType.appear) {
 						return elements.length > 0;
 					}

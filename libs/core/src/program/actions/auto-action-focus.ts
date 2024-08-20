@@ -37,7 +37,7 @@ export class AutoActionFocus extends AutoAction implements IAutoActionFocus {
 
 		await this.moveCursorTo(elements[0]);
 
-		if (this.blur === true) {
+		if (this.blur) {
 			(elements[0] as HTMLElement).blur();
 		} else {
 			(elements[0] as HTMLElement).focus();

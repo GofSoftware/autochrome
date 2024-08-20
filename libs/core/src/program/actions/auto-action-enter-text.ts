@@ -1,8 +1,6 @@
 import { Logger } from '../../common/logger';
 import { IAutoAction, AutoAction } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { QuerySelectorHelper } from '../../common/query-selector-helper';
 
 export interface IAutoActionEnterText extends IAutoAction {
 	selector: string;
@@ -39,23 +37,9 @@ export class AutoActionEnterText extends AutoAction implements IAutoActionEnterT
 
 	public async invoke(): Promise<void> {
 		try {
-			let elements: Element[];
-			if (this.wait) {
-				await InterruptibleUtility.wait(
-					`Getting element: ${this.selector}`,
-					() => {
-						elements = QuerySelectorHelper.querySelector(this.selector);
-						return elements.length > 0;
-					},
-					this.timeout,
-					100);
-			} else {
-				elements = QuerySelectorHelper.querySelector(this.selector);
-				if (elements.length === 0) {
-					throw new Error(`Element: ${ QuerySelectorHelper.convertToString(this.selector)} has not been found.`);
-				}
-			}
-			const element: HTMLElement =  elements[0] as HTMLElement;
+			const elements: Element[] = await this.querySelector(this.selector, this.wait, false);
+
+			const element: HTMLElement = elements[0] as HTMLElement;
 			if (this.focusBefore) {
 				element.focus();
 			}

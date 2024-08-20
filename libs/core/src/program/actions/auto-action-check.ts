@@ -1,6 +1,5 @@
 import { IAutoAction, AutoAction } from './auto-action';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { QuerySelectorHelper } from '../../common/query-selector-helper';
 import { QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export enum IAutoActionCheckType {
@@ -57,7 +56,7 @@ export class AutoActionCheck extends AutoAction implements IAutoActionCheck {
 		}
 		if (this.result !== AutoActionResult.Success && this.silent === false) {
 			throw new Error(`${this.name}: Check by the selector ${
-				QuerySelectorHelper.convertToString(this.replaceParameters(this.selector))
+				await this.convertQuerySelectorToString(this.selector)
 			} is failed.`);
 		}
 	}

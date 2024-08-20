@@ -1,7 +1,6 @@
 import { AutoActionName, AutoActionResult, AutoAnyAction } from './action-types';
 import { Config } from '../config/config';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { QuerySelectorHelper } from '../../common/query-selector-helper';
 import { Guid } from '../../common/guid';
 import { AutoActionFactory } from './auto-action-factory';
 import { cloneDeep } from 'lodash-es';
@@ -9,10 +8,11 @@ import {
 	AutoValueSourceType,
 	AutoValueTypeName, IAutoParameter,
 	IAutoValue,
-	IParameterLink,
+	IParameterLink, IQuerySelector,
 	ParameterLinkTypeName,
 	QuerySelectorWithPropertyLink, StringOrIQuerySelector
 } from './i-interfaces';
+import { Logger } from '@autochrome/core/common/logger';
 
 /**
  * The base interface for all actions, includes fields that can be set in any nested action.
@@ -114,24 +114,24 @@ export abstract class AutoAction implements IAutoAction {
 	protected async querySelector(selector: QuerySelectorWithPropertyLink, wait: boolean, silent: boolean = false): Promise<Element[]> {
 		let elements: Element[];
 
-		let querySelector = this.replaceParameters(selector) as StringOrIQuerySelector;
-		await this.replaceSelectorAutoValues(querySelector);
-		querySelector = this.replaceParameterMacro(querySelector);
+		const querySelector = await this.preProcessQuerySelector(selector);
+		const selectorString = await this.convertQuerySelectorToString(selector);
 
 		try {
 			if (wait) {
 				await InterruptibleUtility.wait(
-					`Getting element: ${QuerySelectorHelper.convertToString(querySelector)}`,
+					`Getting elements: ${selectorString}`,
 					() => {
-						elements = QuerySelectorHelper.querySelector(querySelector);
+						elements = this.invokeQuerySelector(querySelector);
 						return elements.length > 0;
 					},
 					this.timeout,
 					100);
 			} else {
-				elements = QuerySelectorHelper.querySelector(querySelector);
+				Logger.instance.debug(`Getting elements: ${selectorString}`);
+				elements = this.invokeQuerySelector(querySelector);
 				if (elements.length === 0) {
-					throw new Error(`Element: ${QuerySelectorHelper.convertToString(querySelector)} has not been found.`);
+					throw new Error(`Elements: ${selectorString} haven't been found.`);
 				}
 			}
 		} catch (error) {
@@ -142,6 +142,26 @@ export abstract class AutoAction implements IAutoAction {
 			}
 		}
 		return elements;
+	}
+
+	protected async convertQuerySelectorToString(querySelector: QuerySelectorWithPropertyLink): Promise<string> {
+		const selector = await this.preProcessQuerySelector(querySelector);
+
+		if (typeof selector === "string") {
+			return selector;
+		}
+		return `${selector.selector}`+
+			`${selector.innerText == null ? '' : ', innerText: ' + selector.innerText}` +
+			`${selector.textContent == null ? '' : ', textContent: ' + selector.textContent}` +
+			`${selector.child == null ? '' : ', child: (' + await this.convertQuerySelectorToString(selector.child) + ')'}` +
+			`${selector.parent == null ? '' : ', child: (' + await this.convertQuerySelectorToString(selector.parent) + ')'}` +
+			`${selector.all ? ', all' : ''}`;
+	}
+
+	protected async preProcessQuerySelector(selector: QuerySelectorWithPropertyLink): Promise<StringOrIQuerySelector> {
+		let querySelector = this.replaceParameters(selector) as StringOrIQuerySelector;
+		await this.replaceSelectorAutoValues(querySelector);
+		return this.replaceParameterMacro(querySelector);
 	}
 
 	protected selfOrLastChild(autoAction: AutoAction): AutoAction {
@@ -236,4 +256,62 @@ export abstract class AutoAction implements IAutoAction {
 		}
 		return linkedParameter.value;
 	}
+
+	protected invokeQuerySelector(selector: StringOrIQuerySelector, root: Element = document.documentElement): Element[] {
+		if (typeof selector === "string") {
+			return Array.from(root.querySelectorAll(selector));
+		}
+
+		const querySelector: IQuerySelector = selector;
+
+		let elements: Element[] = [];
+
+		// It also can be done through the XPath, check the following link if more complex selectors are required.
+		// https://stackoverflow.com/questions/37098405/javascript-queryselector-find-div-by-innertext/37098508#37098508
+		if (typeof selector.textContent === "string") {
+			const allElements = Array.from(root.querySelectorAll(querySelector.selector));
+			elements = (querySelector.all === true)
+				? allElements.filter((element) => RegExp(selector.textContent).test(element.textContent))
+				: [allElements.find((element) => RegExp(selector.textContent).test(element.textContent))].filter((e) => e != null);
+		} else if (typeof selector.innerText === "string") {
+			const allElements = Array.from(root.querySelectorAll(querySelector.selector));
+			elements = (querySelector.all === true)
+				? allElements.filter((element) => RegExp(selector.innerText).test((element as HTMLElement).innerText))
+				: [allElements.find((element) => RegExp(selector.innerText).test((element as HTMLElement).innerText))]
+					.filter((e) => e != null);
+		} else {
+			elements = (querySelector.all === true)
+				? Array.from(root.querySelectorAll(querySelector.selector))
+				: [root.querySelector(querySelector.selector)].filter((e) => e != null);
+		}
+
+		if (selector.child != null) {
+			return elements.reduce((childElements, element) => {
+				const result = this.invokeQuerySelector(selector.child, element);
+				return childElements.concat(result);
+			}, [] as Element[]);
+		}
+
+		if (selector.parent != null && elements.length > 0) {
+			const parentLevel = selector.parentLevel || 0;
+
+			let parent = elements[0].parentElement;
+			for (let i = 0; i < parentLevel; i++) {
+				parent = parent.parentElement;
+			}
+
+			return this.invokeQuerySelector(selector.parent, parent);
+		}
+
+		if (selector.iframe != null && elements.length > 0) {
+			const iframeBody = (elements[0] as HTMLIFrameElement).contentDocument?.body;
+			if (iframeBody != null) {
+				return this.invokeQuerySelector(selector.iframe, iframeBody);
+			}
+		}
+
+		return elements;
+	}
+
+
 }

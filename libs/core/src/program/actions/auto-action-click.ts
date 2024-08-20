@@ -2,7 +2,6 @@ import { Logger } from '../../common/logger';
 import { IAutoAction, AutoAction } from './auto-action';
 import { Cursor } from '../../common/cursor';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { QuerySelectorHelper } from '../../common/query-selector-helper';
 import { IParameterLink, QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export enum AutoActionClickType {
@@ -62,7 +61,7 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 		const box = element.getBoundingClientRect();
 		if (box != null) {
 			Logger.instance.debug(`Robot ClickOn [${
-				QuerySelectorHelper.convertToString(this.replaceParameters(this.selector as IParameterLink))
+				await this.convertQuerySelectorToString(this.selector)
 			}], box: `, box);
 
 			const coordinateX = box.left + (box.right - box.left) / 2;
