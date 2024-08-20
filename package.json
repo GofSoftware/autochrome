@@ -2,7 +2,9 @@
   "name": "@autochrome/source",
   "version": "1.0.2",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "npx nx run autochrome:build:production --watch"
+  },
   "private": false,
   "devDependencies": {
     "@angular-devkit/build-angular": "~18.0.0",
