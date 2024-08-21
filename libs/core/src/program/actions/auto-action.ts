@@ -193,7 +193,7 @@ export abstract class AutoAction implements IAutoAction {
 		}
 
 		if (typeof selector === 'object') {
-			return this.replaceParameterMacro(selector.selector);
+			selector.selector = this.replaceParameterMacro(selector.selector) as string;
 		}
 
 		if (typeof selector === 'string') {
