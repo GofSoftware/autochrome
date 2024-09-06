@@ -162,7 +162,7 @@ export abstract class AutoAction implements IAutoAction {
 		if (!Array.isArray(autoAction.children) || autoAction.children.length === 0) {
 			return autoAction;
 		}
-		return autoAction.children[autoAction.children.length - 1];
+		return this.selfOrLastChild(autoAction.children[autoAction.children.length - 1]);
 	}
 
 	protected replaceParameters(value: any): any {

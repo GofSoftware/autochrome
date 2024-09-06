@@ -50,6 +50,7 @@ export class AutoActionContentWorker {
 		this.isInProgress = true;
 		const action = this.actionQueue.shift();
 		try {
+			AutoActionFactory.instance.skipProcedureInstantiation = true;
 			const autoAction = AutoActionFactory.instance.fromJson(action.action);
 
 			Logger.instance.log(`AutoActionWorker start processing. ${autoAction.toString()}`);

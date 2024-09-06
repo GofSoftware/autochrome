@@ -19,23 +19,15 @@ export class AutoProcedure implements IAutoProcedure {
 		return procedure
 	}
 
-	public action: AutoAction;
-
-	constructor(
-		public name: string,
-		public description: string,
-	) {
-	}
-
-	public instantiateAction(parentId: string, parameters: IAutoParameter[]): AutoAction {
-		const action = AutoActionFactory.instance.fromJson(this.action);
+	public static instantiateAction( procedureRootAction: IAutoAction, parentId: string, parameters: IAutoParameter[] ): AutoAction {
+		const rootAction = AutoActionFactory.instance.fromJson(procedureRootAction);
 
 		// Set the Parameters to each action and prepend all procedure action ids with the root actionId,
 		// so we will not have the same ids for the user created ids
 
 		const idMap = new Map<string, string>();
 
-		action.traverse((action: AutoAction) => {
+		rootAction.traverse((action: AutoAction) => {
 			const newId = `Proc[${parentId}]:${action.id}`;
 			idMap.set(action.id, newId);
 			action.id = newId;
@@ -45,7 +37,7 @@ export class AutoProcedure implements IAutoProcedure {
 		});
 
 		// Replace ids in the Case and GoTo actions
-		action.traverse((action: AutoAction) => {
+		rootAction.traverse((action: AutoAction) => {
 			switch (action.name) {
 				case AutoActionName.AutoActionCase:
 				case AutoActionName.AutoActionCaseParameter:
@@ -67,7 +59,15 @@ export class AutoProcedure implements IAutoProcedure {
 			return true;
 		});
 
-		return action;
+		return rootAction;
+	}
+
+	public action: AutoAction;
+
+	constructor(
+		public name: string,
+		public description: string,
+	) {
 	}
 
 	public toJson(): IAutoProcedure {

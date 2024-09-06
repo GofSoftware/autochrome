@@ -2,7 +2,6 @@ import { AutoAction, IAutoAction } from './actions/auto-action';
 import { AutoActionFactory } from './actions/auto-action-factory';
 import { AutoProcedure, IAutoProcedure } from './auto-procedure';
 import { AutoActionName } from './actions/action-types';
-import { AutoActionProcedure } from './actions/auto-action-procedure';
 
 export interface IAutoProgram {
 	name: string;
@@ -47,36 +46,12 @@ export class AutoProgram implements IAutoProgram {
 		program.name = programJson.name;
 		program.version = programJson.version;
 		program.description = programJson.description;
-		program.procedures = (programJson.procedures || []).map((procedure) => AutoProcedure.fromJson(procedure));
-
-		const procedureMap = program.procedures.reduce((procMap, procedure) => {
-			procMap.set(procedure.name, procedure);
-			return procMap;
-		}, new Map<string, AutoProcedure>());
+		program.procedures = (programJson.procedures || []).map((procedure) => {
+			AutoActionFactory.instance.setProcedure(procedure);
+			return AutoProcedure.fromJson(procedure);
+		});
 
 		program.rootAction = AutoActionFactory.instance.fromJson(programJson.rootAction);
-
-		program.rootAction.traverse((action) => {
-			if (action.name === AutoActionName.AutoActionProcedure) {
-				const autoActionProcedure = action as AutoActionProcedure;
-				if (!procedureMap.has(autoActionProcedure.procedureName)) {
-					return false;
-				}
-
-				const procedureAction = procedureMap.get(autoActionProcedure.procedureName).instantiateAction(autoActionProcedure.id, autoActionProcedure.parameters);
-
-				autoActionProcedure.children.push(procedureAction);
-				procedureAction.previous = autoActionProcedure;
-				const procNextAction = autoActionProcedure.next;
-				autoActionProcedure.next = procedureAction;
-				const lastProcedureAction = procedureAction.getLastAction();
-				lastProcedureAction.next = procNextAction;
-				if (procNextAction != null) { // can be null if the proc is the last action in the program.
-					procNextAction.previous = lastProcedureAction;
-				}
-			}
-			return true;
-		});
 
 		const idSet = new Set<string>();
 

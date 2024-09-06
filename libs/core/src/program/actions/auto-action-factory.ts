@@ -15,12 +15,13 @@ import { AutoActionDragNDrop } from './auto-action-drag-n-drop';
 import { AutoActionRoot } from './auto-action-root';
 import { AutoActionUrl } from './auto-action-url';
 import { AutoActionFocus } from './auto-action-focus';
-import { AutoActionProcedure } from './auto-action-procedure';
+import { AutoActionProcedure, IAutoActionProcedure } from './auto-action-procedure';
 import { AutoActionEmpty } from './auto-action-empty';
 import { AutoActionConsoleLog } from './auto-action-console-log';
 import { AutoActionGoTo } from './auto-action-go-to';
 import { AutoActionGroup } from './auto-action-group';
 import { AutoActionCaseParameter } from './auto-action-case-parameter';
+import { AutoProcedure, IAutoProcedure } from '@autochrome/core/program/auto-procedure';
 
 export class AutoActionFactory {
 	private static __id = 0;
@@ -30,7 +31,10 @@ export class AutoActionFactory {
 		return AutoActionFactory.autoActionFactoryInstance || (AutoActionFactory.autoActionFactoryInstance = new AutoActionFactory());
 	}
 
+	public skipProcedureInstantiation = false;
+
 	private registry = new Map<AutoActionName, any>();
+	private procedureMap = new Map<string, IAutoProcedure>();
 	private index = 0;
 
 	private constructor() {
@@ -61,19 +65,47 @@ export class AutoActionFactory {
 		return actionId || `ID:${++AutoActionFactory.__id}`; // Guid.v4() // import { Guid } from '../../common/guid';
 	}
 
-	public fromJson(actionJson: IAutoAction): AutoAction {
-		let action: AutoAction;
-		actionJson.id = this.getUniqueId(actionJson.id);
-		if (this.registry.has(actionJson.name)) {
-			action = this.registry.get(actionJson.name).fromJson(actionJson);
-		} else {
-			throw new Error(`The unsupported AutoAction ${actionJson.name}`);
+	public fromJson(autoAction: IAutoAction): AutoAction {
+		if (this.registry.has(autoAction.name)) {
+
+			const action: AutoAction = this.registry.get(autoAction.name).fromJson(autoAction);
+			action.id = this.getUniqueId(action.id);
+
+			if (autoAction.name === AutoActionName.AutoActionProcedure && !this.skipProcedureInstantiation) {
+				if (Array.isArray(autoAction.children) && autoAction.children.length > 0) {
+					throw new Error(`${autoAction.name} doesn't support "children" at the moment.`);
+				} else {
+					if (!this.procedureMap.has((autoAction as IAutoActionProcedure).procedureName)) {
+						throw new Error(`Unknown procedure: ${(autoAction as IAutoActionProcedure).procedureName}`);
+					}
+					const procedureAction = AutoProcedure.instantiateAction(
+						this.procedureMap.get((autoAction as IAutoActionProcedure).procedureName).action,
+						(autoAction as IAutoActionProcedure).id,
+						(autoAction as IAutoActionProcedure).parameters);
+
+					action.children.push(procedureAction);
+					procedureAction.previous = action;
+					const procNextAction = action.next;
+					action.next = procedureAction;
+					const lastProcedureAction = procedureAction.getLastAction();
+					lastProcedureAction.next = procNextAction;
+					if (procNextAction != null) { // can be null if the proc is the last action in the program.
+						procNextAction.previous = lastProcedureAction;
+					}
+				}
+			}
+
+			return action;
 		}
-		return action;
+		throw new Error(`The unsupported AutoAction ${autoAction.name}`);
 	}
 
 	public reset(): void {
 		this.index = 0;
+	}
+
+	public setProcedure(procedure: IAutoProcedure): void {
+		this.procedureMap.set(procedure.name, procedure);
 	}
 
 	public nextIndex(): number {
