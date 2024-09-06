@@ -1,7 +1,6 @@
 import { AutoActionName, AutoActionResult, AutoAnyAction } from './action-types';
 import { Config } from '../config/config';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { Guid } from '../../common/guid';
 import { AutoActionFactory } from './auto-action-factory';
 import { cloneDeep } from 'lodash-es';
 import {
@@ -43,17 +42,12 @@ export abstract class AutoAction implements IAutoAction {
 	public children: AutoAction[];
 	public parameters: IAutoParameter[];
 
-	protected static idSet: Set<string> = new Set();
 	protected static prop<T = any>(value: T, defaultValue: T): T {
 		return value == null ? defaultValue : value;
 	}
 
 	protected constructor(jsonAction: IAutoAction) {
-		if (AutoAction.idSet.has(jsonAction.id)) {
-			throw new Error(`Not unique id: ${jsonAction.id}`);
-		}
-
-		this.id = jsonAction.id || Guid.v4();
+		this.id = jsonAction.id;
 		this.index = AutoActionFactory.instance.nextIndex();
 		this.description = jsonAction.description;
 		this.continueAfterFail = AutoAction.prop(jsonAction.continueAfterFail, false);

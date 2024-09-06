@@ -3,9 +3,6 @@ import { AutoActionFactory } from './actions/auto-action-factory';
 import { AutoProcedure, IAutoProcedure } from './auto-procedure';
 import { AutoActionName } from './actions/action-types';
 import { AutoActionProcedure } from './actions/auto-action-procedure';
-import { AutoActionCase } from './actions/auto-action-case';
-import { AutoActionGoTo } from './actions/auto-action-go-to';
-import { Guid } from '../common/guid';
 
 export interface IAutoProgram {
 	name: string;
@@ -39,6 +36,12 @@ export class AutoProgram implements IAutoProgram {
 			throw new Error(`Unknown program version: ${programJson?.version}`);
 		}
 
+		if (programJson?.rootAction == null ) {
+			throw new Error(`rootAction is null, must be the AutoActionRoot object.`);
+		}
+
+		AutoActionFactory.instance.reset();
+
 		const program = new AutoProgram();
 
 		program.name = programJson.name;
@@ -46,17 +49,12 @@ export class AutoProgram implements IAutoProgram {
 		program.description = programJson.description;
 		program.procedures = (programJson.procedures || []).map((procedure) => AutoProcedure.fromJson(procedure));
 
-		AutoActionFactory.instance.reset();
-
-		if (programJson?.rootAction == null ) {
-			throw new Error(`rootAction is null, must be the AutoActionRoot object.`);
-		}
+		const procedureMap = program.procedures.reduce((procMap, procedure) => {
+			procMap.set(procedure.name, procedure);
+			return procMap;
+		}, new Map<string, AutoProcedure>());
 
 		program.rootAction = AutoActionFactory.instance.fromJson(programJson.rootAction);
-
-		// We need the Map of the "not instantiated" IAutoProcedure-s because we will instantiate them for each AutoActionProcedure call.
-		const procedureMap = new Map<string, IAutoProcedure>();
-		(programJson.procedures || []).forEach((procedure) => procedureMap.set(procedure.name, procedure));
 
 		program.rootAction.traverse((action) => {
 			if (action.name === AutoActionName.AutoActionProcedure) {
@@ -64,49 +62,14 @@ export class AutoProgram implements IAutoProgram {
 				if (!procedureMap.has(autoActionProcedure.procedureName)) {
 					return false;
 				}
-				const procedureDescription = AutoProcedure.fromJson(procedureMap.get(autoActionProcedure.procedureName));
 
-				// Set the Parameters to each action and prepend all procedure action ids with the root actionId,
-				// so we will not have the same ids for the user created ids
-				const procUniqueId = Guid.v4();
-				const idMap = new Map<string, string>();
-				procedureDescription.action.traverse((action: AutoAction) => {
-					const newId = `Proc[${procUniqueId}]:${action.id}`;
-					idMap.set(action.id, newId);
-					action.id = newId;
+				const procedureAction = procedureMap.get(autoActionProcedure.procedureName).instantiateAction(autoActionProcedure.id, autoActionProcedure.parameters);
 
-					action.parameters = autoActionProcedure.parameters;
-					return true;
-				});
-
-				// Replace ids in the Case and GoTo actions
-				procedureDescription.action.traverse((action: AutoAction) => {
-					switch (action.name) {
-						case AutoActionName.AutoActionCase:
-						case AutoActionName.AutoActionCaseParameter:
-							const caseAction = action as AutoActionCase;
-							if (!idMap.has(caseAction.elseActionId) || !idMap.has(caseAction.thenActionId)) {
-								throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for elseActionId: ${caseAction.elseActionId} or thenActionId: ${caseAction.thenActionId}`);
-							}
-							caseAction.elseActionId = idMap.get(caseAction.elseActionId);
-							caseAction.thenActionId = idMap.get(caseAction.thenActionId);
-						break;
-						case AutoActionName.AutoActionGoTo:
-							const goToAction = action as AutoActionGoTo;
-							if (!idMap.has(goToAction.goToActionId)) {
-								throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for goToActionId: ${goToAction.goToActionId}`);
-							}
-							goToAction.goToActionId = idMap.get(goToAction.goToActionId);
-						break;
-					}
-					return true;
-				});
-
-				autoActionProcedure.children.push(procedureDescription.action);
-				procedureDescription.action.previous = autoActionProcedure;
+				autoActionProcedure.children.push(procedureAction);
+				procedureAction.previous = autoActionProcedure;
 				const procNextAction = autoActionProcedure.next;
-				autoActionProcedure.next = procedureDescription.action;
-				const lastProcedureAction = procedureDescription.action.getLastAction();
+				autoActionProcedure.next = procedureAction;
+				const lastProcedureAction = procedureAction.getLastAction();
 				lastProcedureAction.next = procNextAction;
 				if (procNextAction != null) { // can be null if the proc is the last action in the program.
 					procNextAction.previous = lastProcedureAction;
@@ -115,7 +78,13 @@ export class AutoProgram implements IAutoProgram {
 			return true;
 		});
 
+		const idSet = new Set<string>();
+
 		program.rootAction.traverse((action) => {
+			if (idSet.has(action.id)) {
+				throw new Error(`Not unique id: ${action.id}`);
+			}
+			idSet.add(action.id);
 			program.actionMap.set(action.id, action);
 			return true;
 		});

@@ -23,6 +23,7 @@ import { AutoActionGroup } from './auto-action-group';
 import { AutoActionCaseParameter } from './auto-action-case-parameter';
 
 export class AutoActionFactory {
+	private static __id = 0;
 
 	private static autoActionFactoryInstance: AutoActionFactory;
 	public static get instance(): AutoActionFactory {
@@ -56,9 +57,13 @@ export class AutoActionFactory {
 		this.registry.set(AutoActionName.AutoActionCaseParameter, AutoActionCaseParameter);
 	}
 
+	public getUniqueId(actionId: string): string {
+		return actionId || `ID:${++AutoActionFactory.__id}`; // Guid.v4() // import { Guid } from '../../common/guid';
+	}
+
 	public fromJson(actionJson: IAutoAction): AutoAction {
 		let action: AutoAction;
-
+		actionJson.id = this.getUniqueId(actionJson.id);
 		if (this.registry.has(actionJson.name)) {
 			action = this.registry.get(actionJson.name).fromJson(actionJson);
 		} else {
