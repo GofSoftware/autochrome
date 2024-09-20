@@ -12,6 +12,7 @@ import {
 	QuerySelectorWithPropertyLink, StringOrIQuerySelector
 } from './i-interfaces';
 import { Logger } from '@autochrome/core/common/logger';
+import { MacroProcessor } from '@autochrome/core/common/macro-processor';
 
 /**
  * The base interface for all actions, includes fields that can be set in any nested action.
@@ -191,15 +192,11 @@ export abstract class AutoAction implements IAutoAction {
 		}
 
 		if (typeof selector === 'string') {
-			let result;
-			let watchDog = 0;
-			while ((result = /\{parameter:(.*?)\}/g.exec(selector as string)) !== null) {
-				const paramValue = this.getParameterValue(result[1]);
-				selector = selector.replace(result[0], paramValue);
-				if (watchDog++ > 1000) {
-					throw new Error(`replaceParameterMacro watchDog > 1000`);
-				}
-			}
+			selector = MacroProcessor.create().replaceParameters(
+				selector as string,
+				(name: string) => this.getParameterValue(name)
+			);
+			selector = MacroProcessor.create().replaceDates(selector as string);
 		}
 
 		return selector;

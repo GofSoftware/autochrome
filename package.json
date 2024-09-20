@@ -60,6 +60,7 @@
     "@angular/router": "~18.0.0",
     "@types/chrome": "^0.0.268",
     "@types/lodash": "^4.17.6",
+    "dayjs": "^1.11.13",
     "lodash-es": "^4.17.21",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
