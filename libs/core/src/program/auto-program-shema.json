@@ -1,6 +1,5 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://example.com/product.schema.json",
     "title": "AutoProgram",
     "description": "Auto program schema",
 
@@ -32,7 +31,7 @@
                 {"type": "string"},
                 {"type": "number"},
                 {"type": "boolean"},
-                {"$ref": "#/defs/QuerySelectorWithParameters"}
+                {"$ref": "#/$defs/QuerySelectorWithParameters"}
             ]
         },
         "AutoValueSourceType": {
@@ -285,27 +284,28 @@
             "type": "integer"
         },
         "rootAction": {
-            "$ref": {
-                "if": {
-                    "properties": {
-                        "rootAction": {
-                            "properties": {
-                                "name": {
-                                    "enum": ["AutoActionClick"]
-                                }
+            "oneOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "enum": ["AutoActionClick"]
                             }
                         }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionClick"
+                    },
+                    "else": {
+                        "$ref": "#/$defs/AutoAction"
                     }
-                },
-                "then": {
-                    "#/$defs/AutoActionClick"
                 }
-            }
+            ]
         },
         "procedures": {
             "type": "array",
             "items": {
-                "$ref": "#/$defs/AutoParameter"
+                "$ref": "#/$defs/AutoProcedure"
             }
         }
     },
