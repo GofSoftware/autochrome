@@ -271,7 +271,7 @@
                     "type": "string"
                 },
                 "action": {
-                    "$ref": "#/$defs/AutoAction"
+                    "$ref": "#/$defs/AutoActionWithCheck"
                 }
             },
             "required": [
@@ -301,7 +301,7 @@
                 "children": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/AutoAction"
+                        "$ref": "#/$defs/AutoActionWithCheck"
                     }
                 },
                 "parameters": {
@@ -968,20 +968,8 @@
                     ]
                 }
             ]
-        }
-    },
-    "type": "object",
-    "properties": {
-        "name": {
-            "type": "string"
         },
-        "description": {
-            "type": "string"
-        },
-        "version": {
-            "type": "integer"
-        },
-        "rootAction": {
+        "AutoActionWithCheck": {
             "oneOf": [
                 {
                     "if": {
@@ -993,7 +981,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionRoot"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1003,7 +993,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionClick"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1013,7 +1005,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionCheckGroup"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1023,7 +1017,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionCheck"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1033,7 +1029,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionGetText"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1043,7 +1041,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionEnterText"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1053,7 +1053,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionWait"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1063,7 +1065,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionScrollIntoView"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1073,7 +1077,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionSelectFile"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1083,7 +1089,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionWaitUntil"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1093,7 +1101,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionSetValue"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1103,7 +1113,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionCase"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1113,7 +1125,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionDragNDrop"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1123,7 +1137,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionUrl"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1133,7 +1149,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionFocus"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1143,7 +1161,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionProcedure"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1153,7 +1173,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionEmpty"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1163,7 +1185,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionConsoleLog"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1173,7 +1197,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionGoTo"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1183,7 +1209,9 @@
                     },
                     "then": {
                         "$ref": "#/$defs/AutoActionGroup"
-                    },
+                    }
+                },
+                {
                     "if": {
                         "properties": {
                             "name": {
@@ -1199,6 +1227,21 @@
                     }
                 }
             ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "version": {
+            "type": "integer"
+        },
+        "rootAction": {
+            "$ref": "#/$defs/AutoActionWithCheck"
         },
         "procedures": {
             "type": "array",
