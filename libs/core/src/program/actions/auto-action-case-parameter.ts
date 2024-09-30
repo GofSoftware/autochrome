@@ -1,19 +1,12 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-
-export enum AutoActionCaseParameterOperator {
-	Equal = 'Equal',
-	NotEqual = 'NotEqual'
-}
-
-export interface IAutoActionCaseParameter extends IAutoAction {
-	parameterName: string;
-	operator: AutoActionCaseParameterOperator;
-	value: any;
-	thenActionId: string;
-	elseActionId: string;
-}
+import { AutoAction } from './auto-action';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import {
+    AutoActionCaseParameterOperator,
+    IAutoActionCaseParameter
+} from "./types/i-auto-action-case-parameter";
 
 export class AutoActionCaseParameter extends AutoAction implements IAutoActionCaseParameter {
 	public name = AutoActionName.AutoActionCaseParameter;

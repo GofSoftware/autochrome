@@ -1,7 +1,7 @@
-import { IProgramContainer } from '../../program/container/program-container';
-import { IAutoAction } from '../../program/actions/auto-action';
-import { AutoActionResult } from '../../program/actions/action-types';
-import { IRobotSettingsGlobal } from '../../settings/robot-settings-global';
+import { IRobotSettingsGlobal } from '../../settings/i-robot-settings-global';
+import { IAutoAction } from "../../program/actions/types/i-auto-action";
+import { AutoActionResult } from "../../program/actions/types/auto-action-result";
+import { IProgramContainer } from "../../program/container/i-program-container";
 
 export enum AutoMessageType {
 	Ping = 'Ping',
@@ -14,7 +14,9 @@ export enum AutoMessageType {
 	ContentAwake = 'ContentAwake',
 	ContentProgramAction = 'ContentProgramAction',
 	ContentProgramActionResult = 'ContentProgramActionResult',
-	ContentProgramInterrupt = 'ContentProgramInterrupt'
+	ContentProgramInterrupt = 'ContentProgramInterrupt',
+
+    WebSocketConnect = 'WebSocketConnect',
 }
 
 export type IAutoMessageDataType =
@@ -27,7 +29,8 @@ export type IAutoMessageDataType =
 	IAutoMessageDataContentAwake |
 	IAutoMessageDataContentProgramAction |
 	IAutoMessageDataContentProgramActionResult |
-	IAutoMessageDataContentProgramInterrupt;
+	IAutoMessageDataContentProgramInterrupt |
+	IAutoMessageWebSocketConnect;
 
 export interface IAutoMessage<T extends IAutoMessageDataType = IAutoMessageDataType> {
 	type: AutoMessageType;
@@ -89,4 +92,8 @@ export interface IAutoMessageDataContentProgramInterrupt {
 
 export interface IAutoMessageDataSetGlobalSettings {
 	globalSettings: Partial<IRobotSettingsGlobal>;
+}
+
+export interface IAutoMessageWebSocketConnect {
+	clientId: string;
 }

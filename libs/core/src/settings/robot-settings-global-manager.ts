@@ -1,8 +1,5 @@
 import { AutoStorage } from '../common/auto-storage';
-
-export interface IRobotSettingsGlobal {
-	autoPlay: boolean;
-}
+import { IRobotSettingsGlobal } from "./i-robot-settings-global";
 
 const DEFAULT_ROBOT_SETTINGS_GLOBAL: IRobotSettingsGlobal = {
 	autoPlay: true
@@ -10,10 +7,10 @@ const DEFAULT_ROBOT_SETTINGS_GLOBAL: IRobotSettingsGlobal = {
 
 export const ROBOT_SETTINGS_GLOBAL_STORAGE_KEY = 'globalSettings';
 
-export class RobotSettingsGlobal {
-	private static autoSettingsGlobalInstance: RobotSettingsGlobal;
-	public static get instance(): RobotSettingsGlobal {
-		return RobotSettingsGlobal.autoSettingsGlobalInstance || (RobotSettingsGlobal.autoSettingsGlobalInstance = new RobotSettingsGlobal());
+export class RobotSettingsGlobalManager {
+	private static autoSettingsGlobalInstance: RobotSettingsGlobalManager;
+	public static get instance(): RobotSettingsGlobalManager {
+		return RobotSettingsGlobalManager.autoSettingsGlobalInstance || (RobotSettingsGlobalManager.autoSettingsGlobalInstance = new RobotSettingsGlobalManager());
 	}
 
 	private settingsInstance: IRobotSettingsGlobal = null;

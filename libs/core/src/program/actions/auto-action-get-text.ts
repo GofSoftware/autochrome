@@ -1,16 +1,8 @@
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-
-enum AutoActionGetTextType {
-	innerText = 'innerText',
-	textContent = 'textContent'
-}
-
-export interface IAutoActionGetText extends IAutoAction {
-	selector: string;
-	textType: AutoActionGetTextType;
-	wait?: boolean;
-}
+import { AutoAction } from './auto-action';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { AutoActionGetTextType, IAutoActionGetText } from './types/i-auto-action-get-text';
 
 /**
  * For now this actions does nothing because the resultValue isn't processed on the server-side.

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@autochrome/core/*": [
+        "libs/core/src/*"
+      ]
+    }
+  },
+  "extends": "..\\..\\..\\..\\apps\\connector\\tsconfig.app.json"
+}

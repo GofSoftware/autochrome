@@ -1,4 +1,5 @@
-import {ProgramContainer, ProgramContainerStatus} from '../program/container/program-container';
+import {ProgramContainer} from '../program/container/program-container';
+import {ProgramContainerStatus} from '../program/container/program-container-status';
 import { ExtractedProgramContainer } from '../program/container/extracted-program-container';
 import { ProgramContainerManager } from './program-container-manager';
 import { Logger } from '../common/logger';
@@ -8,10 +9,6 @@ export class ExtractedProgramContainerManager {
 	public static get instance(): ExtractedProgramContainerManager {
 		return ExtractedProgramContainerManager.extractedProgramContainerManagerInstance ||
 			(ExtractedProgramContainerManager.extractedProgramContainerManagerInstance = new ExtractedProgramContainerManager());
-	}
-
-	private constructor() {
-
 	}
 
 	private cacheInstance: Map<string, ExtractedProgramContainer> = null;

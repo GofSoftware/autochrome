@@ -1,14 +1,10 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-import { QuerySelectorWithPropertyLink } from './i-interfaces';
-
-export interface IAutoActionCase extends IAutoAction {
-	selector: QuerySelectorWithPropertyLink;
-	wait?: boolean;
-	thenActionId: string;
-	elseActionId: string;
-}
+import { AutoAction } from './auto-action';
+import { QuerySelectorWithPropertyLink } from './types/i-interfaces';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionCase } from "./types/i-auto-action-case";
 
 export class AutoActionCase extends AutoAction implements IAutoActionCase {
 	public name = AutoActionName.AutoActionCase;

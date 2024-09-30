@@ -1,4 +1,4 @@
-import { IAutoAction, AutoAction } from './auto-action';
+import { AutoAction } from './auto-action';
 import { AutoActionCheckGroup } from './auto-action-check-group';
 import { AutoActionCheck } from './auto-action-check';
 import { AutoActionEnterText } from './auto-action-enter-text';
@@ -7,7 +7,6 @@ import { AutoActionScrollIntoView } from './auto-action-scroll-into-view';
 import { AutoActionSelectFile } from './auto-action-select-file';
 import { AutoActionWaitUntil } from './auto-action-wait-until';
 import { AutoActionSetValue } from './auto-action-set-value';
-import { AutoActionName } from './action-types';
 import { AutoActionGetText } from './auto-action-get-text';
 import { AutoActionClick } from './auto-action-click';
 import { AutoActionCase } from './auto-action-case';
@@ -15,13 +14,17 @@ import { AutoActionDragNDrop } from './auto-action-drag-n-drop';
 import { AutoActionRoot } from './auto-action-root';
 import { AutoActionUrl } from './auto-action-url';
 import { AutoActionFocus } from './auto-action-focus';
-import { AutoActionProcedure, IAutoActionProcedure } from './auto-action-procedure';
+import { AutoActionProcedure } from './auto-action-procedure';
 import { AutoActionEmpty } from './auto-action-empty';
 import { AutoActionConsoleLog } from './auto-action-console-log';
 import { AutoActionGoTo } from './auto-action-go-to';
 import { AutoActionGroup } from './auto-action-group';
 import { AutoActionCaseParameter } from './auto-action-case-parameter';
-import { AutoProcedure, IAutoProcedure } from '@autochrome/core/program/auto-procedure';
+import { AutoProcedure } from '../../program/auto-procedure';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { IAutoActionProcedure } from './types/i-auto-action-procedure';
+import { IAutoProcedure } from '../i-auto-procedure';
 
 export class AutoActionFactory {
 	private static __id = 0;

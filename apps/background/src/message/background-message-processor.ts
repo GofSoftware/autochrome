@@ -19,9 +19,6 @@ export class BackgroundMessageProcessor {
 			(BackgroundMessageProcessor.contentMessageProcessorInstance = new BackgroundMessageProcessor());
 	}
 
-	private constructor() {
-	}
-
 	public isKnownMessage(message: IAutoMessage) {
 		switch (message?.type) {
 			case AutoMessageType.Ping:

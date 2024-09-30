@@ -1,18 +1,13 @@
-import { AutoAction, IAutoAction } from './actions/auto-action';
+import { AutoAction } from './actions/auto-action';
 import { AutoActionFactory } from './actions/auto-action-factory';
-import { AutoActionName } from '@autochrome/core/program/actions/action-types';
-import { AutoActionCase } from '@autochrome/core/program/actions/auto-action-case';
-import { AutoActionGoTo } from '@autochrome/core/program/actions/auto-action-go-to';
-import { IAutoParameter } from '@autochrome/core/program/actions/i-interfaces';
-
-export interface IAutoProcedure {
-	name: string;
-	description: string;
-	action: IAutoAction;
-}
+import { AutoActionName } from './actions/types/auto-action-name';
+import { AutoActionCase } from './actions/auto-action-case';
+import { AutoActionGoTo } from './actions/auto-action-go-to';
+import { IAutoParameter } from './actions/types/i-interfaces';
+import { IAutoProcedure } from './i-auto-procedure';
+import { IAutoAction } from './actions/types/i-auto-action';
 
 export class AutoProcedure implements IAutoProcedure {
-
 	public static fromJson(procedureJson: IAutoProcedure): AutoProcedure {
 		const procedure = new AutoProcedure(procedureJson.name, procedureJson.description);
 		procedure.action = AutoActionFactory.instance.fromJson(procedureJson.action);

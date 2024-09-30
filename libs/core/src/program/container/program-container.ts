@@ -1,25 +1,6 @@
 import { Guid } from '../../common/guid';
-
-export enum ProgramContainerStatus {
-	Ready = 'Ready',
-	InProgress = 'InProgress',
-	Paused = 'Paused',
-	Stopped = 'Stopped',
-	Completed = 'Completed',
-	Error = 'Error'
-}
-
-export interface IProgramContainer {
-	id: string;
-	serializedProgram: string;
-	tabId: number;
-	status: ProgramContainerStatus;
-	percent: number;
-	error: string;
-	activeActionId: string;
-	activeActionStartTime: number;
-	order: number;
-}
+import {IProgramContainer} from "./i-program-container";
+import {ProgramContainerStatus} from "./program-container-status";
 
 export class ProgramContainer implements IProgramContainer {
 

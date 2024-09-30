@@ -7,17 +7,14 @@ import {
 	AutoMessageType, IAutoMessageDataUpdateContainer, IAutoMessageDataSetGlobalSettings
 } from './messaging/i-auto-message';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { IProgramContainer } from '../program/container/program-container';
+import { IProgramContainer } from '../program/container/i-program-container';
 import { Logger } from '../common/logger';
-import { IRobotSettingsGlobal } from '../settings/robot-settings-global';
+import { IRobotSettingsGlobal } from '../settings/i-robot-settings-global';
 
 export class AutoLinkClient {
 	private static autoLinkClientInstance: AutoLinkClient;
 	public static instance(): AutoLinkClient {
 		return AutoLinkClient.autoLinkClientInstance || (AutoLinkClient.autoLinkClientInstance = new AutoLinkClient());
-	}
-
-	private constructor() {
 	}
 
 	private containerChangesSubject$ = new BehaviorSubject<IAutoMessageDataContainerChanged>(null);

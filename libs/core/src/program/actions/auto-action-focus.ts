@@ -1,14 +1,10 @@
-import { IAutoAction, AutoAction } from './auto-action';
+import { AutoAction } from './auto-action';
 import { Cursor } from '../../common/cursor';
-import { AutoActionName, AutoActionResult } from './action-types';
-import { QuerySelectorWithPropertyLink } from './i-interfaces';
-
-export interface IAutoActionFocus extends IAutoAction {
-	selector: QuerySelectorWithPropertyLink;
-	smoothMouse?: boolean;
-	wait?: boolean;
-	blur?: boolean;
-}
+import { QuerySelectorWithPropertyLink } from './types/i-interfaces';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionFocus } from './types/i-auto-action-focus';
 
 export class AutoActionFocus extends AutoAction implements IAutoActionFocus {
 	public name = AutoActionName.AutoActionFocus;

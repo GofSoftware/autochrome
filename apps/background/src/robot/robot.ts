@@ -1,10 +1,11 @@
 import { Logger } from '@autochrome/core/common/logger';
-import { AutoActionName, AutoActionResult } from '@autochrome/core/program/actions/action-types';
+import { AutoActionName } from '@autochrome/core/program/actions/types/auto-action-name';
+import { AutoActionResult } from '@autochrome/core/program/actions/types/auto-action-result';
 import { TabManager } from '@autochrome/core/common/tab-manager';
 import { ExtractedProgramContainer } from '@autochrome/core/program/container/extracted-program-container';
 import { ExtractedProgramContainerManager } from '@autochrome/core/auto-link/extracted-program-container-manager';
 import { AutoLinkServer } from '@autochrome/core/auto-link/auto-link-server';
-import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container';
+import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container-status';
 import {
 	IAutoMessageContainerChangeType,
 	IAutoMessageDataContainerAction,
@@ -15,7 +16,7 @@ import {
 	AutoMessageType
 } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { ErrorHelper } from '@autochrome/core/common/error-helper';
-import { RobotSettingsGlobal } from '@autochrome/core/settings/robot-settings-global';
+import { RobotSettingsGlobalManager } from '@autochrome/core/settings/robot-settings-global-manager';
 
 export type RobotEventDataType =
 	IAutoMessageDataContainerAction |
@@ -150,7 +151,7 @@ export class Robot {
 		await ExtractedProgramContainerManager.instance.setContainer(activeProgramContainer);
 		await AutoLinkServer.instance.sendContainerUpdate(activeProgramContainer.programContainer.id, IAutoMessageContainerChangeType.Update);
 
-		const settings = await RobotSettingsGlobal.instance.getSettings();
+		const settings = await RobotSettingsGlobalManager.instance.getSettings();
 		Logger.instance.log(`Autoplay is ${settings.autoPlay}`);
 		if (settings.autoPlay) {
 			await this.activateNextProgram(activeProgramContainer);
@@ -250,7 +251,7 @@ export class Robot {
 	}
 
 	private async processSetGlobalSettings(senderId: number, globalSettingsData: IAutoMessageDataSetGlobalSettings): Promise<void> {
-		await RobotSettingsGlobal.instance.setSettings(globalSettingsData.globalSettings);
+		await RobotSettingsGlobalManager.instance.setSettings(globalSettingsData.globalSettings);
 	}
 
 	private async activateNextProgram(previousProgramContainer: ExtractedProgramContainer): Promise<void> {

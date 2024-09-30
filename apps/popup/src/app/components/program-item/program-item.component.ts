@@ -1,7 +1,7 @@
 import { Component, computed, effect, input, OnDestroy, signal, untracked } from '@angular/core';
 import { ProgramItem } from '../../program/program-item';
 import { TabManager } from '@autochrome/core/common/tab-manager';
-import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container';
+import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container-status';
 import { AutoLinkClient } from '@autochrome/core/auto-link/auto-link-client';
 import { ProgramContainerAction } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { NgClass, NgIf, NgStyle } from '@angular/common';

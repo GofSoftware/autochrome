@@ -1,23 +1,13 @@
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-import { QuerySelectorWithPropertyLink } from './i-interfaces';
-
-export enum IAutoActionCheckType {
-	Exists = 'Exists',
-	NotExists = 'NotExists'
-}
-
-export interface IAutoActionCheck extends IAutoAction {
-	selector: QuerySelectorWithPropertyLink;
-	wait?: boolean;
-	type: IAutoActionCheckType;
-	silent?: boolean;
-	highlight?: boolean;
-}
+import { AutoAction } from './auto-action';
+import { QuerySelectorWithPropertyLink } from './types/i-interfaces';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionCheck, AutoActionCheckType } from "./types/i-auto-action-check";
 
 export class AutoActionCheck extends AutoAction implements IAutoActionCheck {
 	public name = AutoActionName.AutoActionCheck;
-	public type: IAutoActionCheckType;
+	public type: AutoActionCheckType;
 	public selector: QuerySelectorWithPropertyLink;
 	public wait?: boolean;
 	public silent?: boolean;
@@ -44,10 +34,10 @@ export class AutoActionCheck extends AutoAction implements IAutoActionCheck {
 		this.highlightElements(elements);
 
 		switch (this.type) {
-			case IAutoActionCheckType.Exists:
+			case AutoActionCheckType.Exists:
 				this.result = elements.length > 0 ? AutoActionResult.Success : AutoActionResult.Failed;
 				break;
-			case IAutoActionCheckType.NotExists:
+			case AutoActionCheckType.NotExists:
 				this.result =  elements.length === 0 ? AutoActionResult.Success : AutoActionResult.Failed;
 				break;
 			default:

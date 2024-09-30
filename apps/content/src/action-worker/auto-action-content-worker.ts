@@ -5,7 +5,7 @@ import {
 } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { Logger } from '@autochrome/core/common/logger';
 import { AutoActionFactory } from '@autochrome/core/program/actions/auto-action-factory';
-import { AutoActionResult } from '@autochrome/core/program/actions/action-types';
+import { AutoActionResult } from '@autochrome/core/program/actions/types/auto-action-result';
 import { ErrorHelper } from '@autochrome/core/common/error-helper';
 import { filter } from 'rxjs';
 import { InterruptibleUtility } from '@autochrome/core/common/interruptible-utility';

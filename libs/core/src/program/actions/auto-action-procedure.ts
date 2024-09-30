@@ -1,10 +1,9 @@
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
+import { AutoAction } from './auto-action';
 import { cloneDeep } from 'lodash-es';
-
-export interface IAutoActionProcedure extends IAutoAction {
-	procedureName: string;
-}
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionProcedure } from './types/i-auto-action-procedure';
 
 export class AutoActionProcedure extends AutoAction implements IAutoActionProcedure {
 	public name = AutoActionName.AutoActionProcedure;

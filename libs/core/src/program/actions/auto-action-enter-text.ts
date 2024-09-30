@@ -1,14 +1,9 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-
-export interface IAutoActionEnterText extends IAutoAction {
-	selector: string;
-	text: string;
-	wait?: boolean;
-	focusBefore?: boolean;
-	blurAfter?: boolean;
-}
+import { AutoAction } from './auto-action';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionEnterText } from './types/i-auto-action-enter-text';
 
 export class AutoActionEnterText extends AutoAction implements IAutoActionEnterText {
 	public name = AutoActionName.AutoActionEnterText;

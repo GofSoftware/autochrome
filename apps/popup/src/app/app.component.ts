@@ -4,7 +4,7 @@ import { IProgramItemCollectionElement, ProgramItemCollection } from './program/
 import { AutoLinkClient } from '@autochrome/core/auto-link/auto-link-client';
 import { Logger } from '@autochrome/core/common/logger';
 import { TabManager } from "@autochrome/core/common/tab-manager";
-import { RobotSettingsGlobal } from '@autochrome/core/settings/robot-settings-global';
+import { RobotSettingsGlobalManager } from '@autochrome/core/settings/robot-settings-global-manager';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProgramItemComponent } from './components/program-item/program-item.component';
@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
 		await ProgramItemCollection.instance().restore();
 		AutoLinkClient.instance().init();
 
-		const settings = await RobotSettingsGlobal.instance.getSettings();
+		const settings = await RobotSettingsGlobalManager.instance.getSettings();
 		if (settings.autoPlay) {
 			this.autoPlay.set(true);
 		}
