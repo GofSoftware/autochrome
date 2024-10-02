@@ -11,5 +11,6 @@ export class WebSocketConnectMessageProcessor implements IMessageProcessor<IAuto
     public async process(message: IAutoMessageWebSocketConnect): Promise<void> {
         console.log(`New Connection, Id: ${message.clientId}`);
         ConnectionManager.instance.setConnection(ConnectorConnection.create(message.clientId));
+
     }
 }

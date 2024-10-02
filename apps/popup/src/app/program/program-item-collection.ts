@@ -25,6 +25,7 @@ export class ProgramItemCollection {
 	private tabIdSet: Set<number> = new Set<number>();
 	private programItemMap: Map<string, IProgramItemCollectionElement> = new Map<string, IProgramItemCollectionElement>();
 	private autoLinkSubscription: Subscription;
+	private autoLinkClearSubscription: Subscription;
 
 	public init(): void {
 		this.autoLinkSubscription = AutoLinkClient.instance().containerChanges$.pipe(
@@ -47,11 +48,15 @@ export class ProgramItemCollection {
 				}
 			})
 		).subscribe();
+        this.autoLinkClearSubscription = AutoLinkClient.instance().containerChanges$.subscribe(() => {
+            this.clearCollection();
+        });
 	}
 
 	public destroy(): void {
 		this.clear();
 		this.autoLinkSubscription?.unsubscribe();
+		this.autoLinkClearSubscription?.unsubscribe();
 	}
 
 	// public forEach(
@@ -87,10 +92,14 @@ export class ProgramItemCollection {
 
 	private clear(): void {
 		this.tabIdSet.clear();
-		this.programItemMap.forEach(value => {
-			this.destroyProgramItemCollectionItem(value);
-		});
+		this.clearCollection();
 	}
+
+    private clearCollection(): void {
+        this.programItemMap.forEach(value => {
+            this.destroyProgramItemCollectionItem(value);
+        });
+    }
 
 	private addProgramItem(programContainer: ProgramContainer): ProgramItem {
 		this.tabIdSet.add(programContainer.tabId);

@@ -45,10 +45,11 @@ export class BackgroundMessageProcessor {
 			case AutoMessageType.Ping:
 				sendResponse(true);
 				break;
+			case AutoMessageType.ContainerClearAll:
 			case AutoMessageType.ContainerNew:
 			case AutoMessageType.ContainerRemove:
-			case AutoMessageType.ContainerAction:
 			case AutoMessageType.ContainerUpdate:
+            case AutoMessageType.ContainerAction:
 				const containerMessageProcessorResult = await this.processContainerMessage(message, sender);
 				sendResponse(containerMessageProcessorResult);
 				break;
@@ -68,6 +69,14 @@ export class BackgroundMessageProcessor {
 
 	private async processContainerMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender): Promise<boolean> {
 		switch (message?.type) {
+            case AutoMessageType.ContainerClearAll:
+                try {
+                    await ExtractedProgramContainerManager.instance.clearAll();
+                    await AutoLinkServer.instance.sendClearAll();
+                } catch (error) {
+                    Logger.instance.error('ContainerClearAll error:', error);
+                }
+                return true;
 			case AutoMessageType.ContainerNew:
 				const programContainerJson = (message as IAutoMessage<IAutoMessageDataNewContainer>).data.container;
 				try {
@@ -95,6 +104,7 @@ export class BackgroundMessageProcessor {
 				return true;
 			default:
 				Logger.instance.warn(`processContainerMessage: Unknown message type: ${message?.type}`);
+                return false;
 		}
 	}
 
@@ -110,6 +120,7 @@ export class BackgroundMessageProcessor {
 			}
 		} catch (error) {
 			Logger.instance.error('processContentMessage Error.', error);
+            return false;
 		}
 	}
 
@@ -124,6 +135,7 @@ export class BackgroundMessageProcessor {
 			}
 		} catch (error) {
 			Logger.instance.error('processGlobalSettingsMessage Error.', error);
+            return false;
 		}
 	}
 }

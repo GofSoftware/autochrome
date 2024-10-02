@@ -5,6 +5,7 @@ import { IProgramContainer } from "../../program/container/i-program-container";
 
 export enum AutoMessageType {
 	Ping = 'Ping',
+	ContainerClearAll = 'ContainerClearAll',
 	ContainerNew = 'ContainerNew',
 	ContainerUpdate = 'ContainerUpdate',
 	ContainerRemove = 'ContainerRemove',
@@ -17,9 +18,12 @@ export enum AutoMessageType {
 	ContentProgramInterrupt = 'ContentProgramInterrupt',
 
     WebSocketConnect = 'WebSocketConnect',
+    WebSocketLog = 'WebSocketLog',
+    WebSocketMessageResult = 'WebSocketMessageResult'
 }
 
 export type IAutoMessageDataType =
+    void |
 	IAutoMessageDataContainerChanged |
 	IAutoMessageDataNewContainer |
 	IAutoMessageDataRemoveContainer |
@@ -30,9 +34,12 @@ export type IAutoMessageDataType =
 	IAutoMessageDataContentProgramAction |
 	IAutoMessageDataContentProgramActionResult |
 	IAutoMessageDataContentProgramInterrupt |
-	IAutoMessageWebSocketConnect;
+	IAutoMessageWebSocketConnect |
+    IAutoMessageWebSocketLog |
+    IAutoMessageWebSocketResult;
 
 export interface IAutoMessage<T extends IAutoMessageDataType = IAutoMessageDataType> {
+    id?: string;
 	type: AutoMessageType;
 	data: T;
 }
@@ -41,6 +48,7 @@ export enum IAutoMessageContainerChangeType {
 	New = 'New',
 	Update = 'Update',
 	Remove = 'Remove',
+    ClearAll = 'ClearAll'
 }
 
 export interface IAutoMessageDataContainerChanged {
@@ -96,4 +104,14 @@ export interface IAutoMessageDataSetGlobalSettings {
 
 export interface IAutoMessageWebSocketConnect {
 	clientId: string;
+}
+
+export interface IAutoMessageWebSocketLog extends IAutoMessageWebSocketConnect {
+	message: string;
+}
+
+export interface IAutoMessageWebSocketResult extends IAutoMessageWebSocketConnect {
+    ok: boolean;
+	result: any;
+	error: any;
 }

@@ -6,7 +6,7 @@ import {
 	IAutoMessageDataRemoveContainer,
 	AutoMessageType, IAutoMessageDataUpdateContainer, IAutoMessageDataSetGlobalSettings
 } from './messaging/i-auto-message';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { IProgramContainer } from '../program/container/i-program-container';
 import { Logger } from '../common/logger';
 import { IRobotSettingsGlobal } from '../settings/i-robot-settings-global';
@@ -17,11 +17,11 @@ export class AutoLinkClient {
 		return AutoLinkClient.autoLinkClientInstance || (AutoLinkClient.autoLinkClientInstance = new AutoLinkClient());
 	}
 
-	private containerChangesSubject$ = new BehaviorSubject<IAutoMessageDataContainerChanged>(null);
+	private $containerChanges = new BehaviorSubject<IAutoMessageDataContainerChanged>(null);
+	private $containerClearAll = new Subject<void>();
 
-	public get containerChanges$(): Observable<IAutoMessageDataContainerChanged> {
-		return this.containerChangesSubject$.asObservable();
-	}
+	public containerChanges$: Observable<IAutoMessageDataContainerChanged>  = this.$containerChanges.asObservable();
+	public containerClearAll$: Observable<void>  = this.$containerClearAll.asObservable();
 
 	public init(): void {
 		chrome.runtime.onMessage.addListener(
@@ -30,7 +30,11 @@ export class AutoLinkClient {
 
 				switch (message?.type) {
 					case AutoMessageType.ContainerUpdate:
-						this.containerChangesSubject$.next(message.data as IAutoMessageDataContainerChanged);
+						this.$containerChanges.next(message.data as IAutoMessageDataContainerChanged);
+						sendResponse(true);
+						break;
+					case AutoMessageType.ContainerClearAll:
+						this.$containerClearAll.next();
 						sendResponse(true);
 						break;
 					default:

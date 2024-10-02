@@ -79,6 +79,11 @@ export class ExtractedProgramContainerManager {
 		await ExtractedProgramContainerManager.instance.setContainer(extractedProgramContainer);
 	}
 
+	public async clearAll(): Promise<void> {
+		await ProgramContainerManager.instance.clear();
+		(await this.cache()).clear();
+	}
+
 	public async setContainer(extractedProgramContainer: ExtractedProgramContainer): Promise<void> {
 		await ProgramContainerManager.instance.setContainer(extractedProgramContainer.programContainer);
 		(await this.cache()).set(extractedProgramContainer.programContainer.id, extractedProgramContainer);

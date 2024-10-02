@@ -62,6 +62,7 @@
     "@angular/platform-browser-dynamic": "~18.0.0",
     "@angular/router": "~18.0.0",
     "@types/chrome": "^0.0.268",
+    "@types/express-ws": "^3.0.5",
     "@types/lodash": "^4.17.6",
     "axios": "^1.6.0",
     "dayjs": "^1.11.13",

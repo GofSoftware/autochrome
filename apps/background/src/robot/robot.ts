@@ -7,13 +7,14 @@ import { ExtractedProgramContainerManager } from '@autochrome/core/auto-link/ext
 import { AutoLinkServer } from '@autochrome/core/auto-link/auto-link-server';
 import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container-status';
 import {
-	IAutoMessageContainerChangeType,
-	IAutoMessageDataContainerAction,
-	IAutoMessageDataContentAwake,
-	IAutoMessageDataContentProgramAction,
-	IAutoMessageDataContentProgramActionResult, IAutoMessageDataSetGlobalSettings,
-	ProgramContainerAction,
-	AutoMessageType
+    AutoMessageType,
+    IAutoMessageContainerChangeType,
+    IAutoMessageDataContainerAction,
+    IAutoMessageDataContentAwake,
+    IAutoMessageDataContentProgramAction,
+    IAutoMessageDataContentProgramActionResult,
+    IAutoMessageDataSetGlobalSettings,
+    ProgramContainerAction
 } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { ErrorHelper } from '@autochrome/core/common/error-helper';
 import { RobotSettingsGlobalManager } from '@autochrome/core/settings/robot-settings-global-manager';
@@ -132,11 +133,18 @@ export class Robot {
 		activeProgramContainer.programContainer.activeActionStartTime = Date.now();
 		activeProgramContainer.programContainer.status = ProgramContainerStatus.InProgress;
 		activeProgramContainer.programContainer.error = null;
-		Logger.instance.log(`Continue with the ${fromRoot ? 'root ' : ''}Action: ${nextAction.toString()}`);
+        activeProgramContainer.programContainer.tabId = activeProgramContainer.programContainer.tabId || await this.getCurrentTabId();
 		await ExtractedProgramContainerManager.instance.setContainer(activeProgramContainer);
+
+        Logger.instance.log(`Continue with the ${fromRoot ? 'root ' : ''}Action: ${nextAction.toString()}`);
 		await AutoLinkServer.instance.sendNextAction(activeProgramContainer.programContainer.tabId, nextAction.toJson());
 		await AutoLinkServer.instance.sendContainerUpdate(activeProgramContainer.programContainer.id, IAutoMessageContainerChangeType.Update);
 	}
+
+    private async getCurrentTabId(): Promise<number> {
+        const tabs: chrome.tabs.Tab[] = await chrome.tabs.query({});
+        return tabs.find((tab) => tab.active)?.id;
+    }
 
 	private async completeProgram(activeProgramContainer: ExtractedProgramContainer, error: string = null): Promise<void> {
         Logger.instance.log(`Program completed for the tab: ${activeProgramContainer.programContainer.tabId}.`);
@@ -205,7 +213,7 @@ export class Robot {
 		}
 		try {
 			switch (containerActionData.action) {
-				case ProgramContainerAction.Play:
+                case ProgramContainerAction.Play:
 					let fromRoot = true;
 					if (containerForAction.programContainer.status === ProgramContainerStatus.Paused) {
 						fromRoot = false;

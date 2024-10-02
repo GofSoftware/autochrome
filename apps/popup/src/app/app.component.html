@@ -22,6 +22,10 @@
             <input id="auto-play" name="autoPlay" type="checkbox" [(ngModel)]="autoPlay" (ngModelChange)="onAutoPlayChange()">
             <label for="auto-play">Auto</label>
         </div>
+        <div class="input-label-option">
+            <input id="enable-connector" name="enableConnector" type="checkbox" [(ngModel)]="enableConnector" (ngModelChange)="onEnableConnectorChange()">
+            <label for="enable-connector">Enable Connector</label>
+        </div>
     </div>
     <div id="uploaded-programs-holder" class="uploaded-programs-holder">
         @for(item of programItems(); track item.programItem.extractedProgramContainer.programContainer.id) {
