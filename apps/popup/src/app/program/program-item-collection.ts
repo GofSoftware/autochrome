@@ -3,7 +3,7 @@ import { ProgramContainer } from '@autochrome/core/program/container/program-con
 import { concatMap, filter, Subject, Subscription } from 'rxjs';
 import { ProgramContainerManager } from '@autochrome/core/auto-link/program-container-manager';
 import { AutoLinkClient } from '@autochrome/core/auto-link/auto-link-client';
-import { IAutoMessageDataContainerChanged, IAutoMessageContainerChangeType } from '@autochrome/core/auto-link/messaging/i-auto-message';
+import { IAutoMessageDataContainerChanged, AutoMessageContainerChangeType } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { Logger } from '@autochrome/core/common/logger';
 
 export interface IProgramItemCollectionElement {
@@ -33,15 +33,15 @@ export class ProgramItemCollection {
 			concatMap(async (event: IAutoMessageDataContainerChanged) => {
 				Logger.instance.debug(`ProgramItemCollection get event`, event);
 				switch (event.type) {
-					case IAutoMessageContainerChangeType.New:
+					case AutoMessageContainerChangeType.New:
 						if (!this.programItemMap.has(event.containerId)) {
 							const programContainer = await ProgramContainerManager.instance.getContainer(event.containerId);
 							this.addProgramItem(programContainer);
 							this.notifyChanges();
 						}
 						break;
-					case IAutoMessageContainerChangeType.Update:
-					case IAutoMessageContainerChangeType.Remove:
+					case AutoMessageContainerChangeType.Update:
+					case AutoMessageContainerChangeType.Remove:
 						break;
 					default:
 						Logger.instance.warn(`Unknown IAutoMessageContainerChangeType: ${event.type}`);

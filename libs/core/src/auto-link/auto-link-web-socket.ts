@@ -3,7 +3,7 @@ import {
     AutoMessageType,
     IAutoMessage,
     IAutoMessageWebSocketConnect,
-    IAutoMessageWebSocketLog, IAutoMessageWebSocketResult
+    IAutoMessageWebSocketLog, IAutoMessageWebSocketResult, WebSocketLogSeverity
 } from '../auto-link/messaging/i-auto-message';
 
 export class AutoLinkWebSocket {
@@ -67,12 +67,12 @@ export class AutoLinkWebSocket {
         });
     }
 
-    public sendLog(message: string, ...params: any[]): void {
+    public sendLog(severity: WebSocketLogSeverity, message: string, ...params: any[]): void {
         if (this.socket != null && (this.socket.readyState === WebSocket.OPEN)) {
 
             const autoActionMessage: IAutoMessage<IAutoMessageWebSocketLog> = {
                 type: AutoMessageType.WebSocketLog,
-                data: {clientId: this.id, message: this.createLogMessage(message, ...params)}
+                data: {clientId: this.id, message: this.createLogMessage(message, ...params), severity}
             }
             this.socket.send(JSON.stringify(autoActionMessage));
         }

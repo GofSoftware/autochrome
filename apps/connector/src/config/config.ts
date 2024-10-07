@@ -1,4 +1,5 @@
 import { Logger } from '@autochrome/core/common/logger';
+import { WebSocketLogSeverity } from '@autochrome/core/auto-link/messaging/i-auto-message';
 
 export interface IConfig {
     host: string;
@@ -19,6 +20,7 @@ export class Config implements IConfig {
     public userInput = false;
     public path: string;
     public search: string;
+    public logSeverity: WebSocketLogSeverity = WebSocketLogSeverity.Warning;
 
     public configure(): void {
         this.processArgv();
@@ -45,7 +47,7 @@ export class Config implements IConfig {
     }
 
     private setOption(option: {name: string, value: string}): void {
-        switch (option.name) {
+        switch (option.name.toLowerCase()) {
             case 'host':
                 this.host = option.value || this.host;
                 break;
@@ -58,11 +60,30 @@ export class Config implements IConfig {
             case 'search':
                 this.search = option.value || null;
                 break;
+            case 'log-severity':
+                this.logSeverity = this.convertSeverity(option.value);
+                break;
             case '-i':
                 this.userInput = true;
                 break;
             default:
                 Logger.instance.warn(`Config: unknown option ${option.name}`);
+        }
+    }
+
+    private convertSeverity(value: string): WebSocketLogSeverity {
+        switch (value.toLowerCase()) {
+            case 'debug':
+                return WebSocketLogSeverity.Debug;
+            case 'info':
+                return WebSocketLogSeverity.Info;
+            case 'warning':
+                return WebSocketLogSeverity.Warning;
+            case 'error':
+                return WebSocketLogSeverity.Error;
+            default:
+                console.warn(`Unknown log-severity: ${value}, falling back to 'Warning'`);
+                return WebSocketLogSeverity.Warning;
         }
     }
 }

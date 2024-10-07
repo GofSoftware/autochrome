@@ -1,6 +1,6 @@
 import {
 	IAutoMessage,
-	IAutoMessageContainerChangeType,
+	AutoMessageContainerChangeType,
 	IAutoMessageDataNewContainer,
 	IAutoMessageDataRemoveContainer,
 	IAutoMessageDataUpdateContainer,
@@ -82,7 +82,7 @@ export class BackgroundMessageProcessor {
 				try {
 					const programContainer = ProgramContainer.fromJson(programContainerJson);
 					await ExtractedProgramContainerManager.instance.addContainer(programContainer);
-					await AutoLinkServer.instance.sendContainerUpdate(programContainer.id, IAutoMessageContainerChangeType.New);
+					await AutoLinkServer.instance.sendContainerUpdate(programContainer.id, AutoMessageContainerChangeType.New);
 				} catch (error) {
 					Logger.instance.error('ContainerNew error:', error);
 				}
@@ -90,14 +90,14 @@ export class BackgroundMessageProcessor {
 			case AutoMessageType.ContainerRemove:
 				const removeContainerId = (message as IAutoMessage<IAutoMessageDataRemoveContainer>).data.containerId;
 				await ExtractedProgramContainerManager.instance.removeContainer(removeContainerId);
-				await AutoLinkServer.instance.sendContainerUpdate(removeContainerId, IAutoMessageContainerChangeType.Remove);
+				await AutoLinkServer.instance.sendContainerUpdate(removeContainerId, AutoMessageContainerChangeType.Remove);
 				return true;
 			case AutoMessageType.ContainerUpdate:
 				const updatedContainer = (message as IAutoMessage<IAutoMessageDataUpdateContainer>).data.container;
 				const containerToUpdate = await ExtractedProgramContainerManager.instance.getContainer(updatedContainer.id);
 				containerToUpdate.programContainer.tabId = updatedContainer.tabId;
 				await ExtractedProgramContainerManager.instance.setContainer(containerToUpdate);
-				await AutoLinkServer.instance.sendContainerUpdate(updatedContainer.id, IAutoMessageContainerChangeType.Update);
+				await AutoLinkServer.instance.sendContainerUpdate(updatedContainer.id, AutoMessageContainerChangeType.Update);
 				return true;
 			case AutoMessageType.ContainerAction:
 				await Robot.instance.incomingEvent(null, message.type, message.data as RobotEventDataType);

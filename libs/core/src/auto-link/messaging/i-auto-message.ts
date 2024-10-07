@@ -44,7 +44,7 @@ export interface IAutoMessage<T extends IAutoMessageDataType = IAutoMessageDataT
 	data: T;
 }
 
-export enum IAutoMessageContainerChangeType {
+export enum AutoMessageContainerChangeType {
 	New = 'New',
 	Update = 'Update',
 	Remove = 'Remove',
@@ -53,7 +53,7 @@ export enum IAutoMessageContainerChangeType {
 
 export interface IAutoMessageDataContainerChanged {
 	containerId: string;
-	type: IAutoMessageContainerChangeType;
+	type: AutoMessageContainerChangeType;
 }
 
 export interface IAutoMessageDataUpdateContainer {
@@ -106,8 +106,16 @@ export interface IAutoMessageWebSocketConnect {
 	clientId: string;
 }
 
+export enum WebSocketLogSeverity {
+    Debug = 0,
+    Info = 10,
+    Warning = 20,
+    Error = 30
+}
+
 export interface IAutoMessageWebSocketLog extends IAutoMessageWebSocketConnect {
 	message: string;
+    severity: WebSocketLogSeverity;
 }
 
 export interface IAutoMessageWebSocketResult extends IAutoMessageWebSocketConnect {

@@ -1,5 +1,6 @@
 import { IMessageProcessor } from "./i-message-processor";
-import { IAutoMessageWebSocketLog } from '@autochrome/core/auto-link/messaging/i-auto-message';
+import { IAutoMessageWebSocketLog, WebSocketLogSeverity } from '@autochrome/core/auto-link/messaging/i-auto-message';
+import { Config } from '../../config/config';
 
 export class WebSocketLogMessageProcessor implements IMessageProcessor<IAutoMessageWebSocketLog> {
     public static create(): WebSocketLogMessageProcessor {
@@ -7,6 +8,19 @@ export class WebSocketLogMessageProcessor implements IMessageProcessor<IAutoMess
     }
 
     public async process(message: IAutoMessageWebSocketLog): Promise<void> {
-        console.log(`Log, Id: ${message.clientId}, ${message.message}`);
+        if (message.severity >= Config.instance.logSeverity) {
+            switch (message.severity) {
+                case WebSocketLogSeverity.Warning:
+                    console.warn(`Log, Id: ${message.clientId}, ${message.message}`);
+                    break;
+                case WebSocketLogSeverity.Error:
+                    console.error(`Log, Id: ${message.clientId}, ${message.message}`);
+                    break;
+                case WebSocketLogSeverity.Debug:
+                case WebSocketLogSeverity.Info:
+                default:
+                    console.log(`Log, Id: ${message.clientId}, ${message.message}`);
+            }
+        }
     }
 }

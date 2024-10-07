@@ -1,7 +1,7 @@
 import { ProgramContainer } from '@autochrome/core/program/container/program-container';
 import { AutoLinkClient } from '@autochrome/core/auto-link/auto-link-client';
 import {
-	IAutoMessageContainerChangeType,
+	AutoMessageContainerChangeType,
 	IAutoMessageDataContainerChanged
 } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { ProgramContainerManager } from '@autochrome/core/auto-link/program-container-manager';
@@ -57,7 +57,7 @@ export class ProgramItem {
 			return;
 		}
 
-		if (event.type === IAutoMessageContainerChangeType.Remove) {
+		if (event.type === AutoMessageContainerChangeType.Remove) {
 			this.itemChangedSubject$.next(
 				{type: IProgramItemUpdateInfoType.Remove, id: this.extractedProgramContainer.programContainer.id}
 			);
