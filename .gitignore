@@ -1,6 +1,8 @@
 /.idea
 /plugin
 /dist
+/dist-connector
+/tmp
 /node_modules
 *.drawio.bkp
 /program-examples/apps

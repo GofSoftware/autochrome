@@ -1,10 +1,11 @@
-import { IProgramContainer } from '../../program/container/program-container';
-import { IAutoAction } from '../../program/actions/auto-action';
-import { AutoActionResult } from '../../program/actions/action-types';
-import { IRobotSettingsGlobal } from '../../settings/robot-settings-global';
+import { IRobotSettingsGlobal } from '../../settings/i-robot-settings-global';
+import { IAutoAction } from "../../program/actions/types/i-auto-action";
+import { AutoActionResult } from "../../program/actions/types/auto-action-result";
+import { IProgramContainer } from "../../program/container/i-program-container";
 
 export enum AutoMessageType {
 	Ping = 'Ping',
+	ContainerClearAll = 'ContainerClearAll',
 	ContainerNew = 'ContainerNew',
 	ContainerUpdate = 'ContainerUpdate',
 	ContainerRemove = 'ContainerRemove',
@@ -14,10 +15,15 @@ export enum AutoMessageType {
 	ContentAwake = 'ContentAwake',
 	ContentProgramAction = 'ContentProgramAction',
 	ContentProgramActionResult = 'ContentProgramActionResult',
-	ContentProgramInterrupt = 'ContentProgramInterrupt'
+	ContentProgramInterrupt = 'ContentProgramInterrupt',
+
+    WebSocketConnect = 'WebSocketConnect',
+    WebSocketLog = 'WebSocketLog',
+    WebSocketMessageResult = 'WebSocketMessageResult'
 }
 
 export type IAutoMessageDataType =
+    void |
 	IAutoMessageDataContainerChanged |
 	IAutoMessageDataNewContainer |
 	IAutoMessageDataRemoveContainer |
@@ -27,22 +33,27 @@ export type IAutoMessageDataType =
 	IAutoMessageDataContentAwake |
 	IAutoMessageDataContentProgramAction |
 	IAutoMessageDataContentProgramActionResult |
-	IAutoMessageDataContentProgramInterrupt;
+	IAutoMessageDataContentProgramInterrupt |
+	IAutoMessageWebSocketConnect |
+    IAutoMessageWebSocketLog |
+    IAutoMessageWebSocketResult;
 
 export interface IAutoMessage<T extends IAutoMessageDataType = IAutoMessageDataType> {
+    id?: string;
 	type: AutoMessageType;
 	data: T;
 }
 
-export enum IAutoMessageContainerChangeType {
+export enum AutoMessageContainerChangeType {
 	New = 'New',
 	Update = 'Update',
 	Remove = 'Remove',
+    ClearAll = 'ClearAll'
 }
 
 export interface IAutoMessageDataContainerChanged {
 	containerId: string;
-	type: IAutoMessageContainerChangeType;
+	type: AutoMessageContainerChangeType;
 }
 
 export interface IAutoMessageDataUpdateContainer {
@@ -89,4 +100,26 @@ export interface IAutoMessageDataContentProgramInterrupt {
 
 export interface IAutoMessageDataSetGlobalSettings {
 	globalSettings: Partial<IRobotSettingsGlobal>;
+}
+
+export interface IAutoMessageWebSocketConnect {
+	clientId: string;
+}
+
+export enum WebSocketLogSeverity {
+    Debug = 0,
+    Info = 10,
+    Warning = 20,
+    Error = 30
+}
+
+export interface IAutoMessageWebSocketLog extends IAutoMessageWebSocketConnect {
+	message: string;
+    severity: WebSocketLogSeverity;
+}
+
+export interface IAutoMessageWebSocketResult extends IAutoMessageWebSocketConnect {
+    ok: boolean;
+	result: any;
+	error: any;
 }

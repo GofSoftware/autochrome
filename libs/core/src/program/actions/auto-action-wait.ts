@@ -1,11 +1,10 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
+import { AutoAction } from './auto-action';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-
-export interface IAutoActionWait extends IAutoAction {
-	timeToWait: number;
-}
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionWait } from './types/i-auto-action-wait';
 
 export class AutoActionWait extends AutoAction implements IAutoActionWait {
 	public name = AutoActionName.AutoActionWait;

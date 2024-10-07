@@ -1,16 +1,11 @@
-import { AutoActionClickType } from '@autochrome/core/program/actions/auto-action-click-type';
-import { Cursor } from '../../common/cursor';
 import { Logger } from '../../common/logger';
-import { AutoActionName, AutoActionResult } from './action-types';
-import { AutoAction, IAutoAction } from './auto-action';
-import { QuerySelectorWithPropertyLink } from './i-interfaces';
-
-export interface IAutoActionClick extends IAutoAction {
-	selector: QuerySelectorWithPropertyLink;
-	smoothMouse?: boolean;
-	wait?: boolean;
-	clickType?: AutoActionClickType;
-}
+import { AutoAction } from './auto-action';
+import { Cursor } from '../../common/cursor';
+import { QuerySelectorWithPropertyLink } from './types/i-interfaces';
+import { IAutoAction } from './types/i-auto-action';
+import { AutoActionName } from './types/auto-action-name';
+import { AutoActionResult } from './types/auto-action-result';
+import { AutoActionClickType, IAutoActionClick } from './types/i-auto-action-click';
 
 export class AutoActionClick extends AutoAction implements IAutoActionClick {
 	public name = AutoActionName.AutoActionClick;
@@ -53,7 +48,7 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 		return basicJson;
 	}
 
-	private async clickOn(element: HTMLElement, smoothMouse: boolean = false): Promise<void> {
+	private async clickOn(element: HTMLElement, smoothMouse = false): Promise<void> {
 		const box = element.getBoundingClientRect();
 		if (box != null) {
 			Logger.instance.debug(`Robot ClickOn [${
@@ -70,11 +65,11 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 					element.click();
 					break;
 				default:
-					this.simulateMouseEvent(element, "mousedown", coordinateX, coordinateY);
+					this.simulateMouseEvent(element, 'mousedown', coordinateX, coordinateY);
 					if (element.focus != null) {
 						element.focus();
 					}
-					this.simulateMouseEvent(element, "mouseup", coordinateX, coordinateY);
+					this.simulateMouseEvent(element, 'mouseup', coordinateX, coordinateY);
 					this.simulatePointerEvent(element);
 			}
 		} else {

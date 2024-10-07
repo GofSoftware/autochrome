@@ -1,23 +1,14 @@
-import { AutoAction, IAutoAction } from './actions/auto-action';
+import { AutoAction } from './actions/auto-action';
 import { AutoActionFactory } from './actions/auto-action-factory';
-import { AutoProcedure, IAutoProcedure } from './auto-procedure';
-import { AutoActionName } from './actions/action-types';
-
-export interface IAutoProgram {
-	name: string;
-	description: string;
-	version: number;
-	rootAction: IAutoAction;
-	procedures: IAutoProcedure[];
-}
-
-const CURRENT_VERSION = 1;
+import { AutoProcedure } from './auto-procedure';
+import { AutoActionName } from './actions/types/auto-action-name';
+import { AUTO_PROGRAM_CURRENT_VERSION, IAutoProgram } from './i-auto-program';
 
 export class AutoProgram implements IAutoProgram {
 
 	public static empty(): AutoProgram {
 		const program = new AutoProgram();
-		program.version = CURRENT_VERSION;
+		program.version = AUTO_PROGRAM_CURRENT_VERSION;
 		program.name = '';
 		program.description = '';
 		program.rootAction = AutoActionFactory.instance.fromJson({name: AutoActionName.AutoActionEmpty});

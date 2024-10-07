@@ -1,14 +1,9 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-
-export interface IAutoActionSelectFile extends IAutoAction {
-	selector: string;
-	fileName: string;
-	fileType: string;
-	fileContent: string;
-	wait?: boolean;
-}
+import { AutoAction } from './auto-action';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionSelectFile } from './types/i-auto-action-select-file';
 
 export class AutoActionSelectFile extends AutoAction implements IAutoActionSelectFile {
 	public name = AutoActionName.AutoActionSelectFile;

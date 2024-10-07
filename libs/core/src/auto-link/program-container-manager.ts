@@ -17,6 +17,11 @@ export class ProgramContainerManager {
 		});
 	}
 
+	public async clear(): Promise<void> {
+        const containers = await this.getAllContainers();
+        await Promise.all(containers.map((container) => this.removeContainer(container.id)));
+	}
+
 	public async getContainer(id: string): Promise<ProgramContainer> {
 		return (await this.getAllContainers()).find((container) => container.id === id);
 	}

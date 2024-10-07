@@ -1,21 +1,23 @@
 import { Logger } from '@autochrome/core/common/logger';
-import { AutoActionName, AutoActionResult } from '@autochrome/core/program/actions/action-types';
+import { AutoActionName } from '@autochrome/core/program/actions/types/auto-action-name';
+import { AutoActionResult } from '@autochrome/core/program/actions/types/auto-action-result';
 import { TabManager } from '@autochrome/core/common/tab-manager';
 import { ExtractedProgramContainer } from '@autochrome/core/program/container/extracted-program-container';
 import { ExtractedProgramContainerManager } from '@autochrome/core/auto-link/extracted-program-container-manager';
 import { AutoLinkServer } from '@autochrome/core/auto-link/auto-link-server';
-import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container';
+import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container-status';
 import {
-	IAutoMessageContainerChangeType,
-	IAutoMessageDataContainerAction,
-	IAutoMessageDataContentAwake,
-	IAutoMessageDataContentProgramAction,
-	IAutoMessageDataContentProgramActionResult, IAutoMessageDataSetGlobalSettings,
-	ProgramContainerAction,
-	AutoMessageType
+    AutoMessageType,
+    AutoMessageContainerChangeType,
+    IAutoMessageDataContainerAction,
+    IAutoMessageDataContentAwake,
+    IAutoMessageDataContentProgramAction,
+    IAutoMessageDataContentProgramActionResult,
+    IAutoMessageDataSetGlobalSettings,
+    ProgramContainerAction
 } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { ErrorHelper } from '@autochrome/core/common/error-helper';
-import { RobotSettingsGlobal } from '@autochrome/core/settings/robot-settings-global';
+import { RobotSettingsGlobalManager } from '@autochrome/core/settings/robot-settings-global-manager';
 
 export type RobotEventDataType =
 	IAutoMessageDataContainerAction |
@@ -131,11 +133,18 @@ export class Robot {
 		activeProgramContainer.programContainer.activeActionStartTime = Date.now();
 		activeProgramContainer.programContainer.status = ProgramContainerStatus.InProgress;
 		activeProgramContainer.programContainer.error = null;
-		Logger.instance.log(`Continue with the ${fromRoot ? 'root ' : ''}Action: ${nextAction.toString()}`);
+        activeProgramContainer.programContainer.tabId = activeProgramContainer.programContainer.tabId || await this.getCurrentTabId();
 		await ExtractedProgramContainerManager.instance.setContainer(activeProgramContainer);
+
+        Logger.instance.log(`Continue with the ${fromRoot ? 'root ' : ''}Action: ${nextAction.toString()}`);
 		await AutoLinkServer.instance.sendNextAction(activeProgramContainer.programContainer.tabId, nextAction.toJson());
-		await AutoLinkServer.instance.sendContainerUpdate(activeProgramContainer.programContainer.id, IAutoMessageContainerChangeType.Update);
+		await AutoLinkServer.instance.sendContainerUpdate(activeProgramContainer.programContainer.id, AutoMessageContainerChangeType.Update);
 	}
+
+    private async getCurrentTabId(): Promise<number> {
+        const tabs: chrome.tabs.Tab[] = await chrome.tabs.query({});
+        return tabs.find((tab) => tab.active)?.id;
+    }
 
 	private async completeProgram(activeProgramContainer: ExtractedProgramContainer, error: string = null): Promise<void> {
         Logger.instance.log(`Program completed for the tab: ${activeProgramContainer.programContainer.tabId}.`);
@@ -148,9 +157,9 @@ export class Robot {
 			activeProgramContainer.programContainer.status = ProgramContainerStatus.Error;
 		}
 		await ExtractedProgramContainerManager.instance.setContainer(activeProgramContainer);
-		await AutoLinkServer.instance.sendContainerUpdate(activeProgramContainer.programContainer.id, IAutoMessageContainerChangeType.Update);
+		await AutoLinkServer.instance.sendContainerUpdate(activeProgramContainer.programContainer.id, AutoMessageContainerChangeType.Update);
 
-		const settings = await RobotSettingsGlobal.instance.getSettings();
+		const settings = await RobotSettingsGlobalManager.instance.getSettings();
 		Logger.instance.log(`Autoplay is ${settings.autoPlay}`);
 		if (settings.autoPlay) {
 			await this.activateNextProgram(activeProgramContainer);
@@ -164,7 +173,7 @@ export class Robot {
 		activeProgram.programContainer.error = reason;
 		activeProgram.programContainer.activeActionStartTime = 0;
 		await ExtractedProgramContainerManager.instance.setContainer(activeProgram);
-		await AutoLinkServer.instance.sendContainerUpdate(activeProgram.programContainer.id, IAutoMessageContainerChangeType.Update);
+		await AutoLinkServer.instance.sendContainerUpdate(activeProgram.programContainer.id, AutoMessageContainerChangeType.Update);
 		await AutoLinkServer.instance.sendInterrupt(activeProgram.programContainer.tabId, 'Interrupted by the server, ' + reason);
 	}
 
@@ -204,7 +213,7 @@ export class Robot {
 		}
 		try {
 			switch (containerActionData.action) {
-				case ProgramContainerAction.Play:
+                case ProgramContainerAction.Play:
 					let fromRoot = true;
 					if (containerForAction.programContainer.status === ProgramContainerStatus.Paused) {
 						fromRoot = false;
@@ -215,13 +224,13 @@ export class Robot {
 				case ProgramContainerAction.Pause:
 					containerForAction.programContainer.status = ProgramContainerStatus.Paused;
 					await ExtractedProgramContainerManager.instance.setContainer(containerForAction);
-					await AutoLinkServer.instance.sendContainerUpdate(containerIdForAction, IAutoMessageContainerChangeType.Update);
+					await AutoLinkServer.instance.sendContainerUpdate(containerIdForAction, AutoMessageContainerChangeType.Update);
 					return;
 				case ProgramContainerAction.Stop:
 					containerForAction.programContainer.status = ProgramContainerStatus.Stopped;
 					containerForAction.activeAction = null;
 					await ExtractedProgramContainerManager.instance.setContainer(containerForAction);
-					await AutoLinkServer.instance.sendContainerUpdate(containerIdForAction, IAutoMessageContainerChangeType.Update);
+					await AutoLinkServer.instance.sendContainerUpdate(containerIdForAction, AutoMessageContainerChangeType.Update);
 					return;
 			}
 		} catch (error) {
@@ -229,7 +238,7 @@ export class Robot {
 			containerForAction.programContainer.status = ProgramContainerStatus.Error;
 			containerForAction.programContainer.error = ErrorHelper.genericErrorToString(error);
 			await ExtractedProgramContainerManager.instance.setContainer(containerForAction);
-			await AutoLinkServer.instance.sendContainerUpdate(containerIdForAction, IAutoMessageContainerChangeType.Update);
+			await AutoLinkServer.instance.sendContainerUpdate(containerIdForAction, AutoMessageContainerChangeType.Update);
 		}
 	}
 
@@ -250,7 +259,7 @@ export class Robot {
 	}
 
 	private async processSetGlobalSettings(senderId: number, globalSettingsData: IAutoMessageDataSetGlobalSettings): Promise<void> {
-		await RobotSettingsGlobal.instance.setSettings(globalSettingsData.globalSettings);
+		await RobotSettingsGlobalManager.instance.setSettings(globalSettingsData.globalSettings);
 	}
 
 	private async activateNextProgram(previousProgramContainer: ExtractedProgramContainer): Promise<void> {

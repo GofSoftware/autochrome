@@ -1,18 +1,9 @@
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-import { IParameterLink } from './i-interfaces';
-
-export enum AutoActionConsoleLogLevel {
-	Error= 'Error',
-	Warn= 'Warn',
-	Log= 'Log',
-	Debug= 'Debug'
-}
-
-export interface IAutoActionConsoleLog extends IAutoAction {
-	level?: AutoActionConsoleLogLevel;
-	message: string | IParameterLink;
-}
+import { AutoAction } from './auto-action';
+import { IParameterLink } from './types/i-interfaces';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { AutoActionConsoleLogLevel, IAutoActionConsoleLog } from './types/i-auto-action-console-log';
 
 export class AutoActionConsoleLog extends AutoAction implements IAutoActionConsoleLog {
 	public name = AutoActionName.AutoActionConsoleLog;

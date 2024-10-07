@@ -3,7 +3,7 @@ import { ProgramContainer } from '@autochrome/core/program/container/program-con
 import { concatMap, filter, Subject, Subscription } from 'rxjs';
 import { ProgramContainerManager } from '@autochrome/core/auto-link/program-container-manager';
 import { AutoLinkClient } from '@autochrome/core/auto-link/auto-link-client';
-import { IAutoMessageDataContainerChanged, IAutoMessageContainerChangeType } from '@autochrome/core/auto-link/messaging/i-auto-message';
+import { IAutoMessageDataContainerChanged, AutoMessageContainerChangeType } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { Logger } from '@autochrome/core/common/logger';
 
 export interface IProgramItemCollectionElement {
@@ -25,6 +25,7 @@ export class ProgramItemCollection {
 	private tabIdSet: Set<number> = new Set<number>();
 	private programItemMap: Map<string, IProgramItemCollectionElement> = new Map<string, IProgramItemCollectionElement>();
 	private autoLinkSubscription: Subscription;
+	private autoLinkClearSubscription: Subscription;
 
 	public init(): void {
 		this.autoLinkSubscription = AutoLinkClient.instance().containerChanges$.pipe(
@@ -32,26 +33,30 @@ export class ProgramItemCollection {
 			concatMap(async (event: IAutoMessageDataContainerChanged) => {
 				Logger.instance.debug(`ProgramItemCollection get event`, event);
 				switch (event.type) {
-					case IAutoMessageContainerChangeType.New:
+					case AutoMessageContainerChangeType.New:
 						if (!this.programItemMap.has(event.containerId)) {
 							const programContainer = await ProgramContainerManager.instance.getContainer(event.containerId);
 							this.addProgramItem(programContainer);
 							this.notifyChanges();
 						}
 						break;
-					case IAutoMessageContainerChangeType.Update:
-					case IAutoMessageContainerChangeType.Remove:
+					case AutoMessageContainerChangeType.Update:
+					case AutoMessageContainerChangeType.Remove:
 						break;
 					default:
 						Logger.instance.warn(`Unknown IAutoMessageContainerChangeType: ${event.type}`);
 				}
 			})
 		).subscribe();
+        this.autoLinkClearSubscription = AutoLinkClient.instance().containerChanges$.subscribe(() => {
+            this.clearCollection();
+        });
 	}
 
 	public destroy(): void {
 		this.clear();
 		this.autoLinkSubscription?.unsubscribe();
+		this.autoLinkClearSubscription?.unsubscribe();
 	}
 
 	// public forEach(
@@ -87,10 +92,14 @@ export class ProgramItemCollection {
 
 	private clear(): void {
 		this.tabIdSet.clear();
-		this.programItemMap.forEach(value => {
-			this.destroyProgramItemCollectionItem(value);
-		});
+		this.clearCollection();
 	}
+
+    private clearCollection(): void {
+        this.programItemMap.forEach(value => {
+            this.destroyProgramItemCollectionItem(value);
+        });
+    }
 
 	private addProgramItem(programContainer: ProgramContainer): ProgramItem {
 		this.tabIdSet.add(programContainer.tabId);

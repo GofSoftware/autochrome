@@ -1,9 +1,8 @@
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-
-// tslint:disable-next-line:no-empty-interface
-export interface IAutoActionRoot extends IAutoAction {
-}
+import { AutoAction } from './auto-action';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionRoot } from './types/i-auto-action-root';
 
 export class AutoActionRoot extends AutoAction implements IAutoActionRoot {
 	public name = AutoActionName.AutoActionRoot;

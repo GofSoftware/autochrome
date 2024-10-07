@@ -8,7 +8,7 @@ import {
 } from './messaging/i-auto-message';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Logger } from '../common/logger';
-import { AutoActionResult } from '../program/actions/action-types';
+import { AutoActionResult } from '../program/actions/types/action-types';
 import { Guid } from '../common/guid';
 import { StringHelper } from '../common/string-helper';
 

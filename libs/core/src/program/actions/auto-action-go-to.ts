@@ -1,10 +1,9 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-
-export interface IAutoActionGoTo extends IAutoAction {
-	goToActionId: string;
-}
+import { AutoAction } from './auto-action';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionGoTo } from './types/i-auto-action-go-to';
 
 export class AutoActionGoTo extends AutoAction implements IAutoActionGoTo {
 	public name = AutoActionName.AutoActionGoTo;

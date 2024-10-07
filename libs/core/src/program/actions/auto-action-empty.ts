@@ -1,8 +1,8 @@
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-
-export interface IAutoActionEmpty extends IAutoAction {
-}
+import { AutoAction } from './auto-action';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionEmpty } from './types/i-auto-action-empty';
 
 export class AutoActionEmpty extends AutoAction implements IAutoActionEmpty {
 	public name = AutoActionName.AutoActionEmpty;

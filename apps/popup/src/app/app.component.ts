@@ -4,7 +4,7 @@ import { IProgramItemCollectionElement, ProgramItemCollection } from './program/
 import { AutoLinkClient } from '@autochrome/core/auto-link/auto-link-client';
 import { Logger } from '@autochrome/core/common/logger';
 import { TabManager } from "@autochrome/core/common/tab-manager";
-import { RobotSettingsGlobal } from '@autochrome/core/settings/robot-settings-global';
+import { RobotSettingsGlobalManager } from '@autochrome/core/settings/robot-settings-global-manager';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProgramItemComponent } from './components/program-item/program-item.component';
@@ -18,6 +18,7 @@ import { ProgramItemComponent } from './components/program-item/program-item.com
 })
 export class AppComponent implements OnInit {
 	public autoPlay = signal<boolean>(false);
+	public enableConnector = signal<boolean>(false);
 	public browserTabList = signal<{id: string; label: string}[]>([]);
 	public browserTabValue = signal<string>(null);
 	public programItems = signal<IProgramItemCollectionElement[]>([]);
@@ -30,16 +31,17 @@ export class AppComponent implements OnInit {
 
 	public async ngOnInit(): Promise<void> {
 		Logger.instance.prefix = 'Autochrome:popup';
+
 		await TabManager.instance.init();
 		this.updateBrowserTabs();
-		ProgramItemCollection.instance().init();
+
+        ProgramItemCollection.instance().init();
 		await ProgramItemCollection.instance().restore();
 		AutoLinkClient.instance().init();
 
-		const settings = await RobotSettingsGlobal.instance.getSettings();
-		if (settings.autoPlay) {
-			this.autoPlay.set(true);
-		}
+		const settings = await RobotSettingsGlobalManager.instance.getSettings();
+        this.autoPlay.set(settings?.autoPlay || false);
+        this.enableConnector.set(settings?.enableConnector || false);
 	}
 
 	public async onFileChange(event: Event) {
@@ -65,6 +67,10 @@ export class AppComponent implements OnInit {
 
 	public async onAutoPlayChange(): Promise<void> {
 		await AutoLinkClient.instance().setGlobalSettings({autoPlay: this.autoPlay()});
+	}
+
+	public async onEnableConnectorChange(): Promise<void> {
+		await AutoLinkClient.instance().setGlobalSettings({enableConnector: this.enableConnector()});
 	}
 
 	public async onCreateProgramClick(): Promise<void> {

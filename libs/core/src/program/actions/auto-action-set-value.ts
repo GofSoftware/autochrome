@@ -1,13 +1,10 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-import { IAutoValue, IParameterLink, QuerySelectorWithPropertyLink } from './i-interfaces';
-
-export interface IAutoActionSetValue extends IAutoAction {
-	selector: QuerySelectorWithPropertyLink;
-	wait: boolean;
-	value: any | IAutoValue | IParameterLink;
-}
+import { AutoAction } from './auto-action';
+import { IAutoValue, IParameterLink, QuerySelectorWithPropertyLink } from './types/i-interfaces';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionSetValue } from './types/i-auto-action-set-value';
 
 export class AutoActionSetValue extends AutoAction implements IAutoActionSetValue {
 	public name = AutoActionName.AutoActionSetValue;

@@ -1,20 +1,14 @@
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
-import { IAutoActionCheck, AutoActionCheck } from './auto-action-check';
-
-export enum IAutoActionGroupOperator {
-	And = 'And',
-	Or = 'Or'
-}
-
-export interface IAutoActionCheckGroup extends IAutoAction {
-	operator: IAutoActionGroupOperator;
-	checkItems: (IAutoActionCheckGroup | IAutoActionCheck)[];
-	silent?: boolean;
-}
+import { AutoAction } from './auto-action';
+import { AutoActionCheck } from './auto-action-check';
+import { IAutoAction } from './types/i-auto-action';
+import { AutoActionName } from './types/auto-action-name';
+import { AutoActionResult } from './types/auto-action-result';
+import { IAutoActionCheckGroup } from './types/i-auto-action-check-group';
+import { AutoActionGroupOperator } from './types/i-auto-action-check-group';
+import { IAutoActionCheck } from './types/i-auto-action-check';
 
 export class AutoActionCheckGroup extends AutoAction implements IAutoActionCheckGroup {
-	public operator: IAutoActionGroupOperator;
+	public operator: AutoActionGroupOperator;
 	public checkItems: (AutoActionCheckGroup | AutoActionCheck)[];
 	public silent?: boolean;
 	public name = AutoActionName.AutoActionCheckGroup;
@@ -48,10 +42,10 @@ export class AutoActionCheckGroup extends AutoAction implements IAutoActionCheck
 
 		let res = false;
 		switch (this.operator) {
-			case IAutoActionGroupOperator.And:
+			case AutoActionGroupOperator.And:
 				res = this.checkItems.every((item) => item.result === AutoActionResult.Success);
 				break;
-			case IAutoActionGroupOperator.Or:
+			case AutoActionGroupOperator.Or:
 				res = this.checkItems.some((item) => item.result === AutoActionResult.Success);
 				break;
 			default:

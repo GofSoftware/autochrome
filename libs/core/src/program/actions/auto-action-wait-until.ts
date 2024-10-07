@@ -1,17 +1,11 @@
 import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
+import { AutoAction } from './auto-action';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { QuerySelectorWithPropertyLink } from './i-interfaces';
-
-export enum AutoActionWaitUntilType {
-	appear = 'appear',
-	disappear = 'disappear'
-}
-export interface IAutoActionWaitUntil extends IAutoAction {
-	untilType: AutoActionWaitUntilType;
-	selector: QuerySelectorWithPropertyLink;
-}
+import { QuerySelectorWithPropertyLink } from './types/i-interfaces';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { AutoActionWaitUntilType, IAutoActionWaitUntil } from './types/i-auto-action-wait-until';
 
 export class AutoActionWaitUntil extends AutoAction implements IAutoActionWaitUntil {
 	public name = AutoActionName.AutoActionWaitUntil;

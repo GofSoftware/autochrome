@@ -1,7 +1,7 @@
 import {
 	IAutoMessage,
 	IAutoMessageDataContainerChanged,
-	IAutoMessageContainerChangeType,
+	AutoMessageContainerChangeType,
 	IAutoMessageDataContentProgramAction,
 	AutoMessageType, IAutoMessageDataContentProgramInterrupt
 } from './messaging/i-auto-message';
@@ -13,7 +13,7 @@ export class AutoLinkServer {
 		return AutoLinkServer.autoLinkServerInstance || (AutoLinkServer.autoLinkServerInstance = new AutoLinkServer());
 	}
 
-	public async sendContainerUpdate(containerId: string, type: IAutoMessageContainerChangeType): Promise<boolean> {
+	public async sendContainerUpdate(containerId: string, type: AutoMessageContainerChangeType): Promise<boolean> {
 		const message: IAutoMessage<IAutoMessageDataContainerChanged> = {type: AutoMessageType.ContainerUpdate, data: {containerId, type}};
 		const contexts = await (chrome.runtime as any).getContexts({contextTypes: ['POPUP']});
 		if (!Array.isArray(contexts) || contexts.length === 0) {
@@ -22,6 +22,16 @@ export class AutoLinkServer {
 		const result = await chrome.runtime.sendMessage(message);
 		return result === true;
 	}
+
+    public async sendClearAll(): Promise<boolean> {
+        const message: IAutoMessage<void> = {type: AutoMessageType.ContainerClearAll, data: null};
+        const contexts = await (chrome.runtime as any).getContexts({contextTypes: ['POPUP']});
+        if (!Array.isArray(contexts) || contexts.length === 0) {
+            return  true; // assume the popup isn't opened.
+        }
+        const result = await chrome.runtime.sendMessage(message);
+        return result === true;
+    }
 
 	public async sendNextAction(tabId: number, action: IAutoAction): Promise<boolean> {
 		const message: IAutoMessage<IAutoMessageDataContentProgramAction> = {type: AutoMessageType.ContentProgramAction, data: {action}};

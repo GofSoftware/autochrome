@@ -1,19 +1,22 @@
 import { AutoStorage } from '../common/auto-storage';
-
-export interface IRobotSettingsGlobal {
-	autoPlay: boolean;
-}
+import { IRobotSettingsGlobal } from "./i-robot-settings-global";
 
 const DEFAULT_ROBOT_SETTINGS_GLOBAL: IRobotSettingsGlobal = {
-	autoPlay: true
+	autoPlay: true,
+    enableConnector: false,
+    connectorPort: 3101,
+    connectorHost: "localhost"
 };
 
 export const ROBOT_SETTINGS_GLOBAL_STORAGE_KEY = 'globalSettings';
-
-export class RobotSettingsGlobal {
-	private static autoSettingsGlobalInstance: RobotSettingsGlobal;
-	public static get instance(): RobotSettingsGlobal {
-		return RobotSettingsGlobal.autoSettingsGlobalInstance || (RobotSettingsGlobal.autoSettingsGlobalInstance = new RobotSettingsGlobal());
+/**
+ * It is impossible for now to see the chrome.storage in the dev tool, so run the following snippet in the dev console to see the data.
+ * chrome.storage.local.get(function(result){console.log(result)})
+ */
+export class RobotSettingsGlobalManager {
+	private static autoSettingsGlobalInstance: RobotSettingsGlobalManager;
+	public static get instance(): RobotSettingsGlobalManager {
+		return RobotSettingsGlobalManager.autoSettingsGlobalInstance || (RobotSettingsGlobalManager.autoSettingsGlobalInstance = new RobotSettingsGlobalManager());
 	}
 
 	private settingsInstance: IRobotSettingsGlobal = null;

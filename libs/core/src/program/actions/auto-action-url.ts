@@ -1,11 +1,10 @@
-import { IAutoAction, AutoAction } from './auto-action';
-import { AutoActionName, AutoActionResult } from './action-types';
+import { AutoAction } from './auto-action';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { IAutoValue, IParameterLink } from './i-interfaces';
-
-export interface IAutoActionUrl extends IAutoAction {
-	url: string | IAutoValue | IParameterLink;
-}
+import { IAutoValue, IParameterLink } from './types/i-interfaces';
+import { IAutoAction } from "./types/i-auto-action";
+import { AutoActionName } from "./types/auto-action-name";
+import { AutoActionResult } from "./types/auto-action-result";
+import { IAutoActionUrl } from './types/i-auto-action-url';
 
 export class AutoActionUrl extends AutoAction implements IAutoActionUrl {
 	public name = AutoActionName.AutoActionUrl;

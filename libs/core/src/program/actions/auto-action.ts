@@ -1,4 +1,4 @@
-import { AutoActionName, AutoActionResult, AutoAnyAction } from './action-types';
+import { AutoAnyAction } from './types/action-types';
 import { Config } from '../config/config';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
 import { AutoActionFactory } from './auto-action-factory';
@@ -10,24 +10,12 @@ import {
 	IParameterLink, IQuerySelector,
 	ParameterLinkTypeName,
 	QuerySelectorWithPropertyLink, StringOrIQuerySelector
-} from './i-interfaces';
-import { Logger } from '@autochrome/core/common/logger';
-import { MacroProcessor } from '@autochrome/core/common/macro-processor';
-
-/**
- * The base interface for all actions, includes fields that can be set in any nested action.
- * @id string is not required and will be set automatically when a Program is loaded. You only have to set the id if you are planing to
- * change the program flow and go directly to the action.
- */
-export interface IAutoAction {
-	id?: string; // A little help to a user, do not generate id if it is not really necessary (not a goto action for example)
-	name: AutoActionName;
-	description?: string;
-	continueAfterFail?: boolean;
-	timeout?: number;
-	children?: IAutoAction[];
-	parameters?: IAutoParameter[];
-}
+} from './types/i-interfaces';
+import { Logger } from '../../common/logger';
+import { MacroProcessor } from '../../common/macro-processor';
+import { IAutoAction } from "../../program/actions/types/i-auto-action";
+import { AutoActionName } from "../../program/actions/types/auto-action-name";
+import { AutoActionResult } from "../../program/actions/types/auto-action-result";
 
 export abstract class AutoAction implements IAutoAction {
 	public id: string;
@@ -106,7 +94,7 @@ export abstract class AutoAction implements IAutoAction {
 		return this.next.getLastAction();
 	}
 
-	protected async querySelector(selector: QuerySelectorWithPropertyLink, wait: boolean, silent: boolean = false): Promise<Element[]> {
+	protected async querySelector(selector: QuerySelectorWithPropertyLink, wait: boolean, silent = false): Promise<Element[]> {
 		let elements: Element[];
 
 		const querySelector = await this.preProcessQuerySelector(selector);
@@ -154,7 +142,7 @@ export abstract class AutoAction implements IAutoAction {
 	}
 
 	protected async preProcessQuerySelector(selector: QuerySelectorWithPropertyLink): Promise<StringOrIQuerySelector> {
-		let querySelector = this.replaceParameters(selector) as StringOrIQuerySelector;
+		const querySelector = this.replaceParameters(selector) as StringOrIQuerySelector;
 		await this.replaceSelectorAutoValues(querySelector);
 		return this.replaceParameterMacro(querySelector);
 	}
