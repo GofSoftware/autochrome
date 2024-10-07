@@ -1,13 +1,9 @@
-import { Logger } from '../../common/logger';
-import { IAutoAction, AutoAction } from './auto-action';
+import { AutoActionClickType } from '@autochrome/core/program/actions/auto-action-click-type';
 import { Cursor } from '../../common/cursor';
+import { Logger } from '../../common/logger';
 import { AutoActionName, AutoActionResult } from './action-types';
-import { IParameterLink, QuerySelectorWithPropertyLink } from './i-interfaces';
-
-export enum AutoActionClickType {
-	MouseDownFocusMouseUp = 'MouseDownFocusMouseUp',
-	Click = 'Click'
-}
+import { AutoAction, IAutoAction } from './auto-action';
+import { QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export interface IAutoActionClick extends IAutoAction {
 	selector: QuerySelectorWithPropertyLink;

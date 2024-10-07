@@ -1,28 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TestOneComponent } from './components/test-one/test-one.component';
+import { IAutoActionClick } from '@autochrome/core/program/actions/auto-action-click';
+import { IAutoActionProcedure } from '@autochrome/core/program/actions/auto-action-procedure';
+import { AutoActionSchema } from './auto-action-zod-schema';
 
 @Component({
-  standalone: true,
-	imports: [RouterModule, TestOneComponent],
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.sass',
+	standalone: true,
+	imports: [RouterModule],
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrl: './app.component.sass'
 })
 export class AppComponent implements OnInit {
-	public tick = 0;
-	ngOnInit(): void {
-		setInterval(() => {
-			this.setTick();
-		}, 1000)
-	}
+	public ngOnInit() {
+		const actionData = {
+			id: 'root-id',
+			name: 'AutoActionClick',
+			description: 'Test',
+			selector: '#test-anchor',
+			smoothMouse: false,
+			children: [
+				{
+					name: 'AutoActionProcedure',
+					procedureName: 'Test Procedure'
+				} as IAutoActionProcedure
+			]
+		} as IAutoActionClick;
 
-	private setTick(): void {
-		this.tick = Date.now();
-		let a = 0;
-		for(let i = 0; i < 10000000; i++) {
-			a += 1;
-		}
-		console.log(this.tick, a);
+		const parsed = AutoActionSchema.safeParse(actionData);
+
+		console.log(parsed);
 	}
 }
