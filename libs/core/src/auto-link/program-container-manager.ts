@@ -23,7 +23,11 @@ export class ProgramContainerManager {
 	}
 
 	public async getContainer(id: string): Promise<ProgramContainer> {
-		return (await this.getAllContainers()).find((container) => container.id === id);
+		const foundContainer = (await this.getAllContainers()).find((container) => container.id === id);
+		if (foundContainer == null) {
+			throw new Error(`Container not found, id: ${id}`);
+		}
+		return foundContainer;
 	}
 
 	public async setContainer(programContainer: ProgramContainer): Promise<void> {

@@ -11,7 +11,7 @@ export class AutoActionDragNDrop extends AutoAction implements IAutoActionDragND
 	public sourceSelector: QuerySelectorWithPropertyLink;
 	public targetSelector: QuerySelectorWithPropertyLink;
 	public wait = false;
-	public dataTransfer: string;
+	public dataTransfer: string | undefined;
 
 	public static fromJson(jsonAction: IAutoActionDragNDrop): AutoActionDragNDrop {
 		return new AutoActionDragNDrop(jsonAction);
@@ -25,7 +25,7 @@ export class AutoActionDragNDrop extends AutoAction implements IAutoActionDragND
 
 		this.sourceSelector = jsonAction.sourceSelector;
 		this.targetSelector = jsonAction.targetSelector;
-		this.wait = jsonAction.wait;
+		this.wait = jsonAction.wait ?? false;
 		this.dataTransfer = jsonAction.dataTransfer;
 	}
 

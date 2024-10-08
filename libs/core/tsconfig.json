@@ -9,7 +9,7 @@
     "noFallthroughCasesInSwitch": true,
     "outDir": "../../dist/out-tsc",
     "declaration": true,
-    "types": ["node"],
+    "types": ["node", "chrome"],
     "esModuleInterop": true
   },
   "files": [],

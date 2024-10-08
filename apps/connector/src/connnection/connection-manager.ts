@@ -10,7 +10,7 @@ export class ConnectionManager {
 
     public setConnection(connection: IConnectorConnection): void {
         if (this.connectionMap.has(connection.id)) {
-            this.connectionMap.get(connection.id).close();
+            this.connectionMap.get(connection.id)!.close();
         }
         this.connectionMap.set(connection.id, connection);
     }

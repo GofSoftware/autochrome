@@ -13,18 +13,18 @@ export interface IAutoParameter {
 	value: IAutoParameterValue;
 }
 
+export type StringOrIQuerySelector = string | IQuerySelector;
+
 export interface IQuerySelector {
 	selector: string;
 	innerText?: string;
 	textContent?: string;
 	all?: boolean;
-	child?: string | IQuerySelector;
-	parent?: string | IQuerySelector;
-	iframe?: string | IQuerySelector;
+	child?: StringOrIQuerySelector;
+	parent?: StringOrIQuerySelector;
+	iframe?: StringOrIQuerySelector;
 	parentLevel?: number;
 }
-
-export type StringOrIQuerySelector = string | IQuerySelector;
 
 export interface IQuerySelectorWithParameters {
 	selector: StringOrIQuerySelector | IParameterLink;

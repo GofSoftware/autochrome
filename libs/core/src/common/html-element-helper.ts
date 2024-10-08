@@ -1,5 +1,5 @@
 export class HtmlElementHelper {
-	public static createElementFromHTML(htmlString: string): ChildNode {
+	public static createElementFromHTML(htmlString: string): ChildNode | null {
 		const div = document.createElement('div');
 		div.innerHTML = htmlString.trim();
 

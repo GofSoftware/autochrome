@@ -64,7 +64,7 @@ export class AutoActionFactory {
 		this.registry.set(AutoActionName.AutoActionCaseParameter, AutoActionCaseParameter);
 	}
 
-	public getUniqueId(actionId: string): string {
+	public getUniqueId(actionId: string | undefined): string {
 		return actionId || `ID:${++AutoActionFactory.__id}`; // Guid.v4() // import { Guid } from '../../common/guid';
 	}
 
@@ -82,9 +82,9 @@ export class AutoActionFactory {
 						throw new Error(`Unknown procedure: ${(autoAction as IAutoActionProcedure).procedureName}`);
 					}
 					const procedureAction = AutoProcedure.instantiateAction(
-						this.procedureMap.get((autoAction as IAutoActionProcedure).procedureName).action,
-						(autoAction as IAutoActionProcedure).id,
-						(autoAction as IAutoActionProcedure).parameters);
+						this.procedureMap.get((autoAction as IAutoActionProcedure).procedureName)!.action,
+						(autoAction as IAutoActionProcedure).id!,
+						(autoAction as IAutoActionProcedure).parameters ?? []);
 
 					action.children.push(procedureAction);
 					procedureAction.previous = action;

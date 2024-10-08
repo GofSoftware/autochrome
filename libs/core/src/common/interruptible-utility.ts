@@ -2,7 +2,7 @@ import { Logger } from './logger';
 import { Config } from '../program/config/config';
 
 export interface IAutoPromise<T> {
-	promise: Promise<T>;
+	promise: Promise<T> | null;
 	reject: (reason: any) => void;
 }
 
@@ -89,14 +89,14 @@ export class InterruptibleUtility {
 
 	public static createTimeout(callback: () => any, timeout: number, tag: string): IAutoTimeout {
 		const id = InterruptibleUtility.newId;
-		let handle = setTimeout(() => {
+		let handle: number | null = setTimeout(() => {
 			InterruptibleUtility.timeoutMap.delete(id);
 
 			callback();
 
 			Logger.instance.debug(`The timeout [${tag}] has been invoked, id: ${id} ` +
 				`total left: ${InterruptibleUtility.timeoutMap.size}`);
-		}, timeout);
+		}, timeout) as unknown as number;
 
 		InterruptibleUtility.timeoutMap.set(id, {
 			id,
@@ -111,16 +111,16 @@ export class InterruptibleUtility {
 			}
 		});
 		Logger.instance.debug(`A new timeout [${tag}] has been created, total: ${InterruptibleUtility.timeoutMap.size}`);
-		return InterruptibleUtility.timeoutMap.get(id);
+		return InterruptibleUtility.timeoutMap.get(id)!;
 	}
 
 	public static createInterval(callback: () => any, timeout: number, tag: string): IAutoInterval {
 		const id = InterruptibleUtility.newId;
-		let handle = setInterval(() => {
+		let handle: number | null = setInterval(() => {
 			callback();
 			Logger.instance.debug(`The interval [${tag}] has been invoked, id: ${id}, ` +
 				`total left: ${InterruptibleUtility.intervalMap.size}`);
-		}, timeout);
+		}, timeout) as unknown as number;
 		InterruptibleUtility.intervalMap.set(id, {
 			id,
 			clear: () => {
@@ -134,7 +134,7 @@ export class InterruptibleUtility {
 			}
 		});
 		Logger.instance.debug(`A new interval [${tag}] has been created, total: ${InterruptibleUtility.intervalMap.size}`);
-		return InterruptibleUtility.intervalMap.get(id);
+		return InterruptibleUtility.intervalMap.get(id)!;
 	}
 
 	public static rejectAllPromises(reason: any): void {

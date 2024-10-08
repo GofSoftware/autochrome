@@ -37,7 +37,7 @@ export class BackgroundMessageProcessor {
 
 	public async processMessage(
 		message: IAutoMessage,
-		sender: chrome.runtime.MessageSender,
+		sender: chrome.runtime.MessageSender | null,
 		sendResponse: (response: boolean) => void
 	): Promise<void> {
 		Logger.instance.debug('Got IAutoMessage', message, sender, sendResponse);
@@ -67,7 +67,7 @@ export class BackgroundMessageProcessor {
 		}
 	}
 
-	private async processContainerMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender): Promise<boolean> {
+	private async processContainerMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender | null): Promise<boolean> {
 		switch (message?.type) {
             case AutoMessageType.ContainerClearAll:
                 try {
@@ -95,6 +95,9 @@ export class BackgroundMessageProcessor {
 			case AutoMessageType.ContainerUpdate:
 				const updatedContainer = (message as IAutoMessage<IAutoMessageDataUpdateContainer>).data.container;
 				const containerToUpdate = await ExtractedProgramContainerManager.instance.getContainer(updatedContainer.id);
+				if (containerToUpdate == null) {
+					throw new Error(`ExtractedProgramContainerManager - container not found, id: ${updatedContainer.id}`)
+				}
 				containerToUpdate.programContainer.tabId = updatedContainer.tabId;
 				await ExtractedProgramContainerManager.instance.setContainer(containerToUpdate);
 				await AutoLinkServer.instance.sendContainerUpdate(updatedContainer.id, AutoMessageContainerChangeType.Update);
@@ -108,12 +111,12 @@ export class BackgroundMessageProcessor {
 		}
 	}
 
-	private async processContentMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender): Promise<boolean> {
+	private async processContentMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender | null): Promise<boolean> {
 		try {
 			switch (message?.type) {
 				case AutoMessageType.ContentAwake:
 				case AutoMessageType.ContentProgramActionResult:
-					await Robot.instance.incomingEvent(sender.tab.id, message.type, message.data as RobotEventDataType);
+					await Robot.instance.incomingEvent(sender?.tab?.id ?? null, message.type, message.data as RobotEventDataType);
 					return true;
 				default:
 					return false;
@@ -124,7 +127,7 @@ export class BackgroundMessageProcessor {
 		}
 	}
 
-	private async processGlobalSettingsMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender): Promise<boolean> {
+	private async processGlobalSettingsMessage(message: IAutoMessage, sender: chrome.runtime.MessageSender | null): Promise<boolean> {
 		try {
 			switch (message?.type) {
 				case AutoMessageType.SetGlobalSettings:

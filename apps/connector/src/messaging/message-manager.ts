@@ -42,7 +42,7 @@ export class MessageManager {
 
     public async processMessage(message: string): Promise<void> {
         const autoMessage = this.parse(message);
-        switch (autoMessage.type) {
+        switch (autoMessage?.type) {
             case AutoMessageType.WebSocketConnect:
                 await WebSocketConnectMessageProcessor.create().process(autoMessage.data as IAutoMessageWebSocketConnect);
                 await this.sendProgram((autoMessage.data as IAutoMessageWebSocketConnect).clientId);
@@ -54,7 +54,7 @@ export class MessageManager {
                 this.handleMessageResult(autoMessage as IAutoMessage<IAutoMessageWebSocketResult>);
                 break;
             default:
-                console.error(`MessageManager.processMessage Error: Unknown autoMessage type ${autoMessage.type}`);
+                console.error(`MessageManager.processMessage Error: Unknown autoMessage type ${autoMessage?.type}`);
         }
     }
 
@@ -84,7 +84,7 @@ export class MessageManager {
         });
     }
 
-    private parse(message: string): IAutoMessage {
+    private parse(message: string): IAutoMessage | null {
         try {
             const autoMessage = JSON.parse(message);
             if (typeof autoMessage.type !== "string" || typeof autoMessage.data === "undefined") {
@@ -117,7 +117,7 @@ export class MessageManager {
             this.waitForResponse.set(clientId, new Map());
         }
 
-        this.waitForResponse.get(clientId).set(handler.messageId, handler);
+        this.waitForResponse.get(clientId)!.set(handler.messageId, handler);
     }
 
     private unRegisterWaiter(clientId: string, handler: IWaitResponseHandler): void {
@@ -125,7 +125,7 @@ export class MessageManager {
             return;
         }
 
-        this.waitForResponse.get(clientId).delete(handler.messageId);
+        this.waitForResponse.get(clientId)!.delete(handler.messageId);
     }
 
     private handleMessageResult(autoMessage: IAutoMessage<IAutoMessageWebSocketResult>): void {
@@ -149,17 +149,20 @@ export class MessageManager {
             return;
         }
 
-        if(!this.waitForResponse.get(clientId).has(messageId)) {
+		const response = this.waitForResponse.get(clientId)!;
+        if(!response.has(messageId)) {
             Logger.instance.error(
                 `Got not expected ${AutoMessageType.WebSocketMessageResult} from the client ${clientId} for message: ${messageId}.`
             );
             return;
         }
 
+		const responseMessage = response.get(messageId)!;
+
         if (isOk) {
-            this.waitForResponse.get(clientId).get(messageId).resolve(result);
+			responseMessage.resolve(result);
         } else {
-            this.waitForResponse.get(clientId).get(messageId).reject(error);
+			responseMessage.reject(error);
         }
     }
 }

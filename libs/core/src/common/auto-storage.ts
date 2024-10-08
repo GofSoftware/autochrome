@@ -13,7 +13,7 @@ export class AutoStorage {
 		await chrome.storage.local.set(items);
 	}
 
-	public async get(keys?: string | string[] | {[name: string]: any}): Promise<{[name: string]: any}> {
+	public async get(keys?: string | string[] | {[name: string]: any} | null): Promise<{[name: string]: any}> {
 		return await chrome.storage.local.get(keys);
 	}
 

@@ -34,7 +34,7 @@ export class AutoActionCheckGroup extends AutoAction implements IAutoActionCheck
 					throw new Error(`The unsupported Check type ${checkAction.name}`);
 			}
 		});
-		this.silent = AutoAction.prop(jsonAction.silent, false);
+		this.silent = jsonAction.silent ?? false;
 	}
 
 	public async invoke(): Promise<void> {

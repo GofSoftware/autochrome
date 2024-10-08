@@ -19,7 +19,7 @@ export class TabManager {
         });
     }
 
-    public tab(tabId: number): Tab {
+    public tab(tabId: number): Tab | undefined {
         return this.tabMap.get(tabId);
     }
 
@@ -28,7 +28,7 @@ export class TabManager {
     }
 
 	public title(tabId: number): string {
-		return this.tabMap.has(tabId) ? this.tabMap.get(tabId).title: 'Unknown';
+		return this.tabMap.has(tabId) ? this.tabMap.get(tabId)!.title ?? '' : 'Unknown';
 	}
 
     public exists(tabId: number) {
@@ -38,6 +38,11 @@ export class TabManager {
     private async updateTabsInfo(): Promise<void> {
         const tabs = await chrome.tabs.query({});
         this.tabMap.clear();
-        tabs.forEach((tab) => { this.tabMap.set(tab.id, tab); });
+        tabs.forEach((tab) => {
+			if (tab.id == null) {
+				throw new Error(`Tab "${tab.title}" has no id`);
+			}
+			this.tabMap.set(tab.id, tab);
+		});
     }
 }

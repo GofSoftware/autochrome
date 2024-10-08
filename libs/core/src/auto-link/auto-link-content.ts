@@ -8,7 +8,7 @@ import {
 } from './messaging/i-auto-message';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Logger } from '../common/logger';
-import { AutoActionResult } from '../program/actions/types/action-types';
+import { AutoActionResult } from '@autochrome/core/program/actions/types/auto-action-result';
 import { Guid } from '../common/guid';
 import { StringHelper } from '../common/string-helper';
 
@@ -23,13 +23,13 @@ export class AutoLinkContent {
 	private constructor() {
 	}
 
-	private programRequestSubject$ = new BehaviorSubject<IAutoMessageDataContentProgramAction>(null);
-	public get containerChanges$(): Observable<IAutoMessageDataContentProgramAction> {
+	private programRequestSubject$ = new BehaviorSubject<IAutoMessageDataContentProgramAction | null>(null);
+	public get containerChanges$(): Observable<IAutoMessageDataContentProgramAction | null> {
 		return this.programRequestSubject$.asObservable();
 	}
 
-	private interruptRequestSubject$ = new BehaviorSubject<IAutoMessageDataContentProgramInterrupt>(null);
-	public get interruptRequest$(): Observable<IAutoMessageDataContentProgramInterrupt> {
+	private interruptRequestSubject$ = new BehaviorSubject<IAutoMessageDataContentProgramInterrupt | null>(null);
+	public get interruptRequest$(): Observable<IAutoMessageDataContentProgramInterrupt | null> {
 		return this.interruptRequestSubject$.asObservable();
 	}
 

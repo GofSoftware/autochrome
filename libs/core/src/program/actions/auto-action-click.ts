@@ -24,9 +24,9 @@ export class AutoActionClick extends AutoAction implements IAutoActionClick {
 			throw new Error(`Wrong Action type, expected '${this.name}' but got ${jsonAction.name}`);
 		}
 		this.selector = jsonAction.selector;
-		this.smoothMouse = AutoAction.prop(jsonAction.smoothMouse, false);
-		this.wait = AutoAction.prop(jsonAction.wait, false);
-		this.clickType = AutoAction.prop(jsonAction.clickType, AutoActionClickType.MouseDownFocusMouseUp);
+		this.smoothMouse = jsonAction.smoothMouse ?? false;
+		this.wait = jsonAction.wait ?? false;
+		this.clickType = jsonAction.clickType ?? AutoActionClickType.MouseDownFocusMouseUp;
 	}
 
 	public async invoke(): Promise<void> {

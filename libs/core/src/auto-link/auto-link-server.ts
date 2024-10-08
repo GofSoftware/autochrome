@@ -5,7 +5,7 @@ import {
 	IAutoMessageDataContentProgramAction,
 	AutoMessageType, IAutoMessageDataContentProgramInterrupt
 } from './messaging/i-auto-message';
-import { IAutoAction } from '../program/actions/auto-action';
+import { IAutoAction } from '@autochrome/core/program/actions/types/i-auto-action';
 
 export class AutoLinkServer {
 	private static autoLinkServerInstance: AutoLinkServer;
@@ -24,7 +24,7 @@ export class AutoLinkServer {
 	}
 
     public async sendClearAll(): Promise<boolean> {
-        const message: IAutoMessage<void> = {type: AutoMessageType.ContainerClearAll, data: null};
+        const message: IAutoMessage<null> = {type: AutoMessageType.ContainerClearAll, data: null};
         const contexts = await (chrome.runtime as any).getContexts({contextTypes: ['POPUP']});
         if (!Array.isArray(contexts) || contexts.length === 0) {
             return  true; // assume the popup isn't opened.

@@ -3,7 +3,7 @@ import { ProgramContainer } from '@autochrome/core/program/container/program-con
 import { concatMap, filter, Subject, Subscription } from 'rxjs';
 import { ProgramContainerManager } from '@autochrome/core/auto-link/program-container-manager';
 import { AutoLinkClient } from '@autochrome/core/auto-link/auto-link-client';
-import { IAutoMessageDataContainerChanged, AutoMessageContainerChangeType } from '@autochrome/core/auto-link/messaging/i-auto-message';
+import { AutoMessageContainerChangeType } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { Logger } from '@autochrome/core/common/logger';
 
 export interface IProgramItemCollectionElement {
@@ -24,18 +24,18 @@ export class ProgramItemCollection {
 
 	private tabIdSet: Set<number> = new Set<number>();
 	private programItemMap: Map<string, IProgramItemCollectionElement> = new Map<string, IProgramItemCollectionElement>();
-	private autoLinkSubscription: Subscription;
-	private autoLinkClearSubscription: Subscription;
+	private autoLinkSubscription!: Subscription;
+	private autoLinkClearSubscription!: Subscription;
 
 	public init(): void {
 		this.autoLinkSubscription = AutoLinkClient.instance().containerChanges$.pipe(
-			filter((event: IAutoMessageDataContainerChanged) => event != null),
-			concatMap(async (event: IAutoMessageDataContainerChanged) => {
+			filter((event)  => event != null),
+			concatMap(async (event) => {
 				Logger.instance.debug(`ProgramItemCollection get event`, event);
-				switch (event.type) {
+				switch (event!.type) {
 					case AutoMessageContainerChangeType.New:
-						if (!this.programItemMap.has(event.containerId)) {
-							const programContainer = await ProgramContainerManager.instance.getContainer(event.containerId);
+						if (!this.programItemMap.has(event!.containerId)) {
+							const programContainer = await ProgramContainerManager.instance.getContainer(event!.containerId);
 							this.addProgramItem(programContainer);
 							this.notifyChanges();
 						}
@@ -44,7 +44,7 @@ export class ProgramItemCollection {
 					case AutoMessageContainerChangeType.Remove:
 						break;
 					default:
-						Logger.instance.warn(`Unknown IAutoMessageContainerChangeType: ${event.type}`);
+						Logger.instance.warn(`Unknown IAutoMessageContainerChangeType: ${event!.type}`);
 				}
 			})
 		).subscribe();
@@ -102,12 +102,12 @@ export class ProgramItemCollection {
     }
 
 	private addProgramItem(programContainer: ProgramContainer): ProgramItem {
-		this.tabIdSet.add(programContainer.tabId);
+		this.tabIdSet.add(programContainer.tabId!);
 		const programItem = ProgramItem.create(programContainer);
 		const subscription = programItem.itemChanged$
-			.pipe(filter((info: IProgramItemUpdateInfo) => info != null))
-			.subscribe((info: IProgramItemUpdateInfo) => {
-				this.programItemChanged(info);
+			.pipe(filter((info) => info != null))
+			.subscribe((info) => {
+				this.programItemChanged(info!);
 			});
 		this.programItemMap.set(programContainer.id, {programItem, subscription});
 		return programItem;
@@ -118,7 +118,7 @@ export class ProgramItemCollection {
 			return;
 		}
 		if (info.type === IProgramItemUpdateInfoType.Remove) {
-			this.destroyProgramItemCollectionItem(this.programItemMap.get(info.id));
+			this.destroyProgramItemCollectionItem(this.programItemMap.get(info.id)!);
 		}
 		this.notifyChanges();
 	}

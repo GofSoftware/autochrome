@@ -41,7 +41,7 @@ export class ProgramItemComponent implements OnDestroy {
 	public isSuccess = signal<boolean>(false);
 	public hasError = signal<boolean>(false);
 
-	private itemChangeSubscription: Subscription;
+	private itemChangeSubscription!: Subscription;
 
 	constructor() {
 		effect(() => {
@@ -96,7 +96,7 @@ export class ProgramItemComponent implements OnDestroy {
 	public async onSetCurrentTabClick() {
 		const [currentTab] = await chrome.tabs.query( { active: true });
 		if (currentTab != null) {
-			this.item().extractedProgramContainer.programContainer.tabId = currentTab.id;
+			this.item().extractedProgramContainer.programContainer.tabId = currentTab.id!;
 			await AutoLinkClient.instance().updateContainer(this.item().extractedProgramContainer.programContainer);
 		}
 	}
@@ -104,10 +104,10 @@ export class ProgramItemComponent implements OnDestroy {
 	private update(): void {
 		this.visibility.set(this.calcElementsVisibility());
 
-		this.tabExists.set(TabManager.instance.exists(this.item().extractedProgramContainer.programContainer.tabId));
+		this.tabExists.set(TabManager.instance.exists(this.item().extractedProgramContainer.programContainer.tabId!));
 		this.tabTitle.set(
 			this.tabExists()
-				? TabManager.instance.tab(this.item().extractedProgramContainer.programContainer.tabId).title
+				? TabManager.instance.tab(this.item().extractedProgramContainer.programContainer.tabId!)!.title!
 				: 'Tab is closed, click to set current tab.'
 		);
 
@@ -142,4 +142,3 @@ export class ProgramItemComponent implements OnDestroy {
 			this.item().extractedProgramContainer.programContainer.status === ProgramContainerStatus.InProgress;
 	}
 }
-

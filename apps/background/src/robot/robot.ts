@@ -44,7 +44,7 @@ export class Robot {
 	private constructor() {
 	}
 
-	public async incomingEvent(senderId: number, type: RobotEventType, data: RobotEventDataType): Promise<void> {
+	public async incomingEvent(senderId: number | null, type: RobotEventType, data: RobotEventDataType): Promise<void> {
 		try {
 			switch (type) {
 				case AutoMessageType.ContentAwake:
@@ -78,14 +78,17 @@ export class Robot {
 		const promises = allContainers.map(async (container) => {
 			if (container.programContainer.activeActionStartTime + (ROBOT_ACTION_TIMEOUT * 60000) < currentTime) { // action timed out.
 				await this.failProgram(
-					container, `Action ${container.activeAction.toString()} failed, the reason: timeout (${ROBOT_ACTION_TIMEOUT} min).`
+					container, `Action ${container.activeAction?.toString()} failed, the reason: timeout (${ROBOT_ACTION_TIMEOUT} min).`
 				);
 			}
 		});
 		await Promise.all(promises);
 	}
 
-	private async continueProgramForTab(tabId: number): Promise<void> {
+	private async continueProgramForTab(tabId: number | null): Promise<void> {
+		if (tabId == null) {
+			throw new Error(`Robot.continueProgramForTab tabId is null`);
+		}
 		const containers = (await ExtractedProgramContainerManager.instance.getContainersForTab(tabId));
 		if (containers.length === 0) {
 			Logger.instance.log(`There is no program for the tab: ${tabId} (${TabManager.instance.title(tabId)})`);
@@ -100,9 +103,9 @@ export class Robot {
 	}
 
 	private async continueProgram(
-		activeProgramContainer: ExtractedProgramContainer,
+		activeProgramContainer: ExtractedProgramContainer | undefined,
 		fromRoot: boolean = false,
-		nextActionId: string = null
+		nextActionId: string | null = null
 	): Promise<void> {
 		if (activeProgramContainer == null) {
 			Logger.instance.debug('Cannot continue a program, there is no active container.');
@@ -114,7 +117,7 @@ export class Robot {
 			return;
 		}
 
-		let nextAction = fromRoot ? activeProgramContainer.program.rootAction?.next : activeProgramContainer.activeAction.next;
+		let nextAction = fromRoot ? activeProgramContainer.program.rootAction?.next : activeProgramContainer.activeAction?.next;
 
 		if (nextActionId != null) {
 			nextAction = activeProgramContainer.program.getActionById(nextActionId);
@@ -143,10 +146,14 @@ export class Robot {
 
     private async getCurrentTabId(): Promise<number> {
         const tabs: chrome.tabs.Tab[] = await chrome.tabs.query({});
-        return tabs.find((tab) => tab.active)?.id;
+        const foundTabId = tabs.find((tab) => tab.active)?.id;
+		if (foundTabId == null) {
+			throw new Error(`Robot.getCurrentTabId - active tab not found`);
+		}
+		return foundTabId;
     }
 
-	private async completeProgram(activeProgramContainer: ExtractedProgramContainer, error: string = null): Promise<void> {
+	private async completeProgram(activeProgramContainer: ExtractedProgramContainer, error: string | null = null): Promise<void> {
         Logger.instance.log(`Program completed for the tab: ${activeProgramContainer.programContainer.tabId}.`);
 		activeProgramContainer.activeAction = null;
 		activeProgramContainer.programContainer.activeActionStartTime = 0;
@@ -174,11 +181,11 @@ export class Robot {
 		activeProgram.programContainer.activeActionStartTime = 0;
 		await ExtractedProgramContainerManager.instance.setContainer(activeProgram);
 		await AutoLinkServer.instance.sendContainerUpdate(activeProgram.programContainer.id, AutoMessageContainerChangeType.Update);
-		await AutoLinkServer.instance.sendInterrupt(activeProgram.programContainer.tabId, 'Interrupted by the server, ' + reason);
+		await AutoLinkServer.instance.sendInterrupt(activeProgram.programContainer.tabId!, 'Interrupted by the server, ' + reason);
 	}
 
 	private async processActionResult(
-		senderId: number,
+		senderId: number | null,
 		contentProgramActionResult: IAutoMessageDataContentProgramActionResult
 	): Promise<void> {
 		const activeProgramContainer = (await ExtractedProgramContainerManager.instance.getInProgressContainerForTab(senderId));
@@ -192,7 +199,7 @@ export class Robot {
 			`The return value is:`, contentProgramActionResult.resultValue);
 
 		if (contentProgramActionResult.result === AutoActionResult.Success ||
-			activeProgramContainer.activeAction.continueAfterFail === true
+			activeProgramContainer.activeAction?.continueAfterFail === true
 		) {
 			const nextActionId = this.extractNextActionId(activeProgramContainer, contentProgramActionResult);
 			await this.continueProgram(activeProgramContainer, false, nextActionId);
@@ -203,7 +210,7 @@ export class Robot {
 	}
 
 	private async processContainerAction(
-		senderId: number,
+		senderId: number | null,
 		containerActionData: IAutoMessageDataContainerAction
 	): Promise<void> {
 		const containerIdForAction = containerActionData.containerId;
@@ -245,8 +252,8 @@ export class Robot {
 	private extractNextActionId(
 		activeProgramContainer: ExtractedProgramContainer,
 		contentProgramResultData: IAutoMessageDataContentProgramActionResult
-	): string {
-		switch (activeProgramContainer.activeAction.name) {
+	): string | null {
+		switch (activeProgramContainer.activeAction?.name) {
 			case AutoActionName.AutoActionCase:
 				return contentProgramResultData.resultValue;
 			case AutoActionName.AutoActionCaseParameter:
@@ -258,7 +265,7 @@ export class Robot {
 		}
 	}
 
-	private async processSetGlobalSettings(senderId: number, globalSettingsData: IAutoMessageDataSetGlobalSettings): Promise<void> {
+	private async processSetGlobalSettings(senderId: number | null, globalSettingsData: IAutoMessageDataSetGlobalSettings): Promise<void> {
 		await RobotSettingsGlobalManager.instance.setSettings(globalSettingsData.globalSettings);
 	}
 

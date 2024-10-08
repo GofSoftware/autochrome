@@ -16,9 +16,9 @@
     <div class="description-error error" *ngIf="hasError()">{{item().extractedProgramContainer.programContainer.error}}</div>
     <div class="description-success success" *ngIf="isSuccess()">Success.</div>
     <div class="program-progress-bar-holder ${this.isProgressBarVisible() ? '' : 'hidden'}">
-        <div>{{item().extractedProgramContainer.activeAction ? item().extractedProgramContainer.activeAction.name : ''}}</div>
+        <div>{{item().extractedProgramContainer.activeAction ? item().extractedProgramContainer.activeAction?.name : ''}}</div>
         <div class="action-description">
-            {{item().extractedProgramContainer.activeAction ? item().extractedProgramContainer.activeAction.description : ''}}
+            {{item().extractedProgramContainer.activeAction ? item().extractedProgramContainer.activeAction?.description : ''}}
         </div>
         <div class="program-progress-bar">
             <div class="program-progress-bar-progress" [ngStyle]="{'width': progressBarValue() + '%'}"></div>

@@ -11,8 +11,8 @@ export class ExtractedProgramContainerManager {
 			(ExtractedProgramContainerManager.extractedProgramContainerManagerInstance = new ExtractedProgramContainerManager());
 	}
 
-	private cacheInstance: Map<string, ExtractedProgramContainer> = null;
-	private cacheInstanceInitialization: Promise<Map<string, ExtractedProgramContainer>> = null;
+	private cacheInstance: Map<string, ExtractedProgramContainer> | null = null;
+	private cacheInstanceInitialization: Promise<Map<string, ExtractedProgramContainer>> | null = null;
 
 	public async cache(): Promise<Map<string, ExtractedProgramContainer>> {
 		if (this.cacheInstance != null) {
@@ -39,11 +39,11 @@ export class ExtractedProgramContainerManager {
 		return Array.from((await this.cache()).values());
 	}
 
-	public async getContainer(id: string): Promise<ExtractedProgramContainer> {
+	public async getContainer(id: string): Promise<ExtractedProgramContainer | undefined> {
 		return (await this.cache()).get(id);
 	}
 
-	public async getContainersForTab(tabId: number): Promise<ExtractedProgramContainer[]> {
+	public async getContainersForTab(tabId: number | null): Promise<ExtractedProgramContainer[]> {
 		const containers: ExtractedProgramContainer[] = [];
 		(await this.cache()).forEach((container) => {
 			if (container.programContainer.tabId === tabId) {
@@ -53,7 +53,7 @@ export class ExtractedProgramContainerManager {
 		return containers.sort((a, b) => a.programContainer.order - b.programContainer.order);
 	}
 
-	public async getInProgressContainerForTab(tabId: number): Promise<ExtractedProgramContainer> {
+	public async getInProgressContainerForTab(tabId: number | null): Promise<ExtractedProgramContainer | undefined> {
 		const containers: ExtractedProgramContainer[] = (await this.getContainersForTab(tabId));
 		return containers.find((c) => c.programContainer.status === ProgramContainerStatus.InProgress);
 	}
@@ -94,7 +94,7 @@ export class ExtractedProgramContainerManager {
 		(await this.cache()).delete(id);
 	}
 
-	public async getNextContainerForTab(startFrom: ExtractedProgramContainer): Promise<ExtractedProgramContainer> {
+	public async getNextContainerForTab(startFrom: ExtractedProgramContainer): Promise<ExtractedProgramContainer | undefined> {
 		const relatedContainers = await this.getContainersForTab(startFrom.programContainer.tabId);
 		Logger.instance.log(`${relatedContainers.length} containers have been found for the Tab Id ${startFrom.programContainer.tabId}`);
 		return relatedContainers.find((container) => container.programContainer.order > startFrom.programContainer.order);

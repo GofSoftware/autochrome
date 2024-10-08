@@ -27,7 +27,7 @@ export class AutoActionSelectFile extends AutoAction implements IAutoActionSelec
 		this.fileName = jsonAction.fileName;
 		this.fileType = jsonAction.fileType;
 		this.fileContent = jsonAction.fileContent;
-		this.wait = AutoAction.prop(jsonAction.wait, false);
+		this.wait = jsonAction.wait ?? false;
 	}
 
 	public async invoke(): Promise<void> {

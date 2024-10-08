@@ -23,7 +23,7 @@ export enum AutoMessageType {
 }
 
 export type IAutoMessageDataType =
-    void |
+	null |
 	IAutoMessageDataContainerChanged |
 	IAutoMessageDataNewContainer |
 	IAutoMessageDataRemoveContainer |

@@ -16,8 +16,8 @@ export class AutoLinkWebSocket {
     public logging = false;
 
     private id = 'AutoLinkWebSocket_' + ++AutoLinkWebSocket.staticId;
-    private socket: WebSocket;
-    public onMessage: (message: IAutoMessage) => Promise<void>;
+    private socket: WebSocket | null = null;
+    public onMessage: ((message: IAutoMessage) => Promise<void>) | undefined;
 
     public refreshConnection(host: string, port: number): void {
         if (this.socket != null) {
@@ -39,7 +39,7 @@ export class AutoLinkWebSocket {
 
         this.socket.addEventListener('open', () => {
             this.log('Connection is opened, sending IAutoMessageWebSocketConnect message to the server.');
-            this.socket.send(JSON.stringify({
+            this.socket?.send(JSON.stringify({
                 type: AutoMessageType.WebSocketConnect,
                 data: {clientId: this.id}
             } as IAutoMessage<IAutoMessageWebSocketConnect>));
@@ -53,7 +53,7 @@ export class AutoLinkWebSocket {
                         throw new Error('IAutoMessage(s) sent by the WebSocket must have the id.');
                     }
                     await this.onMessage(message);
-                    this.socket.send(JSON.stringify({
+                    this.socket?.send(JSON.stringify({
                         id: message.id,
                         type: AutoMessageType.WebSocketMessageResult,
                         data: {clientId: this.id, ok: true}
@@ -99,7 +99,7 @@ export class AutoLinkWebSocket {
     }
 
     private readyStateName(): string {
-        switch (this.socket.readyState) {
+        switch (this.socket?.readyState) {
             case WebSocket.OPEN:
                 return 'OPEN';
             case WebSocket.CONNECTING:
@@ -109,7 +109,7 @@ export class AutoLinkWebSocket {
             case WebSocket.CLOSED:
                 return 'CLOSED';
             default:
-                return `UNKNOWN ${this.socket.readyState}`;
+                return `UNKNOWN ${this.socket?.readyState}`;
         }
     }
 

@@ -7,7 +7,7 @@ export class Logger implements ILogger {
 		return Logger.loggerInstance || (Logger.loggerInstance = new Logger());
 	}
 
-    public middleware: ILogger;
+    public middleware: ILogger | null = null;
 
 	public get prefix(): string {
 		return `${Logger.loggerPrefix} [${(new Date()).toISOString()}]`;
