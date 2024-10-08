@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 	public autoPlay = signal<boolean>(false);
 	public enableConnector = signal<boolean>(false);
 	public browserTabList = signal<{id: string; label: string}[]>([]);
-	public browserTabValue = signal<string>(null);
+	public browserTabValue = signal<string | null>(null);
 	public programItems = signal<IProgramItemCollectionElement[]>([]);
 
 	constructor() {
@@ -83,7 +83,7 @@ export class AppComponent implements OnInit {
 		const [currentTab] = await chrome.tabs.query({ active: true });
 		if (currentTab != null) {
 			this.programItems().forEach((item) => {
-				item.programItem.extractedProgramContainer.programContainer.tabId = currentTab.id;
+				item.programItem.extractedProgramContainer.programContainer.tabId = currentTab.id!;
 				AutoLinkClient.instance().updateContainer(item.programItem.extractedProgramContainer.programContainer);
 			});
 		}
@@ -92,9 +92,9 @@ export class AppComponent implements OnInit {
 	private updateBrowserTabs(): void {
 		this.browserTabList.set(TabManager.instance.tabs.map((tab) => {
 			if (tab.active) {
-				this.browserTabValue.set(tab.id.toString());
+				this.browserTabValue.set(tab.id!.toString());
 			}
-			return {label: tab.title, id: tab.id.toString()};
+			return {label: tab.title!, id: tab.id!.toString()};
 		}));
 	}
 
@@ -102,15 +102,15 @@ export class AppComponent implements OnInit {
 		if (this.browserTabValue() == null) {
 			throw new Error('Please select a Tab first');
 		}
-		await ProgramItemCollection.instance().addItem(content, parseInt(this.browserTabValue(), 10));
+		await ProgramItemCollection.instance().addItem(content, parseInt(this.browserTabValue()!, 10));
 	}
 
-	private async loadFileContent(file: File): Promise<string> {
+	private async loadFileContent(file: File): Promise<string | null> {
 		return await new Promise((resolve) => {
 			const reader = new FileReader();
 			reader.addEventListener('load', async (event) => {
 				try {
-					resolve(event.target.result as string);
+					resolve(event.target?.result as string);
 				} catch (error) {
 					console.error(error);
 					resolve(null);

@@ -23,9 +23,9 @@ export class AutoActionFocus extends AutoAction implements IAutoActionFocus {
 			throw new Error(`Wrong Action type, expected '${this.name}' but got ${jsonAction.name}`);
 		}
 		this.selector = jsonAction.selector;
-		this.smoothMouse = AutoAction.prop(jsonAction.smoothMouse, false);
-		this.wait = AutoAction.prop(jsonAction.wait, false);
-		this.blur = AutoAction.prop(jsonAction.blur, false);
+		this.smoothMouse = jsonAction.smoothMouse ?? false;
+		this.wait = jsonAction.wait ?? false;
+		this.blur = jsonAction.blur ?? false;
 	}
 
 	public async invoke(): Promise<void> {

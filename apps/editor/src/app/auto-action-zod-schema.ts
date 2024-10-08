@@ -1,5 +1,6 @@
-import { AutoActionName } from '@autochrome/core/program/actions/action-types';
+
 import { AutoActionClickType } from '@autochrome/core/program/actions/auto-action-click-type';
+import { AutoActionName } from '@autochrome/core/program/actions/types/auto-action-name';
 import { z } from 'zod';
 
 const AutoActionNameEnumSchema = z.enum([

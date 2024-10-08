@@ -23,11 +23,11 @@ export class ProgramItem {
 		return new ProgramItem(programContainer);
 	}
 
-	public extractedProgramContainer: ExtractedProgramContainer;
-	public error: string = null;
+	public extractedProgramContainer!: ExtractedProgramContainer;
+	public error: string | null = null;
 
 	private containerChangeSubscription: Subscription;
-	private itemChangedSubject$ = new BehaviorSubject<IProgramItemUpdateInfo>(null);
+	private itemChangedSubject$ = new BehaviorSubject<IProgramItemUpdateInfo | null>(null);
 
 	private constructor(programContainer: ProgramContainer) {
 		try {
@@ -37,14 +37,14 @@ export class ProgramItem {
 		}
 
 		this.containerChangeSubscription = AutoLinkClient.instance().containerChanges$.pipe(
-			filter((event: IAutoMessageDataContainerChanged) => event != null),
-			concatMap(async (event: IAutoMessageDataContainerChanged) => {
-				return await this.containerChanged(event);
+			filter((event) => event != null),
+			concatMap(async (event) => {
+				return await this.containerChanged(event!);
 			})
 		).subscribe();
 	}
 
-	public get itemChanged$(): Observable<IProgramItemUpdateInfo> {
+	public get itemChanged$(): Observable<IProgramItemUpdateInfo | null> {
 		return this.itemChangedSubject$.asObservable();
 	}
 

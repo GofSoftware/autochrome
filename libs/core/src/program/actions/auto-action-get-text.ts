@@ -25,7 +25,7 @@ export class AutoActionGetText extends AutoAction implements IAutoActionGetText 
 		}
 		this.selector = jsonAction.selector;
 		this.textType = jsonAction.textType;
-		this.wait = jsonAction.wait;
+		this.wait = jsonAction.wait ?? false;
 	}
 
 	public async invoke(): Promise<void> {

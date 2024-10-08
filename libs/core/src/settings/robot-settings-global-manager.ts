@@ -19,14 +19,14 @@ export class RobotSettingsGlobalManager {
 		return RobotSettingsGlobalManager.autoSettingsGlobalInstance || (RobotSettingsGlobalManager.autoSettingsGlobalInstance = new RobotSettingsGlobalManager());
 	}
 
-	private settingsInstance: IRobotSettingsGlobal = null;
+	private settingsInstance: IRobotSettingsGlobal | null = null;
 
 	public async getSettings(): Promise<Readonly<IRobotSettingsGlobal>> {
 		if (this.settingsInstance == null) {
 			const settings = await AutoStorage.instance.get(ROBOT_SETTINGS_GLOBAL_STORAGE_KEY);
 			this.settingsInstance = Object.assign(DEFAULT_ROBOT_SETTINGS_GLOBAL, settings[ROBOT_SETTINGS_GLOBAL_STORAGE_KEY]);
 		}
-		return this.settingsInstance;
+		return this.settingsInstance!;
 	}
 
 	public async setSettings(settings: Partial<IRobotSettingsGlobal>): Promise<void> {

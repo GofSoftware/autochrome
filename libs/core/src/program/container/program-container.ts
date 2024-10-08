@@ -4,7 +4,7 @@ import {ProgramContainerStatus} from "./program-container-status";
 
 export class ProgramContainer implements IProgramContainer {
 
-	public static create(serializedProgram: string, tabId: number): ProgramContainer {
+	public static create(serializedProgram: string, tabId: number | null): ProgramContainer {
 		return new ProgramContainer(Guid.v4(), serializedProgram, tabId, ProgramContainerStatus.Ready, 0, null, null, 0, 0);
 	}
 
@@ -25,11 +25,11 @@ export class ProgramContainer implements IProgramContainer {
 	protected constructor(
 		public id: string,
 		public serializedProgram: string,
-		public tabId: number,
+		public tabId: number | null,
 		public status: ProgramContainerStatus,
 		public percent: number,
-		public error: string,
-		public activeActionId: string,
+		public error: string | null,
+		public activeActionId: string | null | undefined,
 		public activeActionStartTime: number,
 		public order: number
 	) {

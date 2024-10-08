@@ -24,10 +24,10 @@ export class AutoActionEnterText extends AutoAction implements IAutoActionEnterT
 		}
 
 		this.selector = jsonAction.selector;
-		this.text = AutoAction.prop(jsonAction.text, '');
-		this.wait = AutoAction.prop(jsonAction.wait, false);
-		this.focusBefore = AutoAction.prop(jsonAction.focusBefore, false);
-		this.blurAfter = AutoAction.prop(jsonAction.blurAfter, false);
+		this.text = jsonAction.text ?? '';
+		this.wait = jsonAction.wait ?? false;
+		this.focusBefore = jsonAction.focusBefore ?? false;
+		this.blurAfter = jsonAction.blurAfter ?? false;
 	}
 
 	public async invoke(): Promise<void> {

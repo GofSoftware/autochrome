@@ -24,13 +24,13 @@ export class AutoActionCheck extends AutoAction implements IAutoActionCheck {
 		}
 		this.type = jsonAction.type;
 		this.selector = jsonAction.selector;
-		this.wait = jsonAction.wait;
-		this.silent = AutoAction.prop(jsonAction.silent, false);
-		this.highlight = AutoAction.prop(jsonAction.highlight, false);
+		this.wait = jsonAction.wait ?? false;
+		this.silent = jsonAction.silent ?? false;
+		this.highlight = jsonAction.highlight ?? false;
 	}
 
 	public async invoke(): Promise<void> {
-		const elements: Element[] = await this.querySelector(this.selector, this.wait, true);
+		const elements: Element[] = await this.querySelector(this.selector, this.wait ?? false, true);
 		this.highlightElements(elements);
 
 		switch (this.type) {

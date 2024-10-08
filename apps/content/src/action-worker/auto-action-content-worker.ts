@@ -1,7 +1,6 @@
 import { AutoLinkContent } from '@autochrome/core/auto-link/auto-link-content';
 import {
-	IAutoMessageDataContentProgramAction,
-	IAutoMessageDataContentProgramInterrupt
+	IAutoMessageDataContentProgramAction
 } from '@autochrome/core/auto-link/messaging/i-auto-message';
 import { Logger } from '@autochrome/core/common/logger';
 import { AutoActionFactory } from '@autochrome/core/program/actions/auto-action-factory';
@@ -21,23 +20,23 @@ export class AutoActionContentWorker {
 	}
 
 	private actionQueue: IAutoMessageDataContentProgramAction[] = [];
-	private isInProgress: boolean;
+	private isInProgress: boolean = false;
 
 	public async start(): Promise<void> {
 		Logger.instance.prefix = 'Autochrome:content';
 		AutoLinkContent.instance().init();
 		AutoLinkContent.instance().containerChanges$
 			.pipe(filter((action) => action != null))
-			.subscribe((action: IAutoMessageDataContentProgramAction) => {
-				this.actionQueue.push(action);
+			.subscribe((action) => {
+				this.actionQueue.push(action!);
 				if (!this.isInProgress) {
 					this.processQueue();
 				}
 		});
 		AutoLinkContent.instance().interruptRequest$
 			.pipe(filter((request) => request != null))
-			.subscribe((request: IAutoMessageDataContentProgramInterrupt) => {
-				InterruptibleUtility.clearAll(request.reason);
+			.subscribe((request) => {
+				InterruptibleUtility.clearAll(request!.reason);
 		});
 		await AutoLinkContent.instance().sendAwake();
 	}
@@ -49,6 +48,9 @@ export class AutoActionContentWorker {
 		}
 		this.isInProgress = true;
 		const action = this.actionQueue.shift();
+		if (action == null) {
+			throw new Error(`There is no action to process.`);
+		}
 		try {
 			AutoActionFactory.instance.skipProcedureInstantiation = true;
 			const autoAction = AutoActionFactory.instance.fromJson(action.action);
@@ -65,7 +67,7 @@ export class AutoActionContentWorker {
 				`${actionName == null ? '' : `${actionName} [id: ${actionId}] error:`} ${ErrorHelper.genericErrorToString(error)}`;
 			Logger.instance.error(`AutoActionWorker processing error.`, errorMessage);
 			await AutoLinkContent.instance().sendProgramActionResult(
-				action.action.id, AutoActionResult.Failed, null, ErrorHelper.genericErrorToString(errorMessage)
+				actionId ?? '', AutoActionResult.Failed, null, ErrorHelper.genericErrorToString(errorMessage)
 			);
 		} finally {
 			if (this.actionQueue.length > 0) {

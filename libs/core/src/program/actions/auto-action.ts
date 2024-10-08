@@ -20,10 +20,10 @@ import { AutoActionResult } from "../../program/actions/types/auto-action-result
 export abstract class AutoAction implements IAutoAction {
 	public id: string;
 	public index: number;
-	public name: AutoActionName;
-	public description: string;
-	public previous: AutoAnyAction = null;
-	public next: AutoAnyAction = null;
+	public abstract name: AutoActionName;
+	public description: string | undefined;
+	public previous: AutoAnyAction | null = null;
+	public next: AutoAnyAction | null = null;
 	public result: AutoActionResult = AutoActionResult.Failed;
 	public resultValue: any = null;
 	public continueAfterFail: boolean;
@@ -31,16 +31,15 @@ export abstract class AutoAction implements IAutoAction {
 	public children: AutoAction[];
 	public parameters: IAutoParameter[];
 
-	protected static prop<T = any>(value: T, defaultValue: T): T {
-		return value == null ? defaultValue : value;
-	}
-
 	protected constructor(jsonAction: IAutoAction) {
+		if (jsonAction.id == null) {
+			throw new Error(`AutoAction - id is required`);
+		}
 		this.id = jsonAction.id;
 		this.index = AutoActionFactory.instance.nextIndex();
 		this.description = jsonAction.description;
-		this.continueAfterFail = AutoAction.prop(jsonAction.continueAfterFail, false);
-		this.timeout = AutoAction.prop(jsonAction.timeout, Config.instance.globalTimeout);
+		this.continueAfterFail = jsonAction.continueAfterFail ?? false;
+		this.timeout = jsonAction.timeout ?? Config.instance.globalTimeout;
 
 		let prevAction: AutoAction = this;
 		this.children = (jsonAction.children || []).map((c) => {
@@ -95,7 +94,7 @@ export abstract class AutoAction implements IAutoAction {
 	}
 
 	protected async querySelector(selector: QuerySelectorWithPropertyLink, wait: boolean, silent = false): Promise<Element[]> {
-		let elements: Element[];
+		let elements: Element[] = [];
 
 		const querySelector = await this.preProcessQuerySelector(selector);
 		const selectorString = await this.convertQuerySelectorToString(selector);
@@ -243,30 +242,30 @@ export abstract class AutoAction implements IAutoAction {
 
 		const querySelector: IQuerySelector = selector;
 
-		let elements: Element[] = [];
+		let elements: Element[];
 
 		// It also can be done through the XPath, check the following link if more complex selectors are required.
 		// https://stackoverflow.com/questions/37098405/javascript-queryselector-find-div-by-innertext/37098508#37098508
 		if (typeof selector.textContent === "string") {
 			const allElements = Array.from(root.querySelectorAll(querySelector.selector));
 			elements = (querySelector.all === true)
-				? allElements.filter((element) => RegExp(selector.textContent).test(element.textContent))
-				: [allElements.find((element) => RegExp(selector.textContent).test(element.textContent))].filter((e) => e != null);
+				? allElements.filter((element) => RegExp(selector.textContent as string).test(element.textContent ?? ""))
+				: [allElements.find((element) => RegExp(selector.textContent as string).test(element.textContent ?? ""))].filter((e): e is Element => e != null);
 		} else if (typeof selector.innerText === "string") {
 			const allElements = Array.from(root.querySelectorAll(querySelector.selector));
 			elements = (querySelector.all === true)
-				? allElements.filter((element) => RegExp(selector.innerText).test((element as HTMLElement).innerText))
-				: [allElements.find((element) => RegExp(selector.innerText).test((element as HTMLElement).innerText))]
-					.filter((e) => e != null);
+				? allElements.filter((element) => RegExp(selector.innerText as string).test((element as HTMLElement).innerText))
+				: [allElements.find((element) => RegExp(selector.innerText as string).test((element as HTMLElement).innerText))]
+					.filter((e): e is Element => e != null);
 		} else {
 			elements = (querySelector.all === true)
 				? Array.from(root.querySelectorAll(querySelector.selector))
-				: [root.querySelector(querySelector.selector)].filter((e) => e != null);
+				: [root.querySelector(querySelector.selector)].filter((e): e is Element => e != null);
 		}
 
 		if (selector.child != null) {
 			return elements.reduce((childElements, element) => {
-				const result = this.invokeQuerySelector(selector.child, element);
+				const result = this.invokeQuerySelector(selector.child!, element);
 				return childElements.concat(result);
 			}, [] as Element[]);
 		}
@@ -276,10 +275,10 @@ export abstract class AutoAction implements IAutoAction {
 
 			let parent = elements[0].parentElement;
 			for (let i = 0; i < parentLevel; i++) {
-				parent = parent.parentElement;
+				parent = parent?.parentElement ?? null;
 			}
 
-			return this.invokeQuerySelector(selector.parent, parent);
+			return this.invokeQuerySelector(selector.parent, parent ?? undefined);
 		}
 
 		if (selector.iframe != null && elements.length > 0) {

@@ -19,7 +19,7 @@ export class AutoActionConsoleLog extends AutoAction implements IAutoActionConso
 		if (jsonAction.name !== this.name) {
 			throw new Error(`Wrong Action type, expected '${this.name}' but got ${jsonAction.name}`);
 		}
-		this.level = AutoAction.prop(jsonAction.level, AutoActionConsoleLogLevel.Log);
+		this.level = jsonAction.level ?? AutoActionConsoleLogLevel.Log;
 		this.message = jsonAction.message;
 	}
 

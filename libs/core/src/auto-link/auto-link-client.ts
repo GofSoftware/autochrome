@@ -17,10 +17,10 @@ export class AutoLinkClient {
 		return AutoLinkClient.autoLinkClientInstance || (AutoLinkClient.autoLinkClientInstance = new AutoLinkClient());
 	}
 
-	private $containerChanges = new BehaviorSubject<IAutoMessageDataContainerChanged>(null);
+	private $containerChanges = new BehaviorSubject<IAutoMessageDataContainerChanged | null>(null);
 	private $containerClearAll = new Subject<void>();
 
-	public containerChanges$: Observable<IAutoMessageDataContainerChanged>  = this.$containerChanges.asObservable();
+	public containerChanges$: Observable<IAutoMessageDataContainerChanged | null>  = this.$containerChanges.asObservable();
 	public containerClearAll$: Observable<void>  = this.$containerClearAll.asObservable();
 
 	public init(): void {

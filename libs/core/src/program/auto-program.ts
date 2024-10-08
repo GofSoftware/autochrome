@@ -1,19 +1,19 @@
 import { AutoAction } from './actions/auto-action';
 import { AutoActionFactory } from './actions/auto-action-factory';
-import { AutoProcedure } from './auto-procedure';
 import { AutoActionName } from './actions/types/auto-action-name';
+import { AutoProcedure } from './auto-procedure';
 import { AUTO_PROGRAM_CURRENT_VERSION, IAutoProgram } from './i-auto-program';
 
 export class AutoProgram implements IAutoProgram {
 
 	public static empty(): AutoProgram {
-		const program = new AutoProgram();
-		program.version = AUTO_PROGRAM_CURRENT_VERSION;
-		program.name = '';
-		program.description = '';
-		program.rootAction = AutoActionFactory.instance.fromJson({name: AutoActionName.AutoActionEmpty});
-		program.procedures = [];
-		return program;
+		return new AutoProgram(
+			'',
+			'',
+			AUTO_PROGRAM_CURRENT_VERSION,
+			AutoActionFactory.instance.fromJson({name: AutoActionName.AutoActionEmpty}),
+			[]
+		);
 	}
 
 	public static fromString(serializedProgram: string): AutoProgram {
@@ -32,17 +32,16 @@ export class AutoProgram implements IAutoProgram {
 
 		AutoActionFactory.instance.reset();
 
-		const program = new AutoProgram();
-
-		program.name = programJson.name;
-		program.version = programJson.version;
-		program.description = programJson.description;
-		program.procedures = (programJson.procedures || []).map((procedure) => {
-			AutoActionFactory.instance.setProcedure(procedure);
-			return AutoProcedure.fromJson(procedure);
-		});
-
-		program.rootAction = AutoActionFactory.instance.fromJson(programJson.rootAction);
+		const program = new AutoProgram(
+			programJson.name,
+			programJson.description,
+			programJson.version,
+			AutoActionFactory.instance.fromJson(programJson.rootAction),
+			(programJson.procedures || []).map((procedure) => {
+				AutoActionFactory.instance.setProcedure(procedure);
+				return AutoProcedure.fromJson(procedure);
+			})
+		);
 
 		const idSet = new Set<string>();
 
@@ -57,12 +56,15 @@ export class AutoProgram implements IAutoProgram {
 		return program;
 	}
 
-	public name: string;
-	public description: string;
-	public version: number;
-	public rootAction: AutoAction;
-	public error: string;
-	public procedures: AutoProcedure[];
+	constructor(
+		public name: string,
+		public description: string,
+		public version: number,
+		public rootAction: AutoAction,
+		public procedures: AutoProcedure[] = [],
+		public error: string | null = null
+	) {
+	}
 
 	private actionMap: Map<string, AutoAction> = new Map<string, AutoAction>();
 
@@ -70,7 +72,7 @@ export class AutoProgram implements IAutoProgram {
 		return this.actionMap.size;
 	}
 
-	public getActionById(id: string): AutoAction {
+	public getActionById(id: string): AutoAction | undefined {
 		return this.actionMap.get(id);
 	}
 

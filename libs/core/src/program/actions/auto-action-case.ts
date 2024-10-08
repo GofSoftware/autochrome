@@ -9,7 +9,7 @@ import { IAutoActionCase } from "./types/i-auto-action-case";
 export class AutoActionCase extends AutoAction implements IAutoActionCase {
 	public name = AutoActionName.AutoActionCase;
 	public selector: QuerySelectorWithPropertyLink;
-	public wait = false;
+	public wait: boolean = false;
 	public thenActionId: string;
 	public elseActionId: string;
 
@@ -23,7 +23,7 @@ export class AutoActionCase extends AutoAction implements IAutoActionCase {
 			throw new Error(`Wrong Action type, expected '${this.name}' but got ${jsonAction.name}`);
 		}
 		this.selector = jsonAction.selector;
-		this.wait = jsonAction.wait;
+		this.wait = jsonAction.wait ?? false;
 		this.thenActionId = jsonAction.thenActionId;
 		this.elseActionId = jsonAction.elseActionId;
 	}

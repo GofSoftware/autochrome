@@ -12,6 +12,6 @@ export interface IAutoAction {
     description?: string;
     continueAfterFail?: boolean;
     timeout?: number;
-    children?: IAutoAction[];
+    children?: IAutoAction[] | null;
     parameters?: IAutoParameter[];
 }

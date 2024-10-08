@@ -5,8 +5,8 @@ export interface IConfig {
     host: string;
     port: number;
     userInput: boolean;
-    path: string;
-    search: string;
+    path: string | null;
+    search: string | null;
 }
 
 export class Config implements IConfig {
@@ -18,8 +18,8 @@ export class Config implements IConfig {
     public host = "localhost";
     public port = 3101;
     public userInput = false;
-    public path: string;
-    public search: string;
+    public path: string | null = null;
+    public search: string | null = null;
     public logSeverity: WebSocketLogSeverity = WebSocketLogSeverity.Warning;
 
     public configure(): void {
@@ -37,16 +37,18 @@ export class Config implements IConfig {
         })
     }
 
-    private splitArg(arg: string): {name: string, value: string} {
+    private splitArg(arg: string): {name: string, value: string | null} {
         const splitResult = arg.split('=');
         if (splitResult.length === 2) {
             return {name: splitResult[0], value: splitResult[1]};
         } else if (splitResult.length === 1) {
             return {name: splitResult[0], value: null};
-        }
+        } else {
+			throw new Error(`Unexpected splitResult length ${splitResult.length}`);
+		}
     }
 
-    private setOption(option: {name: string, value: string}): void {
+    private setOption(option: {name: string, value: string | null}): void {
         switch (option.name.toLowerCase()) {
             case 'host':
                 this.host = option.value || this.host;
@@ -71,8 +73,8 @@ export class Config implements IConfig {
         }
     }
 
-    private convertSeverity(value: string): WebSocketLogSeverity {
-        switch (value.toLowerCase()) {
+    private convertSeverity(value: string | null): WebSocketLogSeverity {
+        switch (value?.toLowerCase()) {
             case 'debug':
                 return WebSocketLogSeverity.Debug;
             case 'info':

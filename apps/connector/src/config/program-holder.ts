@@ -10,11 +10,11 @@ export class ProgramHolder {
 
     private programs: string[] = [];
 
-    public popProgram(): string {
+    public popProgram(): string | null {
         if(this.programs.length === 0) {
             return null;
         }
-        return this.programs.shift();
+        return this.programs.shift() ?? null;
     }
 
     public collectPrograms(folder: string, pattern: string): void {

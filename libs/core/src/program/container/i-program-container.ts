@@ -3,11 +3,11 @@ import {ProgramContainerStatus} from "@autochrome/core/program/container/program
 export interface IProgramContainer {
     id: string;
     serializedProgram: string;
-    tabId: number;
+    tabId: number | null;
     status: ProgramContainerStatus;
     percent: number;
-    error: string;
-    activeActionId: string;
+    error: string | null;
+    activeActionId: string | null | undefined;
     activeActionStartTime: number;
     order: number;
 }
