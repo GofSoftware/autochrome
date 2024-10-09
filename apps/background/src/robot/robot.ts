@@ -181,7 +181,7 @@ export class Robot {
 		activeProgram.programContainer.activeActionStartTime = 0;
 		await ExtractedProgramContainerManager.instance.setContainer(activeProgram);
 		await AutoLinkServer.instance.sendContainerUpdate(activeProgram.programContainer.id, AutoMessageContainerChangeType.Update);
-		await AutoLinkServer.instance.sendInterrupt(activeProgram.programContainer.tabId, 'Interrupted by the server, ' + reason);
+		await AutoLinkServer.instance.sendInterrupt(activeProgram.programContainer.tabId!, 'Interrupted by the server, ' + reason);
 	}
 
 	private async processActionResult(

@@ -1,4 +1,4 @@
-import { ParameterLinkTypeName } from '@autochrome/core/program/actions/types/i-interfaces';
+import { ParameterLinkTypeName } from './i-parameter-link';
 import { z } from 'zod';
 
 export const IParameterLinkSchema = z.object({

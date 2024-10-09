@@ -1,10 +1,8 @@
-import { IAutoValueSchema } from '@autochrome/core/program/actions/types/i-auto-value.schema.zod';
-import { IParameterLinkSchema } from '@autochrome/core/program/actions/types/i-parameter-link.schema.zod';
-import {
-	StringOrIQuerySelectorWithParametersSchema
-} from '@autochrome/core/program/actions/types/string-or-i-query-selector-with-parameters.schema.zod';
-import { StringOrIQuerySelectorSchema } from '@autochrome/core/program/actions/types/string-or-i-query-selector.schema.zod';
 import { z } from 'zod';
+import { IAutoValueSchema } from './i-auto-value.schema.zod';
+import { IParameterLinkSchema } from './i-parameter-link.schema.zod';
+import { StringOrIQuerySelectorWithParametersSchema } from './string-or-i-query-selector-with-parameters.schema.zod';
+import { StringOrIQuerySelectorSchema } from './string-or-i-query-selector.schema.zod';
 
 const QuerySelectorWithParametersBaseSchema = z.object({
 	selector: z.union([StringOrIQuerySelectorSchema, IParameterLinkSchema]),

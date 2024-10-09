@@ -3,7 +3,7 @@ import { AutoActionFactory } from './actions/auto-action-factory';
 import { AutoActionName } from './actions/types/auto-action-name';
 import { AutoActionCase } from './actions/auto-action-case';
 import { AutoActionGoTo } from './actions/auto-action-go-to';
-import { IAutoParameter } from './actions/types/i-interfaces';
+import { IAutoParameter } from './actions/types/i-auto-parameter';
 import { IAutoProcedure } from './i-auto-procedure';
 import { IAutoAction } from './actions/types/i-auto-action';
 

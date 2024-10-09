@@ -1,6 +1,6 @@
 import { Logger } from '../../common/logger';
 import { AutoAction } from './auto-action';
-import { QuerySelectorWithPropertyLink } from './types/i-interfaces';
+import { QuerySelectorWithPropertyLink } from './types/query-selector-with-property-link';
 import { IAutoAction } from "./types/i-auto-action";
 import { AutoActionName } from "./types/auto-action-name";
 import { AutoActionResult } from "./types/auto-action-result";

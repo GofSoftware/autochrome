@@ -1,5 +1,5 @@
-import { AutoActionName } from "./auto-action-name";
-import { IAutoParameter } from "./i-interfaces";
+import { IAutoParameter } from './i-auto-parameter';
+import { AutoActionName } from './auto-action-name';
 
 /**
  * The base interface for all actions, includes fields that can be set in any nested action.

@@ -1,5 +1,5 @@
+import { IParameterLink } from './i-parameter-link';
 import { IAutoAction } from './i-auto-action';
-import { IParameterLink } from './i-interfaces';
 
 export enum AutoActionConsoleLogLevel {
     Error= 'Error',

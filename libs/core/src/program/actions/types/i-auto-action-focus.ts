@@ -1,5 +1,5 @@
+import { QuerySelectorWithPropertyLink } from './query-selector-with-property-link';
 import { IAutoAction } from './i-auto-action';
-import { QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export interface IAutoActionFocus extends IAutoAction {
     selector: QuerySelectorWithPropertyLink;

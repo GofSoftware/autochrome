@@ -1,4 +1,4 @@
-import { IAutoAction } from '@autochrome/core/program/actions/types/i-auto-action';
+import { IAutoAction } from './i-auto-action';
 
 export interface IAutoActionRoot extends IAutoAction {
 }

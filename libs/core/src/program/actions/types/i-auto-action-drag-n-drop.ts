@@ -1,5 +1,5 @@
+import { QuerySelectorWithPropertyLink } from './query-selector-with-property-link';
 import { IAutoAction } from './i-auto-action';
-import { QuerySelectorWithPropertyLink } from './i-interfaces';
 
 export interface IAutoActionDragNDrop extends IAutoAction {
     sourceSelector: QuerySelectorWithPropertyLink;

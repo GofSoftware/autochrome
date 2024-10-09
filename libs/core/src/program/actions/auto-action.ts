@@ -1,16 +1,15 @@
+import { AutoValueSourceType } from './types/auto-value-source-type';
+import { AutoValueTypeName, IAutoValue } from './types/i-auto-value';
+import { IParameterLink, ParameterLinkTypeName } from './types/i-parameter-link';
+import { IQuerySelector } from './types/i-query-selector';
+import { QuerySelectorWithPropertyLink } from './types/query-selector-with-property-link';
+import { StringOrIQuerySelector } from './types/string-or-i-query-selector';
+import { IAutoParameter } from './types/i-auto-parameter';
 import { AutoAnyAction } from './types/action-types';
 import { Config } from '../config/config';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
 import { AutoActionFactory } from './auto-action-factory';
 import { cloneDeep } from 'lodash-es';
-import {
-	AutoValueSourceType,
-	AutoValueTypeName, IAutoParameter,
-	IAutoValue,
-	IParameterLink, IQuerySelector,
-	ParameterLinkTypeName,
-	QuerySelectorWithPropertyLink, StringOrIQuerySelector
-} from './types/i-interfaces';
 import { Logger } from '../../common/logger';
 import { MacroProcessor } from '../../common/macro-processor';
 import { IAutoAction } from "../../program/actions/types/i-auto-action";

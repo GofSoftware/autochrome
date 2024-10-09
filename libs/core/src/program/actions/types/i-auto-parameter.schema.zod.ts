@@ -1,4 +1,4 @@
-import { IAutoParameterValueSchema } from '@autochrome/core/program/actions/types/i-auto-parameter-value.schema.zod';
+import { IAutoParameterValueSchema } from './i-auto-parameter-value.schema.zod';
 import { z } from 'zod';
 
 export const IAutoParameterSchema = z.object({

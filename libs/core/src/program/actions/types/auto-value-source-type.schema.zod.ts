@@ -1,4 +1,4 @@
-import { AutoValueSourceType } from '@autochrome/core/program/actions/types/i-interfaces';
+import { AutoValueSourceType } from './auto-value-source-type';
 import { z } from 'zod';
 
 export const AutoValueSourceTypeEnumSchema = z.enum([

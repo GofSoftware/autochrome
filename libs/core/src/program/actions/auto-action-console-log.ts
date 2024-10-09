@@ -1,5 +1,5 @@
 import { AutoAction } from './auto-action';
-import { IParameterLink } from './types/i-interfaces';
+import { IParameterLink } from './types/i-parameter-link';
 import { IAutoAction } from "./types/i-auto-action";
 import { AutoActionName } from "./types/auto-action-name";
 import { AutoActionResult } from "./types/auto-action-result";

@@ -1,5 +1,5 @@
-import { AutoValueSourceTypeEnumSchema } from '@autochrome/core/program/actions/types/auto-value-source-type.schema.zod';
-import { QuerySelectorWithPropertyLinkSchema } from '@autochrome/core/program/actions/types/query-selector-with-property-link.schema.zod';
+import { AutoValueSourceTypeEnumSchema } from './auto-value-source-type.schema.zod';
+import { QuerySelectorWithPropertyLinkSchema } from './query-selector-with-property-link.schema.zod';
 import { z } from 'zod';
 
 const IAutoValueBaseSchema = z.object({

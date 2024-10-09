@@ -1,4 +1,4 @@
-import { AutoActionName } from '@autochrome/core/program/actions/types/auto-action-name';
+import { AutoActionName } from './auto-action-name';
 import { z } from 'zod';
 
 export const AutoActionNameEnumSchema = z.enum([

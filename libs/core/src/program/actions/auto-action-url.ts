@@ -1,6 +1,7 @@
+import { IParameterLink } from './types/i-parameter-link';
 import { AutoAction } from './auto-action';
 import { InterruptibleUtility } from '../../common/interruptible-utility';
-import { IAutoValue, IParameterLink } from './types/i-interfaces';
+import { IAutoValue } from './types/i-auto-value';
 import { IAutoAction } from "./types/i-auto-action";
 import { AutoActionName } from "./types/auto-action-name";
 import { AutoActionResult } from "./types/auto-action-result";
