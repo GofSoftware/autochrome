@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AutoActionSchema } from '@autochrome/core/program/actions/auto-action.schema.zod';
 import { IAutoActionClick } from '@autochrome/core/program/actions/types/i-auto-action-click';
 import { IAutoActionProcedure } from '@autochrome/core/program/actions/types/i-auto-action-procedure';
-import { AutoActionSchema } from './auto-action-zod-schema';
 
 @Component({
 	standalone: true,
