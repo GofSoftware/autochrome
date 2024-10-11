@@ -4,4 +4,4 @@ import { z } from 'zod';
 
 export const AutoActionRootSchema = BaseAutoAction.extend({
 	name: z.literal(AutoActionName.AutoActionRoot),
-});
+}).strict();

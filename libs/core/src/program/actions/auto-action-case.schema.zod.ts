@@ -4,13 +4,10 @@ import { AutoActionName } from '@autochrome/core/program/actions/types/auto-acti
 import { QuerySelectorWithPropertyLinkSchema } from '@autochrome/core/program/actions/types/query-selector-with-property-link.schema.zod';
 import { z } from 'zod';
 
-export const AutoActionClickSchema = BaseAutoAction.extend({
-	name: z.literal(AutoActionName.AutoActionClick),
+export const AutoActionCaseSchema = BaseAutoAction.extend({
+	name: z.literal(AutoActionName.AutoActionCase),
 	selector: QuerySelectorWithPropertyLinkSchema,
-	smoothMouse: z.boolean().optional(),
 	wait: z.boolean().optional(),
-	clickType: z.enum([
-		AutoActionClickType.MouseDownFocusMouseUp,
-		AutoActionClickType.Click
-	]).optional(),
+	thenActionId: z.string(),
+	elseActionId: z.string()
 }).strict();

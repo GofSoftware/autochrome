@@ -10,7 +10,7 @@ const QuerySelectorWithParametersBaseSchema = z.object({
 	textContent: z.union([z.string(), IParameterLinkSchema]),
 	all: z.union([z.boolean(), IParameterLinkSchema]).optional(),
 	parentLevel: z.union([z.number(), IParameterLinkSchema]).optional()
-});
+}).strict();
 
 type QuerySelectorWithParameters = z.infer<typeof QuerySelectorWithParametersBaseSchema> & {
 	child?: z.infer<typeof StringOrIQuerySelectorWithParametersSchema>,
@@ -22,4 +22,4 @@ export const IQuerySelectorWithParametersSchema: z.ZodType<QuerySelectorWithPara
 	child: z.lazy(() => StringOrIQuerySelectorWithParametersSchema).optional(),
 	parent: z.lazy(() => StringOrIQuerySelectorWithParametersSchema).optional(),
 	iframe: z.lazy(() => StringOrIQuerySelectorWithParametersSchema).optional(),
-});
+}).strict();

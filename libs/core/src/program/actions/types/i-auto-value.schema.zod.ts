@@ -7,7 +7,7 @@ const IAutoValueBaseSchema = z.object({
 	wait: z.boolean(),
 	valueType: AutoValueSourceTypeEnumSchema,
 	attributeName: z.string(),
-});
+}).strict();
 
 type IAutoValueType = z.infer<typeof IAutoValueBaseSchema> & {
 	selector: z.infer<typeof QuerySelectorWithPropertyLinkSchema>
@@ -15,4 +15,4 @@ type IAutoValueType = z.infer<typeof IAutoValueBaseSchema> & {
 
 export const IAutoValueSchema: z.ZodType<IAutoValueType> = IAutoValueBaseSchema.extend({
 	selector: z.lazy(() => QuerySelectorWithPropertyLinkSchema)
-})
+}).strict();

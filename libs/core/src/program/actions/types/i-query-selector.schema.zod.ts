@@ -21,4 +21,4 @@ export const IQuerySelectorSchema: z.ZodType<IQuerySelectorType> = IQuerySelecto
 	child: z.union([z.string(), z.lazy(() => IQuerySelectorSchema)]).optional(),
 	parent: z.union([z.string(), z.lazy(() => IQuerySelectorSchema)]).optional(),
 	iframe: z.union([z.string(), z.lazy(() => IQuerySelectorSchema)]).optional(),
-});
+}).strict();

@@ -13,7 +13,7 @@ export const BaseAutoAction = z.object({
 	continueAfterFail: z.boolean(),
 	timeout: z.number(),
 	parameters: z.array(IAutoParameterSchema),
-});
+}).strict();
 
 export type AutoActionType = z.infer<typeof BaseAutoAction> & {
 	previous: AutoActionType, // TODO: replace with AutoAnyAction
@@ -27,4 +27,4 @@ export const AutoActionSchema: z.ZodType<AutoActionType> = BaseAutoAction.extend
 	previous: z.lazy(() => AutoActionSchema),
 	next: z.lazy(() => AutoActionSchema),
 	children: z.lazy(() => z.array(AutoActionSchema)),
-});
+}).strict();
