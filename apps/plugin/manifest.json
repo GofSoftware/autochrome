@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Autochrome",
-  "version": "1.0.2.0",
+  "version": "1.0.2.1",
   "description": "The Chrome Extension for the Automation",
   "icons": {
     "16": "images/icon-16.png",
