@@ -1,0 +1,13 @@
+#close.tab Google
+open.chrome google.com
+wait.time 3000
+wait.connection 30000
+get.tabs
+set.tab Google
+container.clear
+#collect.programs ./program-examples/programs/ .json$
+collect.programs ../apps.global.portal/src/tests/auto/page-settings/ .json$
+container.upload
+get.programs
+container.action Play
+wait.programs

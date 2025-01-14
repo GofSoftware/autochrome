@@ -1,0 +1,51 @@
+<div class="uploaded-program" [ngClass]="{'not-active': !isActive()}">
+    <div class="close-button">
+        <button class="program-button program-square-button-small" title="Remove the item" (click)="onCloseButtonClick()">x</button>
+    </div>
+    <div class="tab-id" [ngClass]="{'error pointer': !tabExists()}" [title]="tabTitle()">
+        Tab id: {{item().tabId}} <a (click)="onSetCurrentTabClick()">[set current]</a>
+    </div>
+    <div class="name">
+        <i class="error" *ngIf="hasError()">X</i>
+        <i class="success" *ngIf="isSuccess()">V</i>
+        {{item().programName}}
+    </div>
+    <div class="description">{{item().programDescription}}</div>
+    <div class="description-error error" *ngIf="hasError()">{{item().error}}</div>
+    <div class="description-success success" *ngIf="isSuccess()">Success.</div>
+    <div class="program-progress-bar-holder" [ngClass]="{hidden: !this.isProgressBarVisible()}">
+        <div>{{item().activeActionName}}</div>
+        <div class="action-description">
+            {{item().activeActionDescription}}
+        </div>
+        <div class="program-progress-bar">
+            <div class="program-progress-bar-progress" [ngStyle]="{'width': progressBarValue() + '%'}"></div>
+        </div>
+    </div>
+    <div class="uploaded-program-actions">
+        <button
+                class="program-button program-square-button play-button"
+                title="Play"
+                [disabled]="visibility().playDisabled"
+                (click)="onPlayButtonClick()">
+        <i class="fa-solid fa-play"></i>
+        </button>
+        <button
+                class="program-button program-square-button pause-button"
+                title="Pause"
+                [disabled]="visibility().pauseDisabled"
+                (click)="onPauseButtonClick()">
+        <i class="fa-solid fa-pause"></i>
+        </button>
+        <button
+                class="program-button program-square-button stop-button"
+                title="Stop"
+                [disabled]="visibility().stopDisabled"
+                (click)="onStopButtonClick()">
+        <i class="fa-solid fa-stop"></i>
+        </button>
+    </div>
+    <div class="expand-collapse" (click)="onExpandButtonClick()">
+        <i class="fa" [ngClass]="{'fa-angle-up': isActive(), 'fa-angle-down': !isActive()}"></i>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+{
+  "name": "The Youtube search.",
+  "description": "The demo program that shows how to search on Youtube.",
+  "version": 1,
+  "rootAction": {
+    "name": "AutoActionRoot",
+    "description": "The starting point.",
+    "children": [
+      {
+        "name": "AutoActionUrl",
+        "description": "Go to YouTube.com",
+        "url": "https://youtube.com"
+      },
+      {
+        "name": "AutoActionWait",
+        "description": "Wait a little so you can click on the page to close the popup and give the page all focus it needs.",
+        "timeToWait": 2000
+      },
+      {
+        "name": "AutoActionFocus",
+        "description": "Focus the search input.",
+        "selector": "input.ytSearchboxComponentInput",
+        "smoothMouse": true
+      },
+      {
+        "name": "AutoActionWait",
+        "description": "Wait a little so you can see where the cursor is.",
+        "timeToWait": 1000
+      },
+      {
+        "name": "AutoActionEnterText",
+        "description": "Enter the search text",
+        "selector": "input.ytSearchboxComponentInput",
+        "text": "Gods of software"
+      },
+      {
+        "name": "AutoActionWait",
+        "description": "Wait a little so you can notice the entered text.",
+        "timeToWait": 1000
+      },
+      {
+        "name": "AutoActionClick",
+        "description": "Click on the search button.",
+        "selector": "button.ytSearchboxComponentSearchButton",
+        "smoothMouse": true,
+        "wait": false
+      },
+      {
+        "name": "AutoActionWait",
+        "description": "Wait until all found elements are loaded.",
+        "timeToWait": 1000
+      },
+      {
+        "name": "AutoActionClick",
+        "description": "Click on the Gods of Software channel.",
+        "selector": "a[href=\"/@godsofsoftware\"]#main-link",
+        "smoothMouse": true,
+        "wait": true,
+        "timeout": 10000
+      }
+    ]
+  }
+}

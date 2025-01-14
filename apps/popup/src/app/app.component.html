@@ -1,0 +1,14 @@
+<img class="logo-icon" src="../images/icon-32.png">
+<div class="close-window"><button class="program-button program-square-button-small" title="Close" (click)="onCloseClick()">x</button></div>
+<div class="title">
+    Autochrome
+</div>
+<ul class="tabs">
+    <li><a (click)="tab.set(Tabs.ProgramContent)" [ngClass]="{active: tab() === Tabs.ProgramContent}">Program</a></li>
+    <li><a (click)="tab.set(Tabs.Settings)" [ngClass]="{active: tab() === Tabs.Settings}">Settings</a></li>
+    <li><a (click)="tab.set(Tabs.LogPanel)" [ngClass]="{active: tab() === Tabs.LogPanel}">&nbsp;&nbsp;&nbsp;Log&nbsp;&nbsp;&nbsp;</a></li>
+</ul>
+<app-program-content *ngIf="tab() === Tabs.ProgramContent"></app-program-content>
+<app-settings *ngIf="tab() === Tabs.Settings"></app-settings>
+<app-log-panel *ngIf="tab() === Tabs.LogPanel" [items]="logItems()"></app-log-panel>
+

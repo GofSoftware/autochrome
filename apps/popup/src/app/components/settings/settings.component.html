@@ -1,0 +1,36 @@
+<div class="settings-container">
+    <form [formGroup]="form">
+        <div class="input-label-checkbox-option">
+            <input id="auto-play" type="checkbox" formControlName="autoPlay">
+            <label for="auto-play">Program Auto Play</label>
+        </div>
+        <div class="input-label-checkbox-option">
+            <input id="enable-connector" type="checkbox" formControlName="enableConnector">
+            <label for="enable-connector">Enable Connector</label>
+        </div>
+        <div class="input-label-checkbox-option">
+            <input id="enable-connector-logging" type="checkbox" formControlName="enableConnectorLogging">
+            <label for="enable-connector-logging">Enable Connector Logging</label>
+        </div>
+        <div class="input-label-option">
+            <label for="enable-connector-logging">Connector Port*</label>
+            <input id="connector-port" type="number" formControlName="connectorPort">
+            @if (form.get('connectorPort')!.hasError('required')) {
+                <span class="error">Required field</span>
+            }
+        </div>
+        <div class="input-label-option">
+            <label for="enable-connector-logging">Connector Host*</label>
+            <input id="connector-host" type="text" formControlName="connectorHost" maxlength="1024">
+            @if (form.get('connectorHost')!.hasError('required')) {
+                <span class="error">Required field</span>
+            }
+            @if (form.get('connectorHost')!.hasError('maxlength')) {
+                <span class="error">Host name is too long (must be less than {{form.get('connectorHost')!.getError('maxlength')!.requiredLength}} characters)</span>
+            }
+        </div>
+    </form>
+    <div class="action-button-holder">
+        <button class="program-button action-button" (click)="onSave()" [disabled]="form.invalid || form.pristine || isLoading()">Save</button>
+    </div>
+</div>

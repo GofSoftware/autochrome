@@ -1,0 +1,7 @@
+{
+  "connectorLogSeverity": "log",
+  "userInput": false,
+  "commandFile": "./program-examples/connector-config/commands",
+  "logFile": "./program-examples/connector-config/commands.log",
+  "teamcity": true
+}

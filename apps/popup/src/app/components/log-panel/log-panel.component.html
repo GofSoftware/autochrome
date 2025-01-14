@@ -1,0 +1,5 @@
+<div class="log-panel" #logPanel>
+    @for (item of items(); track $index){
+        <div class="log-panel-item severity-{{item.severity}}">{{item.message}}</div>
+    }
+</div>

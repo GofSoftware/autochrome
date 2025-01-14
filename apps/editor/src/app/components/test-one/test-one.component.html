@@ -1,0 +1,4 @@
+<button (click)="generateItems(1000)">Click me</button>
+@for (item of items(); track item.id) {
+    <div>The Test One! {{item.name}}</div>
+}

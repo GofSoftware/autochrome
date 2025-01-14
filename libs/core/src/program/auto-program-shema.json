@@ -1,0 +1,1260 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "AutoProgram",
+    "description": "Auto program schema",
+    "$defs": {
+        "AutoActionName": {
+            "type": "string",
+            "enum": [
+                "AutoActionRoot",
+                "AutoActionClick",
+                "AutoActionCheckGroup",
+                "AutoActionCheck",
+                "AutoActionGetText",
+                "AutoActionEnterText",
+                "AutoActionWait",
+                "AutoActionScrollIntoView",
+                "AutoActionSelectFile",
+                "AutoActionWaitUntil",
+                "AutoActionSetValue",
+                "AutoActionCase",
+                "AutoActionDragNDrop",
+                "AutoActionUrl",
+                "AutoActionFocus",
+                "AutoActionProcedure",
+                "AutoActionEmpty",
+                "AutoActionConsoleLog",
+                "AutoActionGoTo",
+                "AutoActionGroup",
+                "AutoActionCaseParameter"
+            ]
+        },
+        "StringOrIQuerySelectorWithParameters": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/$defs/QuerySelectorWithParameters"
+                }
+            ]
+        },
+        "StringOrIQuerySelector": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/$defs/QuerySelector"
+                }
+            ]
+        },
+        "QuerySelectorWithPropertyLink": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/ParameterLink"
+                },
+                {
+                    "$ref": "#/$defs/StringOrIQuerySelectorWithParameters"
+                }
+            ]
+        },
+        "AutoParameterValue": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "number"
+                },
+                {
+                    "type": "boolean"
+                },
+                {
+                    "$ref": "#/$defs/QuerySelectorWithParameters"
+                }
+            ]
+        },
+        "AutoValueSourceType": {
+            "anyOf": [
+                {
+                    "const": "attribute"
+                },
+                {
+                    "const": "innerText"
+                },
+                {
+                    "const": "textContent"
+                },
+                {
+                    "const": "innerHTML"
+                }
+            ]
+        },
+        "ParameterLink": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "ParameterLink"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type",
+                "name"
+            ]
+        },
+        "AutoParameter": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "$ref": "#/$defs/AutoParameterValue"
+                }
+            },
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "QuerySelector": {
+            "type": "object",
+            "properties": {
+                "selector": {
+                    "type": "string"
+                },
+                "innerText": {
+                    "type": "string"
+                },
+                "textContent": {
+                    "type": "string"
+                },
+                "all": {
+                    "type": "boolean"
+                },
+                "child": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "$ref": "#/$defs/QuerySelector"
+                        }
+                    ]
+                },
+                "parent": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "$ref": "#/$defs/QuerySelector"
+                        }
+                    ]
+                },
+                "iframe": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "$ref": "#/$defs/QuerySelector"
+                        }
+                    ]
+                },
+                "parentLevel": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "selector"
+            ]
+        },
+        "AutoValue": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "AutoValue"
+                },
+                "selector": {
+                    "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                },
+                "wait": {
+                    "type": "boolean"
+                },
+                "valueType": {
+                    "$ref": "#/$defs/AutoValueSourceType"
+                },
+                "attributeName": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type",
+                "selector",
+                "wait",
+                "valueType",
+                "attributeName"
+            ]
+        },
+        "QuerySelectorWithParameters": {
+            "type": "object",
+            "properties": {
+                "selector": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/StringOrIQuerySelector"
+                        },
+                        {
+                            "$ref": "#/$defs/ParameterLink"
+                        }
+                    ]
+                },
+                "innerText": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "$ref": "#/$defs/ParameterLink"
+                        },
+                        {
+                            "$ref": "#/$defs/AutoValue"
+                        }
+                    ]
+                },
+                "textContent": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "$ref": "#/$defs/ParameterLink"
+                        }
+                    ]
+                },
+                "all": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "$ref": "#/$defs/ParameterLink"
+                        }
+                    ]
+                },
+                "child": {
+                    "$ref": "#/$defs/StringOrIQuerySelectorWithParameters"
+                },
+                "parent": {
+                    "$ref": "#/$defs/StringOrIQuerySelectorWithParameters"
+                },
+                "iframe": {
+                    "$ref": "#/$defs/StringOrIQuerySelectorWithParameters"
+                }
+            },
+            "required": [
+                "selector"
+            ]
+        },
+        "AutoProcedure": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "action": {
+                    "$ref": "#/$defs/AutoActionWithCheck"
+                }
+            },
+            "required": [
+                "name",
+                "description",
+                "action"
+            ]
+        },
+        "AutoAction": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "$ref": "#/$defs/AutoActionName"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "continueAfterFail": {
+                    "type": "boolean"
+                },
+                "timeout": {
+                    "type": "integer"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/AutoActionWithCheck"
+                    }
+                },
+                "parameters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/AutoParameter"
+                    }
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
+        "AutoActionRoot": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionRoot"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ]
+                }
+            ]
+        },
+        "AutoActionClick": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionClick"
+                        },
+                        "selector": {
+                            "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                        },
+                        "smoothMouse": {
+                            "type": "boolean"
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        },
+                        "clickType": {
+                            "enum": [
+                                "MouseDownFocusMouseUp",
+                                "Click"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "selector",
+                        "smoothMouse",
+                        "wait",
+                        "clickType"
+                    ]
+                }
+            ]
+        },
+        "AutoActionCheckGroup": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionCheckGroup"
+                        },
+                        "operator": {
+                            "enum": [
+                                "And",
+                                "Or"
+                            ]
+                        },
+                        "checkItems": {
+                            "type": "array",
+                            "items": {
+                                "anyOf": [
+                                    { "$ref": "#/$defs/AutoActionCheckGroup" },
+                                    { "$ref": "#/$defs/AutoActionCheck" }
+                                ]
+                            }
+                        },
+                        "silent": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "operator",
+                        "checkItems"
+                    ]
+                }
+            ]
+        },
+        "AutoActionCheck": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionCheck"
+                        },
+                        "type": {
+                            "enum": [
+                                "Exists",
+                                "NotExists"
+                            ]
+                        },
+                        "selector": {
+                            "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        },
+                        "silent": {
+                            "type": "boolean"
+                        },
+                        "highlight": {
+                            "type": "boolean"
+                        }
+
+                    },
+                    "required": [
+                        "name",
+                        "selector"
+                    ]
+                }
+            ]
+        },
+        "AutoActionGetText": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionGetText"
+                        },
+                        "selector": {
+                            "type": "string"
+                        },
+                        "textType": {
+                            "enum": [
+                                "innerText",
+                                "textContent"
+                            ]
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "selector",
+                        "textType",
+                        "wait"
+                    ]
+                }
+            ]
+        },
+        "AutoActionEnterText": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionEnterText"
+                        },
+                        "selector": {
+                            "type": "string"
+                        },
+                        "text": {
+                            "type": "string"
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        },
+                        "focusBefore": {
+                            "type": "boolean"
+                        },
+                        "blurAfter": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "selector",
+                        "text",
+                        "wait",
+                        "focusBefore",
+                        "blurAfter"
+                    ]
+                }
+            ]
+        },
+        "AutoActionWait": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionWait"
+                        },
+                        "timeToWait": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "timeToWait"
+                    ]
+                }
+            ]
+        },
+        "AutoActionScrollIntoView": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionScrollIntoView"
+                        },
+                        "selector": {
+                            "type": "string"
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        },
+                        "behavior": {
+                            "type": "string"
+                        },
+                        "block": {
+                            "type": "string"
+                        },
+                        "inline": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "selector",
+                        "wait",
+                        "behavior",
+                        "block",
+                        "inline"
+                    ]
+                }
+            ]
+        },
+        "AutoActionSelectFile": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionSelectFile"
+                        },
+                        "selector": {
+                            "type": "string"
+                        },
+                        "fileName": {
+                            "type": "string"
+                        },
+                        "fileType": {
+                            "type": "string"
+                        },
+                        "fileContent": {
+                            "type": "string"
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "selector",
+                        "fileName",
+                        "fileType",
+                        "fileContent",
+                        "wait"
+                    ]
+                }
+            ]
+        },
+        "AutoActionWaitUntil": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionWaitUntil"
+                        },
+                        "untilType": {
+                            "enum": [
+                                "appear",
+                                "disappear"
+                            ]
+                        },
+                        "selector": {
+                            "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "untilType",
+                        "selector"
+                    ]
+                }
+            ]
+        },
+        "AutoActionSetValue": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionSetValue"
+                        },
+                        "selector": {
+                            "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                        },
+                        "value": {
+                            "anyOf": [
+                                { "$ref": "#/$defs/AutoValue" },
+                                { "$ref": "#/$defs/ParameterLink" }
+                            ]
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "selector",
+                        "value",
+                        "wait"
+                    ]
+                }
+            ]
+        },
+        "AutoActionCase": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionCase"
+                        },
+                        "selector": {
+                            "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        },
+                        "thenActionId": {
+                            "type": "string"
+                        },
+                        "elseActionId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "selector",
+                        "wait",
+                        "thenActionId",
+                        "elseActionId"
+                    ]
+                }
+            ]
+        },
+        "AutoActionDragNDrop": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionDragNDrop"
+                        },
+                        "sourceSelector": {
+                            "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                        },
+                        "targetSelector": {
+                            "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        },
+                        "dataTransfer": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "sourceSelector",
+                        "targetSelector",
+                        "wait",
+                        "dataTransfer"
+                    ]
+                }
+            ]
+        },
+        "AutoActionUrl": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionUrl"
+                        },
+                        "url": {
+                            "anyOf": [
+                                { "type": "string" },
+                                { "$ref": "#/$defs/AutoValue" },
+                                { "$ref": "#/$defs/ParameterLink" }
+                            ]
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "url"
+                    ]
+                }
+            ]
+        },
+        "AutoActionFocus": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionFocus"
+                        },
+                        "selector": {
+                            "$ref": "#/$defs/QuerySelectorWithPropertyLink"
+                        },
+                        "smoothMouse": {
+                            "type": "boolean"
+                        },
+                        "wait": {
+                            "type": "boolean"
+                        },
+                        "blur": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "selector",
+                        "smoothMouse",
+                        "wait",
+                        "blur"
+                    ]
+                }
+            ]
+        },
+        "AutoActionProcedure": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionProcedure"
+                        },
+                        "procedureName": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "procedureName"
+                    ]
+                }
+            ]
+        },
+        "AutoActionEmpty": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionEmpty"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ]
+                }
+            ]
+        },
+        "AutoActionConsoleLog": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionConsoleLog"
+                        },
+                        "level": {
+                            "enum": [
+                                "Error",
+                                "Warn",
+                                "Log",
+                                "Debug"
+                            ]
+                        },
+                        "message": {
+                            "anyOf": [
+                                { "type": "string" },
+                                { "$ref": "#/$defs/ParameterLink" }
+                            ]
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "level",
+                        "message"
+                    ]
+                }
+            ]
+        },
+        "AutoActionGoTo": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionGoTo"
+                        },
+                        "goToActionId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "goToActionId"
+                    ]
+                }
+            ]
+        },
+        "AutoActionGroup": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionGroup"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ]
+                }
+            ]
+        },
+        "AutoActionCaseParameter": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/$defs/AutoAction"
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "const": "AutoActionCaseParameter"
+                        },
+                        "parameterName": {
+                            "type": "string"
+                        },
+                        "operator": {
+                            "enum": [
+                                "Equal",
+                                "NotEqual"
+                            ]
+                        },
+                        "value": {
+                            "anyOf": [
+                                { "type": "array" },
+                                { "type": "boolean" },
+                                { "type": "integer" },
+                                { "type": "null" },
+                                { "type": "number" },
+                                { "type": "object" },
+                                { "type": "string" }
+                            ],
+                            "description": "This property can be of any type."
+                        },
+                        "thenActionId": {
+                            "type": "string"
+                        },
+                        "elseActionId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "parameterName",
+                        "operator",
+                        "value",
+                        "thenActionId",
+                        "elseActionId"
+                    ]
+                }
+            ]
+        },
+        "AutoActionWithCheck": {
+            "oneOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionRoot"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionRoot"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionClick"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionClick"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionCheckGroup"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionCheckGroup"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionCheck"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionCheck"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionGetText"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionGetText"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionEnterText"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionEnterText"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionWait"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionWait"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionScrollIntoView"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionScrollIntoView"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionSelectFile"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionSelectFile"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionWaitUntil"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionWaitUntil"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionSetValue"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionSetValue"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionCase"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionCase"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionDragNDrop"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionDragNDrop"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionUrl"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionUrl"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionFocus"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionFocus"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionProcedure"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionProcedure"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionEmpty"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionEmpty"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionConsoleLog"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionConsoleLog"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionGoTo"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionGoTo"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionGroup"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionGroup"
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "name": {
+                                "const": "AutoActionCaseParameter"
+                            }
+                        }
+                    },
+                    "then": {
+                        "$ref": "#/$defs/AutoActionCaseParameter"
+                    },
+                    "else": {
+                        "$ref": "#/$defs/AutoAction"
+                    }
+                }
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "version": {
+            "type": "integer"
+        },
+        "rootAction": {
+            "$ref": "#/$defs/AutoActionWithCheck"
+        },
+        "procedures": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/AutoProcedure"
+            }
+        }
+    },
+    "required": [
+        "name",
+        "description",
+        "version",
+        "rootAction",
+        "procedures"
+    ]
+}

@@ -1,0 +1,26 @@
+<div class="content">
+    <div class="browsers-tabs-holder">
+        <label for="browsers-tabs-select">Chose a Tab</label>
+        <select id="browsers-tabs-select" [(ngModel)]="browserTabValue">
+            @for (tab of browserTabList(); track tab.id) {
+                <option [ngValue]="tab.id">{{tab.label}}</option>
+            }
+        </select>
+    </div>
+    <div class="file-upload-with-options">
+        <label class="custom-file-upload">
+            <input id="file-selector" type="file" accept="application/json" multiple (change)="onFileChange($event)"/>
+            Upload a program
+        </label>
+        <a id="a-set-current" class="a-set-current" (click)="onSetCurrentClick()">[set current]</a>
+
+    </div>
+    <div id="uploaded-programs-holder" class="uploaded-programs-holder">
+        @for(item of programItems(); track item.id) {
+            <app-program-item [item]="item"></app-program-item>
+        }
+    </div>
+</div>
+<div class="action-button-holder">
+    <button class="program-button action-button" (click)="onCreateProgramClick()">Create a Program</button>
+</div>
