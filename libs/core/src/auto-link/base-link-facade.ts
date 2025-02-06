@@ -15,7 +15,7 @@ export class BaseLinkFacade {
 	protected async sendToAll<R = void>(data: IAutoMessageData, noResponseRequired: boolean, clientId: string | null): Promise<(R | void)[]> {
 		const senders = Array.from(this.linkMessageSenders.values());
 		if (senders.length === 0) {
-			throw new Error('There are no clients to send the message to');
+			return [];
 		}
 		const promises: Promise<(R | void)>[] = senders.map(
 			async (sender: IMessageSenderWithNoResponse<IAutoMessageData>) => {

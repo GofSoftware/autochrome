@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Autochrome",
-  "version": "1.0.2.1",
-  "description": "The Chrome Extension for the Automation",
+  "version": "1.0.2.2",
+  "description": "Chrome extension for automation",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
@@ -19,13 +19,11 @@
     {
       "js": ["content/content.js"],
       "css": ["content/content.css"],
-      "run_at": "document_end",
+      "run_at": "document_start",
       "matches": [
         "<all_urls>"
       ],
-      "match_origin_as_fallback": true,
-      "all_frames": false,
-      "match_about_blank": true
+      "all_frames": false
     }
   ],
   "permissions": [

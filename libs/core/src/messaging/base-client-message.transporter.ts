@@ -47,7 +47,6 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 		return JSON.stringify(message)
 	}
 
-
 	private preProcessMessage(message: IAutoMessage<IAutoMessageData>): boolean {
 		if (message.data.type === AutoMessageType.AsyncMessageResult) {
 			const resultMessage = message as IAutoMessage<IAutoMessageAsyncMessageResult>;
@@ -97,8 +96,8 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 
 		this.connection = ConnectorConnection.create(remoteClientId);
 
-		Logger.instance.log(`ConnectionManager: A new client with id ${remoteClientId} has been accepted.`);
 		this.$connected.next(true);
-	}
 
+        Logger.instance.log(`ConnectionManager: A new client with id ${remoteClientId} has been accepted.`);
+	}
 }

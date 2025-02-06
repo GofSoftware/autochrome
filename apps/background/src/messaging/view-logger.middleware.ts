@@ -15,6 +15,7 @@ export class ViewLoggerMiddleware implements ILogger {
 		try {
 			ViewInterfaceLinkFacade.instance.sendLog(this.createLogMessage(message, ...params), severity);
 		} catch (error) {
+            /*just skip error to not interrupt any important process*/
 		}
 	}
 
