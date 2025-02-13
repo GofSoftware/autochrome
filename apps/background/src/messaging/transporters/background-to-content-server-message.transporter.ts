@@ -38,7 +38,7 @@ export class BackgroundToContentServerMessageTransporter<T extends IAutoMessageC
 
 	private processMessage(message: IAutoMessage<T>, sender: chrome.runtime.MessageSender): void {
 		const tabId = sender?.tab?.id?.toString();
-		if(tabId == null) {
+		if (tabId == null) {
 			return;
 		}
 		if (!this.clientTransporters.has(message.clientId)) {

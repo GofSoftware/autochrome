@@ -18,6 +18,7 @@ export enum AutoMessageType {
 	GetProgramList = 'GetProgramList',
 	Log = 'Log',
 	GetBrowserTabList = 'GetBrowserTabList',
+	BrowserTabList = 'BrowserTabList',
 	CloseBrowserTab = 'CloseBrowserTab',
 
 	ContentProgramAction = 'ContentProgramAction',
@@ -99,6 +100,11 @@ export interface IBrowserTab {
 	id: number;
 	title: string;
 	url: string;
+    active: boolean
+}
+
+export interface IAutoMessageViewDataBrowserTabList extends IAutoMessageViewData<AutoMessageType.BrowserTabList> {
+    browserTabs: IBrowserTab[];
 }
 
 export interface IAutoMessageViewDataGetBrowserTabList extends IAutoMessageViewData<AutoMessageType.GetBrowserTabList>  {
@@ -150,7 +156,8 @@ export type AutoMessageViewDataType =
 	IAutoMessageViewDataGetProgramList |
 	IAutoMessageAsyncMessageClientConnect |
 	IAutoMessageViewDataGetBrowserTabList |
-	IAutoMessageViewDataCloseBrowserTab;
+	IAutoMessageViewDataCloseBrowserTab |
+    IAutoMessageViewDataBrowserTabList;
 
 export type AutoMessageContentDataType =
 	IAutoMessageContentDataProgramAction |

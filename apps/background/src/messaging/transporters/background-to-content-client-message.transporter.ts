@@ -17,7 +17,7 @@ export class BackgroundToContentClientMessageTransporter<T extends IAutoMessageC
 
 	public clientId = BackgroundToContentClientMessageTransporter.name + '_' + Guid.v4();
 
-	private constructor(private tabId: number) {
+	private constructor(public tabId: number) {
 		super();
 	}
 

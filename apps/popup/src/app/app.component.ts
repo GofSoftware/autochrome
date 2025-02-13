@@ -1,11 +1,8 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { PopupToBackgroundLinkFacade } from './business/popup-to-background-link-facade';
 import { Logger } from '@autochrome/core/common/logger';
 import { FormsModule } from '@angular/forms';
 import { ProgramItemComponent } from './components/program-item/program-item.component';
-import { filter } from 'rxjs';
-import { IRobotSettingsGlobal } from '@autochrome/core/settings/i-robot-settings-global';
 import { EventDisposableComponent } from './components/event-disposable.component';
 import { AppService } from './business/app.service';
 import { IAutoMessageViewDataLog } from '@autochrome/core/messaging/i-auto-message';
@@ -54,10 +51,8 @@ export class AppComponent extends EventDisposableComponent implements OnInit, On
 			// await new Promise((resolve)=>{ setTimeout(resolve, 5000); });
 			await AppService.instance.init();
 
-
-
 			this.registerSubscription(AppService.instance.log$.subscribe((log: IAutoMessageViewDataLog) => {
-				this.logItems().push(log)
+				this.logItems().push(log);
 				this.logItems.set(this.logItems().slice(-1000));
 			}));
 

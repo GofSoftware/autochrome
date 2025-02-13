@@ -90,6 +90,16 @@ export class BackgroundMessagingManager extends EventDisposable {
 				} else {
 					RobotInterfaceLinkFacade.instance.removeMessageSender('contentMessageManager',);
 				}
+
+                this.backgroundMessagingContext.registeredContentTabIds =
+                    Array.from(
+                        (this.contentMessageManager!.transporter as BackgroundToContentServerMessageTransporter).clientTransporters.values()
+                    ).map((v) => (v.transporter as BackgroundToContentClientMessageTransporter).tabId.toString())
+
+                this.viewMessageProcessor.getBrowserTabs().then((tabs) => {
+                    return ViewInterfaceLinkFacade.instance.sendBrowserTabList(tabs);
+                }).catch((error) => { Logger.instance.log(`Error in sendBrowserTabList. ${error?.message}`) });
+
 			}),
 			BackgroundToContentClientMessageTransporter.name
 		);

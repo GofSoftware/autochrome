@@ -116,7 +116,7 @@ export class ProgramItemComponent implements OnDestroy {
 			this.item().status === ProgramContainerStatus.Paused ||
 			this.item().status === ProgramContainerStatus.InProgress
 		);
-		this.isActive.set(this.isProgressBarVisible() || this.isSelected())
+		this.isActive.set(this.isProgressBarVisible() || this.isSelected());
 	}
 
 	private calcElementsVisibility(): IElementsVisibility {
@@ -136,6 +136,4 @@ export class ProgramItemComponent implements OnDestroy {
 				this.item().status === ProgramContainerStatus.Completed
 		};
 	}
-
-
 }

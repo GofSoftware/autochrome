@@ -126,11 +126,15 @@ export class ViewMessageProcessor<T extends AutoMessageViewDataType> {
 		await ViewInterfaceLinkFacade.instance.sendRobotSettings(settings);
 	}
 
-	private async getBrowserTabs(): Promise<IBrowserTab[]> {
+	public async getBrowserTabs(): Promise<IBrowserTab[]> {
 		const tabs = await chrome.tabs.query({});
-		return tabs.map((tab) => {
-			return { id: tab.id!, title: tab.title!, url: tab.url! };
-		});
+        const registeredTabSet = new Set(this.context.registeredContentTabIds);
+		return tabs.reduce((tabs, tab) => {
+            if (registeredTabSet.has(tab.id!.toString())) {
+                tabs.push({ id: tab.id!, title: tab.title!, url: tab.url!, active: tab.active });
+            };
+			return tabs
+		}, ([] as IBrowserTab[]));
 	}
 
 	private async closeBrowserTab(message: IAutoMessage<T>): Promise<void> {

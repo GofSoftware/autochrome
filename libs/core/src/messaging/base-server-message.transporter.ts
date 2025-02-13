@@ -71,11 +71,14 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 		}, 10000);
 		let remoteClientId: string | null = null;
 		transporter.connected$.subscribe((connected) => {
+            if (connected == null) {
+                return;
+            }
 			if (connected) {
 				clearTimeout(connectionWatchdog);
 				remoteClientId = transporter.connection!.clientId;
 				this.clientTransporters.set(remoteClientId, { transporter, subscription });
-				if (this.$connected.value === false) {
+				if (this.$connected.value == null || this.$connected.value === false) {
 					this.$connected.next(true);
 				}
 			} else {

@@ -1,9 +1,9 @@
 import {
-	AutoMessageType,
-	IAutoMessageViewDataSeveralContainersUpdate,
-	IAutoMessageViewDataGlobalSettings,
-	IAutoMessageViewDataLog,
-	IAutoMessageViewDataProgramListUpdate
+    AutoMessageType,
+    IAutoMessageViewDataSeveralContainersUpdate,
+    IAutoMessageViewDataGlobalSettings,
+    IAutoMessageViewDataLog,
+    IAutoMessageViewDataProgramListUpdate, IBrowserTab, IAutoMessageViewDataBrowserTabList
 } from '@autochrome/core/messaging/i-auto-message';
 import { IProgramContainerInfo } from '@autochrome/core/program/container/i-program-container';
 import { BaseLinkFacade } from '@autochrome/core/auto-link/base-link-facade';
@@ -34,6 +34,11 @@ export class ViewInterfaceLinkFacade extends BaseLinkFacade {
 
     public async sendRobotSettings(globalSettings: IRobotSettingsGlobal): Promise<void> {
 		const data: IAutoMessageViewDataGlobalSettings = {type: AutoMessageType.GlobalSettings, globalSettings};
+		await this.sendToAll(data, true, null);
+    }
+
+    public async sendBrowserTabList(browserTabs: IBrowserTab[]): Promise<void> {
+		const data: IAutoMessageViewDataBrowserTabList = {type: AutoMessageType.BrowserTabList, browserTabs};
 		await this.sendToAll(data, true, null);
     }
 }

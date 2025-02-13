@@ -1,9 +1,9 @@
 import { IMessageProcessor } from '@autochrome/core/messaging/i-message-processor';
 import {
-	AutoMessageType, AutoMessageViewDataType,
-	IAutoMessage, IAutoMessageViewDataSeveralContainersUpdate,
-	IAutoMessageViewDataGlobalSettings, IAutoMessageViewDataLog,
-	IAutoMessageViewDataProgramListUpdate
+    AutoMessageType, AutoMessageViewDataType,
+    IAutoMessage, IAutoMessageViewDataSeveralContainersUpdate,
+    IAutoMessageViewDataGlobalSettings, IAutoMessageViewDataLog,
+    IAutoMessageViewDataProgramListUpdate
 } from '@autochrome/core/messaging/i-auto-message';
 import { IPopupDataStream } from '../i-popup-data-stream';
 

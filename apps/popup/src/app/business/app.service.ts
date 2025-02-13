@@ -1,4 +1,3 @@
-import { TabManager } from '@autochrome/core/common/tab-manager';
 import { Logger } from '@autochrome/core/common/logger';
 import { PopupMessageProcessor } from './messaging/popup-message.processor';
 import { IProgramContainerInfo } from '@autochrome/core/program/container/i-program-container';
@@ -8,9 +7,9 @@ import { PopupToBackgroundMessageTransporter } from './messaging/popup-to-backgr
 import { PopupToBackgroundLinkFacade } from './popup-to-background-link-facade';
 import { IRobotSettingsGlobal } from '@autochrome/core/settings/i-robot-settings-global';
 import {
-	AutoMessageType,
-	AutoMessageViewDataType,
-	IAutoMessageViewDataLog
+    AutoMessageType,
+    AutoMessageViewDataType,
+    IAutoMessageViewDataLog, IBrowserTab
 } from '@autochrome/core/messaging/i-auto-message';
 import Tab = chrome.tabs.Tab;
 import { EventDisposable } from '@autochrome/core/common/event-disposable';
@@ -31,13 +30,13 @@ export class AppService extends EventDisposable {
 	private $programItemsUpdate = new Subject<Partial<IProgramContainerInfo>[]>();
 	public programItemsUpdate$: Observable<Partial<IProgramContainerInfo>[]> = this.$programItemsUpdate.asObservable();
 
-	public $globalSettings = new BehaviorSubject<IRobotSettingsGlobal | null>(null);
+    private $globalSettings = new BehaviorSubject<IRobotSettingsGlobal | null>(null);
 	public globalSettings$: Observable<IRobotSettingsGlobal | null> = this.$globalSettings.asObservable();
 
-	public $browserTabs = new BehaviorSubject<Tab[]>([]);
-	public browserTabs$: Observable<Tab[]> = this.$browserTabs.asObservable();
+    private $browserTabs = new BehaviorSubject<IBrowserTab[]>([]);
+	public browserTabs$: Observable<IBrowserTab[]> = this.$browserTabs.asObservable();
 
-	public $log = new Subject<IAutoMessageViewDataLog>();
+    private $log = new Subject<IAutoMessageViewDataLog>();
 	public log$: Observable<IAutoMessageViewDataLog> = this.$log.asObservable();
 
 	public async init(): Promise<void> {
@@ -65,12 +64,14 @@ export class AppService extends EventDisposable {
 				}),
 				switchMap(async (connected) => {
 					if (connected) {
-						const [settings, programList] = await Promise.all([
+						const [settings, programList, browserTabs] = await Promise.all([
 							await PopupToBackgroundLinkFacade.instance.getGlobalSettings(),
-							await PopupToBackgroundLinkFacade.instance.getProgramList()
+							await PopupToBackgroundLinkFacade.instance.getProgramList(),
+							await PopupToBackgroundLinkFacade.instance.getBrowserTabs()
 						]);
 						dataStream.$globalSettings.next(settings);
 						dataStream.$programItems.next(programList);
+						dataStream.$browserTabs.next(browserTabs);
 					}
 				})
 			).subscribe(),
@@ -83,9 +84,5 @@ export class AppService extends EventDisposable {
 			warn: (message: string, ...params) => { this.$log.next({type: AutoMessageType.Log, message, severity: LogSeverity.warn}); },
 			error: (message: string, ...params) => { this.$log.next({type: AutoMessageType.Log, message, severity: LogSeverity.error}); },
 		});
-
-		await TabManager.instance.init();
-		this.$browserTabs.next(TabManager.instance.tabs);
 	}
-
 }

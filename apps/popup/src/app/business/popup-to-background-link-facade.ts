@@ -1,6 +1,6 @@
 import {
-	ProgramContainerAction,
-	AutoMessageType, AutoMessageViewDataType
+    ProgramContainerAction,
+    AutoMessageType, AutoMessageViewDataType, IBrowserTab
 } from '@autochrome/core/messaging/i-auto-message';
 import { IProgramContainerInfo } from '@autochrome/core/program/container/i-program-container';
 import { IRobotSettingsGlobal } from '@autochrome/core/settings/i-robot-settings-global';
@@ -33,6 +33,10 @@ export class PopupToBackgroundLinkFacade {
 
 	public async getProgramList(): Promise<IProgramContainerInfo[]> {
 		return (await this.messageManager?.sendMessage<IProgramContainerInfo[]>({type: AutoMessageType.GetProgramList}, null))!;
+	}
+
+	public async getBrowserTabs(): Promise<IBrowserTab[]> {
+		return (await this.messageManager?.sendMessage<IBrowserTab[]>({type: AutoMessageType.GetBrowserTabList}, null))!;
 	}
 
 	public async doContainerAction(containerId: string, action: ProgramContainerAction): Promise<void> {

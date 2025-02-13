@@ -8,6 +8,7 @@ export class BackgroundMessagingContext {
 
 	private $settingsChanged = new Subject<Partial<IRobotSettingsGlobal>>();
 	public settingsChanged$ = this.$settingsChanged.asObservable();
+	public registeredContentTabIds: string[] = [];
 
 	public notifySettingsChanged(settings: Partial<IRobotSettingsGlobal>): void {
 		this.$settingsChanged.next(settings);

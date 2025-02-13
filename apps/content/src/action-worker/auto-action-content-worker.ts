@@ -38,7 +38,11 @@ export class AutoActionContentWorker {
 			.subscribe((request) => {
 				InterruptibleUtility.clearAll(request!.reason);
 		});
-		await ContentAutoLinkFacade.instance().sendAwake();
+        try {
+            await ContentAutoLinkFacade.instance().sendAwake();
+        } catch (error) {
+            Logger.instance.error('sendAwake failed', error);
+        }
 	}
 
 	private async processQueue(): Promise<void> {

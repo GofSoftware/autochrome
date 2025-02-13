@@ -1,5 +1,4 @@
 import { Component, OnInit, signal } from '@angular/core';
-import Tab = chrome.tabs.Tab;
 import { PopupToBackgroundLinkFacade } from '../../business/popup-to-background-link-facade';
 import { Logger } from '@autochrome/core/common/logger';
 import { IProgramContainerInfo } from '@autochrome/core/program/container/i-program-container';
@@ -7,6 +6,7 @@ import { AppService } from '../../business/app.service';
 import { EventDisposableComponent } from '../event-disposable.component';
 import { ProgramItemComponent } from '../program-item/program-item.component';
 import { FormsModule } from '@angular/forms';
+import { IBrowserTab } from '@autochrome/core/messaging/i-auto-message';
 
 @Component({
 	selector: 'app-program-content',
@@ -103,12 +103,17 @@ export class ProgramContentComponent extends EventDisposableComponent implements
 		});
 	}
 
-	private updateBrowserTabs(tabs: Tab[]): void {
-		this.browserTabList.set(tabs.map((tab: Tab) => {
+	private updateBrowserTabs(tabs: IBrowserTab[]): void {
+        let valueTab: string | null = tabs.length > 0 ? tabs[0].id.toString() : null;
+		this.browserTabList.set(tabs.map((tab: IBrowserTab) => {
 			if (tab.active) {
-				this.browserTabValue.set(tab.id!.toString());
+                valueTab = tab.id!.toString()
+
 			}
 			return {label: tab.title!, id: tab.id!.toString()};
 		}));
+        if (valueTab != null) {
+            this.browserTabValue.set(valueTab);
+        }
 	}
 }
