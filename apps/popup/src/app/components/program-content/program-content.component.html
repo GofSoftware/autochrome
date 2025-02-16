@@ -1,11 +1,16 @@
 <div class="content">
     <div class="browsers-tabs-holder">
         <label for="browsers-tabs-select">Chose a Tab</label>
-        <select id="browsers-tabs-select" [(ngModel)]="browserTabValue">
+        @if (browserTabList().length === 0) {
+            <div class="tab-warning">There are no Tabs with the Autochrome content script, please reload one of the tabs or open a new one (with some URL)</div>
+        }
+        @if (browserTabList().length > 0) {
+        <select id="browsers-tabs-select" [(ngModel)]="browserTabValue" (ngModelChange)="onBrowserTabValueChange()">
             @for (tab of browserTabList(); track tab.id) {
                 <option [ngValue]="tab.id">{{tab.label}}</option>
             }
         </select>
+        }
     </div>
     <div class="file-upload-with-options">
         <label class="custom-file-upload">

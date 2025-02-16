@@ -90,7 +90,12 @@ export class BackgroundMessagingManager extends EventDisposable {
 				} else {
 					RobotInterfaceLinkFacade.instance.removeMessageSender('contentMessageManager',);
 				}
+			}),
+            BackgroundToContentServerMessageTransporter.name
+		);
 
+        this.unsubscribeAndRegisterNamed(
+            (this.contentMessageManager.transporter as BackgroundToContentServerMessageTransporter).clientConnected$.subscribe(() => {
                 this.backgroundMessagingContext.registeredContentTabIds =
                     Array.from(
                         (this.contentMessageManager!.transporter as BackgroundToContentServerMessageTransporter).clientTransporters.values()
@@ -99,10 +104,9 @@ export class BackgroundMessagingManager extends EventDisposable {
                 this.viewMessageProcessor.getBrowserTabs().then((tabs) => {
                     return ViewInterfaceLinkFacade.instance.sendBrowserTabList(tabs);
                 }).catch((error) => { Logger.instance.log(`Error in sendBrowserTabList. ${error?.message}`) });
-
-			}),
-			BackgroundToContentClientMessageTransporter.name
-		);
+            }),
+            BackgroundToContentClientMessageTransporter.name
+        );
 	}
 
 	private async initConnectorMessaging(): Promise<void> {

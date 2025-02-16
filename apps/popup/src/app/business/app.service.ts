@@ -11,7 +11,6 @@ import {
     AutoMessageViewDataType,
     IAutoMessageViewDataLog, IBrowserTab
 } from '@autochrome/core/messaging/i-auto-message';
-import Tab = chrome.tabs.Tab;
 import { EventDisposable } from '@autochrome/core/common/event-disposable';
 import { IPopupDataStream } from './i-popup-data-stream';
 import { LogSeverity } from '@autochrome/core/common/i-logger';
@@ -38,6 +37,8 @@ export class AppService extends EventDisposable {
 
     private $log = new Subject<IAutoMessageViewDataLog>();
 	public log$: Observable<IAutoMessageViewDataLog> = this.$log.asObservable();
+
+    private activeTab: IBrowserTab | null = null;
 
 	public async init(): Promise<void> {
 		Logger.instance.prefix = 'Autochrome:popup';
@@ -85,4 +86,13 @@ export class AppService extends EventDisposable {
 			error: (message: string, ...params) => { this.$log.next({type: AutoMessageType.Log, message, severity: LogSeverity.error}); },
 		});
 	}
+
+    public setActiveTabById(tabId: string | null): void {
+        this.activeTab = this.$browserTabs.value.find((tab) => tab.id.toString() === tabId) || null;
+
+    }
+
+    public getActiveTab(): IBrowserTab | null {
+        return this.activeTab;
+    }
 }

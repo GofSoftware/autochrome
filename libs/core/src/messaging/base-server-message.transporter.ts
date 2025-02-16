@@ -9,9 +9,11 @@ import { Logger } from '@autochrome/core/common/logger';
 export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> implements IServerMessageTransporter<T> {
 	protected $message = new Subject<IAutoMessage<T>>();
 	protected $connected = new BehaviorSubject<boolean | null>(null);
+	protected $clientConnected = new BehaviorSubject<{clientId: string, state: boolean} | null | null>(null);
 
 	public message$: Observable<IAutoMessage<T>> = this.$message.asObservable();
 	public connected$: Observable<boolean | null> = this.$connected.asObservable();
+	public clientConnected$: Observable<{clientId: string, state: boolean} | null> = this.$clientConnected.asObservable();
 
 	public clientTransporters = new Map<string, {transporter: IClientMessageTransporter<T>, subscription: Subscription}>();
 
@@ -20,16 +22,9 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 	}
 
 	public closeConnections(): void {
-		this.clientTransporters.forEach((value) => {
-			try {
-				value.subscription.unsubscribe();
-				value.transporter.dispose();
-			} catch (error) {
-				Logger.instance.error('Error: ', error);
-			}
-		});
-		this.clientTransporters.clear();
-
+        Array.from(this.clientTransporters.keys()).forEach((clientId) => {
+            this.closeConnection(clientId);
+        });
 		this.$connected.next(false);
 	}
 
@@ -69,20 +64,25 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 			subscription.unsubscribe();
 			transporter.dispose();
 		}, 10000);
-		let remoteClientId: string | null = null;
 		transporter.connected$.subscribe((connected) => {
             if (connected == null) {
                 return;
             }
 			if (connected) {
 				clearTimeout(connectionWatchdog);
-				remoteClientId = transporter.connection!.clientId;
+				const remoteClientId = transporter.connection!.clientId;
 				this.clientTransporters.set(remoteClientId, { transporter, subscription });
-				if (this.$connected.value == null || this.$connected.value === false) {
+
+                this.$clientConnected.next({clientId: remoteClientId, state: true});
+
+                if (this.$connected.value == null || this.$connected.value === false) {
 					this.$connected.next(true);
 				}
 			} else {
-				this.closeConnection(remoteClientId);
+				this.closeConnection(transporter.connection!.clientId);
+
+                this.$clientConnected.next({clientId: transporter.connection!.clientId, state: true});
+
 				if (this.clientTransporters.size === 0) {
 					this.$connected.next(false);
 				}

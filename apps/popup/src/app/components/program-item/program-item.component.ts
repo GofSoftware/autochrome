@@ -2,10 +2,11 @@ import { Component, effect, input, OnDestroy, signal, untracked } from '@angular
 import { TabManager } from '@autochrome/core/common/tab-manager';
 import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container-status';
 import { PopupToBackgroundLinkFacade } from '../../business/popup-to-background-link-facade';
-import { ProgramContainerAction } from '@autochrome/core/messaging/i-auto-message';
+import { IBrowserTab, ProgramContainerAction } from '@autochrome/core/messaging/i-auto-message';
 import { NgClass, NgIf, NgStyle } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { IProgramContainerInfo } from '@autochrome/core/program/container/i-program-container';
+import { AppService } from '../../business/app.service';
 
 interface IElementsVisibility {
 	playVisible?: boolean;
@@ -43,6 +44,7 @@ export class ProgramItemComponent implements OnDestroy {
 	public isProgressBarVisible = signal<boolean>(false);
 
 	private itemChangeSubscription!: Subscription;
+    private enabledTabs: IBrowserTab[] = [];
 
 	constructor() {
 		effect(() => {
@@ -52,6 +54,10 @@ export class ProgramItemComponent implements OnDestroy {
 				});
 			}
 		});
+        AppService.instance.browserTabs$.subscribe((tabs) => {
+            this.enabledTabs = tabs;
+            this.update();
+        });
 	}
 
 	public ngOnDestroy(): void {
@@ -88,20 +94,18 @@ export class ProgramItemComponent implements OnDestroy {
 	}
 
 	public async onSetCurrentTabClick() {
-		const [currentTab] = await chrome.tabs.query( { active: true });
-		if (currentTab != null) {
-			this.item().tabId = currentTab.id!;
-			await PopupToBackgroundLinkFacade.instance.updateContainers([this.item()]);
-		}
+        this.item().tabId = AppService.instance.getActiveTab()?.id || null;
+        await PopupToBackgroundLinkFacade.instance.updateContainers([this.item()]);
 	}
 
 	private update(): void {
 		this.visibility.set(this.calcElementsVisibility());
 
-		this.tabExists.set(TabManager.instance.exists(this.item().tabId!));
+        const tab = this.enabledTabs.find((tab) => tab.id === this.item().tabId!);
+		this.tabExists.set(tab != null);
 		this.tabTitle.set(
 			this.tabExists()
-				? TabManager.instance.tab(this.item().tabId!)!.title!
+				? tab!.title
 				: 'Tab is closed, click to set current tab.'
 		);
 

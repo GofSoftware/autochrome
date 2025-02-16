@@ -35,6 +35,7 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 			return;
 		}
 		this.connection.close();
+        Logger.instance.log(`BaseClientMessageTransporter: The client with id ${this.connection.clientId} has been closed.`);
 		this.connection = null;
 		this.$connected.next(false);
 	}
@@ -98,6 +99,6 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 
 		this.$connected.next(true);
 
-        Logger.instance.log(`ConnectionManager: A new client with id ${remoteClientId} has been accepted.`);
+        Logger.instance.log(`BaseClientMessageTransporter: A new client with id ${remoteClientId} has been accepted.`);
 	}
 }

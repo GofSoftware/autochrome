@@ -49,14 +49,18 @@ export class ProgramContentComponent extends EventDisposableComponent implements
 	}
 
 	public async onSetCurrentClick(): Promise<void> {
-		const [currentTab] = await chrome.tabs.query({ active: true });
-		if (currentTab != null) {
+		const currentTabId = AppService.instance.getActiveTab()?.id || null;
+		if (currentTabId != null) {
 			this.programItems().forEach((item) => {
-				item.tabId = currentTab.id!;
+				item.tabId = currentTabId;
 			});
 			await PopupToBackgroundLinkFacade.instance.updateContainers(this.programItems().slice());
 		}
 	}
+
+    public onBrowserTabValueChange() {
+        AppService.instance.setActiveTabById(this.browserTabValue());
+    }
 
 	public async onFileChange(event: Event) {
 		const fileList: FileList = (event.target as any).files;
@@ -107,13 +111,13 @@ export class ProgramContentComponent extends EventDisposableComponent implements
         let valueTab: string | null = tabs.length > 0 ? tabs[0].id.toString() : null;
 		this.browserTabList.set(tabs.map((tab: IBrowserTab) => {
 			if (tab.active) {
-                valueTab = tab.id!.toString()
-
+                valueTab = tab.id!.toString();
 			}
 			return {label: tab.title!, id: tab.id!.toString()};
 		}));
         if (valueTab != null) {
             this.browserTabValue.set(valueTab);
+            this.onBrowserTabValueChange();
         }
 	}
 }

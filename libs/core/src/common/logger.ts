@@ -38,7 +38,7 @@ export class Logger implements ILogger {
 		}
 		this.middleware.forEach((logger) => {
 			try {
-				logger.log(this.prefixMessage(message, LogSeverity.debug), ...params);
+				logger.log(this.prefixMessage(message, LogSeverity.log), ...params);
 			} catch (e){
 				// Ignore
 			}
@@ -51,7 +51,7 @@ export class Logger implements ILogger {
 		}
 		this.middleware.forEach((logger) => {
 			try {
-				logger.warn(this.prefixMessage(message, LogSeverity.debug), ...params);
+				logger.warn(this.prefixMessage(message, LogSeverity.warn), ...params);
 			} catch (e){
 				// Ignore
 			}
@@ -64,7 +64,7 @@ export class Logger implements ILogger {
 		}
 		this.middleware.forEach((logger) => {
 			try {
-				logger.error(this.prefixMessage(message, LogSeverity.debug), ...params);
+				logger.error(this.prefixMessage(message, LogSeverity.error), ...params);
 			} catch (e){
 				// Ignore
 			}
