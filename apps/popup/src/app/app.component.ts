@@ -27,7 +27,6 @@ enum Tabs {
 export class AppComponent extends EventDisposableComponent implements OnInit, OnDestroy {
 
 	public isLoading = signal<boolean>(true);
-	public logItems = signal<IAutoMessageViewDataLog[]>([]);
 	public tab = signal<Tabs>(Tabs.ProgramContent);
 
 	public Tabs = Tabs;
@@ -50,12 +49,6 @@ export class AppComponent extends EventDisposableComponent implements OnInit, On
 		try {
 			// await new Promise((resolve)=>{ setTimeout(resolve, 5000); });
 			await AppService.instance.init();
-
-			this.registerSubscription(AppService.instance.log$.subscribe((log: IAutoMessageViewDataLog) => {
-				this.logItems().push(log);
-				this.logItems.set(this.logItems().slice(-1000));
-			}));
-
 		} catch (error) {
 			Logger.instance.error('Error: ', error);
 		} finally {

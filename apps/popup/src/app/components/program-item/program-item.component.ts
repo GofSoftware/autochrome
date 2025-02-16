@@ -1,12 +1,11 @@
 import { Component, effect, input, OnDestroy, signal, untracked } from '@angular/core';
-import { TabManager } from '@autochrome/core/common/tab-manager';
 import { ProgramContainerStatus } from '@autochrome/core/program/container/program-container-status';
 import { PopupToBackgroundLinkFacade } from '../../business/popup-to-background-link-facade';
 import { IBrowserTab, ProgramContainerAction } from '@autochrome/core/messaging/i-auto-message';
 import { NgClass, NgIf, NgStyle } from '@angular/common';
-import { Subscription } from 'rxjs';
 import { IProgramContainerInfo } from '@autochrome/core/program/container/i-program-container';
 import { AppService } from '../../business/app.service';
+import { EventDisposableComponent } from '../event-disposable.component';
 
 interface IElementsVisibility {
 	playVisible?: boolean;
@@ -28,7 +27,7 @@ interface IElementsVisibility {
 	],
 	styleUrl: 'program-item.component.scss'
 })
-export class ProgramItemComponent implements OnDestroy {
+export class ProgramItemComponent extends EventDisposableComponent implements OnDestroy {
 	public item = input.required<IProgramContainerInfo>();
 
 	public isSelected = signal<boolean>(false);
@@ -43,27 +42,23 @@ export class ProgramItemComponent implements OnDestroy {
 	public hasError = signal<boolean>(false);
 	public isProgressBarVisible = signal<boolean>(false);
 
-	private itemChangeSubscription!: Subscription;
     private enabledTabs: IBrowserTab[] = [];
 
 	constructor() {
+        super();
 		effect(() => {
-			if(this.item() != null) {
+			if (this.item() != null) {
 				untracked(() => {
 					this.update();
 				});
 			}
 		});
-        AppService.instance.browserTabs$.subscribe((tabs) => {
+        this.unsubscribeAndRegisterNamed(AppService.instance.browserTabs$.subscribe((tabs) => {
             this.enabledTabs = tabs;
-            this.update();
-        });
-	}
-
-	public ngOnDestroy(): void {
-		if (this.itemChangeSubscription) {
-			this.itemChangeSubscription.unsubscribe();
-		}
+            if (this.item() != null) {
+                this.update();
+            }
+        }), 'AppService.instance.browserTabs$');
 	}
 
 	public async onCloseButtonClick() {

@@ -3,7 +3,7 @@ import {
     AutoMessageType, AutoMessageViewDataType,
     IAutoMessage, IAutoMessageViewDataSeveralContainersUpdate,
     IAutoMessageViewDataGlobalSettings, IAutoMessageViewDataLog,
-    IAutoMessageViewDataProgramListUpdate
+    IAutoMessageViewDataProgramListUpdate, IAutoMessageViewDataBrowserTabList
 } from '@autochrome/core/messaging/i-auto-message';
 import { IPopupDataStream } from '../i-popup-data-stream';
 
@@ -28,6 +28,9 @@ export class PopupMessageProcessor<T extends AutoMessageViewDataType> implements
 				break;
 			case AutoMessageType.Log:
 				this.popupDataStream.$log.next(message.data! as IAutoMessageViewDataLog);
+				break;
+			case AutoMessageType.BrowserTabList:
+				this.popupDataStream.$browserTabs.next((message.data! as IAutoMessageViewDataBrowserTabList).browserTabs);
 				break;
 			default:
 				throw(`MessageManager.processMessage Error: Unknown autoMessage type ${message.data.type}`);
