@@ -3,7 +3,6 @@ import {
 	IAutoMessage, IAutoMessageContentData, IAutoMessageData
 } from '@autochrome/core/messaging/i-auto-message';
 import { Guid } from '@autochrome/core/common/guid';
-import { IClientMessageTransporter } from '@autochrome/core/messaging/i-client-message-transporter';
 import { AutoMessageBuilder } from '@autochrome/core/messaging/auto-message.builder';
 import { Logger } from '@autochrome/core/common/logger';
 
