@@ -64,11 +64,11 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 			subscription.unsubscribe();
 			transporter.dispose();
 		}, 10000);
+        let remoteClientId: string | null = null;
 		transporter.connected$.subscribe((connected) => {
             if (connected == null) {
                 return;
             }
-            let remoteClientId: string | null = null;
 			if (connected) {
 				clearTimeout(connectionWatchdog);
 				remoteClientId = transporter.connection!.clientId;
@@ -92,7 +92,7 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 		});
 	}
 
-	private closeConnection(clientId: string | null | undefined): void {
+	protected closeConnection(clientId: string | null | undefined): void {
 		if (clientId == null || !this.clientTransporters.has(clientId)) {
 			return;
 		}

@@ -42,6 +42,7 @@ export class BackgroundToContentServerMessageTransporter<T extends IAutoMessageC
 			return;
 		}
 		if (!this.clientTransporters.has(message.clientId)) {
+            this.closeExistingTransporterForTab(sender?.tab?.id)
 			const transporter = BackgroundToContentClientMessageTransporter.create<T>(sender?.tab?.id!);
 			this.tabIdToClientIdMap.set(tabId, message.clientId);
 			this.registerClientTransporter(transporter);
@@ -50,6 +51,14 @@ export class BackgroundToContentServerMessageTransporter<T extends IAutoMessageC
 		}
 		(this.clientTransporters.get(message.clientId)!.transporter as BackgroundToContentClientMessageTransporter<T>).acceptMessage(message);
 	}
+
+    private closeExistingTransporterForTab(tabId: number | undefined): void {
+        if (tabId == null || !this.tabIdToClientIdMap.has(tabId.toString())) {
+            return;
+        }
+        const clientId = this.tabIdToClientIdMap.get(tabId.toString());
+        this.closeConnection(clientId);
+    }
 
 	private getClientIdFromTabId(toTabOrClientId: string): string {
 		return this.tabIdToClientIdMap.has(toTabOrClientId) ? this.tabIdToClientIdMap.get(toTabOrClientId)! : toTabOrClientId;

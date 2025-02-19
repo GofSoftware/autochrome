@@ -8,7 +8,7 @@ import {
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AutoActionResult } from '@autochrome/core/program/actions/types/auto-action-result';
 import { MessageManager } from '@autochrome/core/messaging/message-manager';
-import { ContentToBackgroundMessageProcessor } from './contentToBackgroundMessageProcessor';
+import { ContentToBackgroundMessageProcessor } from './content-to-background-message-processor';
 import { ContentToBackgroundMessageTransporter } from './content-to-background-message.transporter';
 
 export class ContentAutoLinkFacade {

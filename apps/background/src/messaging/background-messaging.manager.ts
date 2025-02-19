@@ -95,12 +95,18 @@ export class BackgroundMessagingManager extends EventDisposable {
 		);
 
         this.unsubscribeAndRegisterNamed(
-            (this.contentMessageManager.transporter as BackgroundToContentServerMessageTransporter).clientConnected$.subscribe(() => {
+            (this.contentMessageManager.transporter as BackgroundToContentServerMessageTransporter).clientConnected$.subscribe((client) => {
+                if (client == null) {
+                    return;
+                }
                 this.backgroundMessagingContext.registeredContentTabIds =
                     Array.from(
                         (this.contentMessageManager!.transporter as BackgroundToContentServerMessageTransporter).clientTransporters.values()
                     ).map((v) => (v.transporter as BackgroundToContentClientMessageTransporter).tabId.toString())
-
+                Logger.instance.log(
+                    `BackgroundMessageManager: clientConnected "${client?.clientId}-${client?.state}" registeredTabIds: `,
+                    this.backgroundMessagingContext.registeredContentTabIds
+                );
                 this.viewMessageProcessor.getBrowserTabs().then((tabs) => {
                     return ViewInterfaceLinkFacade.instance.sendBrowserTabList(tabs);
                 }).catch((error) => { Logger.instance.log(`Error in sendBrowserTabList. ${error?.message}`) });
