@@ -8,6 +8,8 @@ import { AutoMessageType, IAutoMessageViewDataNewContainer } from '@autochrome/c
 export class ContainerNewCommand extends BaseConnectorCommand {
 	public static commandName: string = 'container.new';
 
+    public getHelp(): string { return 'container.new [program]'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		if (parameters.length < 2) {
 			throw new Error(`Please specify a file to upload.`);

@@ -4,6 +4,7 @@ import { AutoMessageViewDataType } from '@autochrome/core/messaging/i-auto-messa
 
 export abstract class BaseConnectorCommand implements IConnectorCommand {
 	public abstract invoke(parameters: string[]): Promise<void>;
+	public abstract getHelp(): string;
 
 	protected async send<T extends AutoMessageViewDataType, R extends any = void>(data: T, toClientId: string | null = null): Promise<R> {
 		return await ConnectorContext.instance.messageManager.sendMessage(data, toClientId);

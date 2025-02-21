@@ -10,6 +10,8 @@ import { OptionParser } from '@autochrome/core/common/option-parser';
 export class SetGlobalSettingsCommand extends BaseConnectorCommand {
 	public static commandName: string = 'set.settings';
 
+    public getHelp(): string { return 'set.settings [optionName=value] [optionName=value]...'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		const globalSettings: Partial<IRobotSettingsGlobal> = {};
 

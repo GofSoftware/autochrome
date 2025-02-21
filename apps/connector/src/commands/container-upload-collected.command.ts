@@ -6,6 +6,8 @@ import { ConnectorContext } from '../connector-context';
 export class ContainerUploadCollectedCommand extends BaseConnectorCommand {
 	public static commandName: string = 'container.upload';
 
+    public getHelp(): string { return 'container.upload'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		if (ConnectorContext.instance.programs?.length == 0) {
 			Logger.instance.log(`Nothing to upload, collect programs first.`);

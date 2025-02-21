@@ -14,6 +14,8 @@ import { BaseServerMessageTransporter } from '@autochrome/core/messaging/base-se
 export class WaitTimeCommand extends BaseConnectorCommand {
 	public static commandName: string = 'wait.time';
 
+    public getHelp(): string { return 'wait.time [time(ms)]'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		await new Promise((resolve) => setTimeout(resolve, parseInt(parameters[1], 10)));
 		Logger.instance.log(`${parameters[0]} done.`);

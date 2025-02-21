@@ -7,6 +7,8 @@ const DEFAULT_TIMEOUT = 30 * 1000
 export class WaitConnectionCommand extends BaseConnectorCommand {
 	public static commandName: string = 'wait.connection';
 
+    public getHelp(): string { return 'wait.connection [timeToWait(ms)]'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		await new Promise<void>((resolve, reject) => {
 			let timeout: number | null = null;

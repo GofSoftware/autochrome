@@ -9,6 +9,8 @@ import { IProgramContainerInfo } from '@autochrome/core/program/container/i-prog
 export class ContainerUpdateCommand extends BaseConnectorCommand {
 	public static commandName: string = 'container.update';
 
+    public getHelp(): string { return 'container.update [containerProperty=value] [containerProperty=value]...'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		if (parameters.length < 2) {
 			throw new Error(`Please specify IProgramContainerUpdateInfo field=value pairs to update.`);

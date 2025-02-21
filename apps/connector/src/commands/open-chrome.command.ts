@@ -5,6 +5,8 @@ import childProc from 'child_process';
 export class OpenChromeCommand extends BaseConnectorCommand {
 	public static commandName: string = 'open.chrome';
 
+    public getHelp(): string { return 'open.chrome [URL?]'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		await new Promise<void>((resolve, reject) => {
 			try {

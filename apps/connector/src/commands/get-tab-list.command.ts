@@ -14,6 +14,8 @@ import { BaseServerMessageTransporter } from '@autochrome/core/messaging/base-se
 export class GetTabListCommand extends BaseConnectorCommand {
 	public static commandName: string = 'get.tabs';
 
+    public getHelp(): string { return 'get.tabs'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		ConnectorContext.instance.browserTabs = await this.send<IAutoMessageViewDataGetBrowserTabList, IBrowserTab[]>(
 			{type:AutoMessageType.GetBrowserTabList}

@@ -8,6 +8,8 @@ const DEFAULT_TIMEOUT = 60 * 60 * 1000
 export class WaitProgramsCommand extends BaseConnectorCommand {
 	public static commandName: string = 'wait.programs';
 
+    public getHelp(): string { return 'wait.programs [timeout]'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		await new Promise<void>((resolve, reject) => {
 			let timeout: number | null = null;

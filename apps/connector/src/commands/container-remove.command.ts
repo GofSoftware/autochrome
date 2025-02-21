@@ -8,6 +8,8 @@ import {
 export class ContainerRemoveCommand extends BaseConnectorCommand {
 	public static commandName: string = 'container.remove';
 
+    public getHelp(): string { return 'container.remove [containerId]'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		if (parameters.length < 2) {
 			throw new Error(`Please specify container id to remove.`);

@@ -8,6 +8,8 @@ import { IRobotSettingsGlobal } from '@autochrome/core/settings/i-robot-settings
 export class GetGlobalSettingsCommand extends BaseConnectorCommand {
 	public static commandName: string = 'get.settings';
 
+    public getHelp(): string { return 'get.settings'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		const settings = await this.send<IAutoMessageViewDataGetGlobalSettings, IRobotSettingsGlobal>(
 			{type:AutoMessageType.GetGlobalSettings}

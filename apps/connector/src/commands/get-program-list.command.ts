@@ -9,6 +9,8 @@ import { ConnectorContext } from '../connector-context';
 export class GetProgramsCommand extends BaseConnectorCommand {
 	public static commandName: string = 'get.programs';
 
+    public getHelp(): string { return 'get.programs'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		const programs = await this.send<IAutoMessageViewDataGetProgramList, IProgramContainerInfo[]>(
 			{type:AutoMessageType.GetProgramList}

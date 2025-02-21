@@ -7,7 +7,9 @@ import { BaseConnectorCommand } from './base-connector-command';
 export class CloseTabCommand extends BaseConnectorCommand {
 	public static commandName: string = 'close.tab';
 
-	public async invoke(parameters: string[]): Promise<void> {
+    public getHelp(): string { return 'close.tab [tabUrlOrTitle]'; }
+
+    public async invoke(parameters: string[]): Promise<void> {
 		if (parameters[1] == null) {
 			Logger.instance.warn(`Tab id, url or title is required.`);
 		}

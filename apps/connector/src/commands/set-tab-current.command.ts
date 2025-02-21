@@ -14,6 +14,8 @@ import { BaseServerMessageTransporter } from '@autochrome/core/messaging/base-se
 export class SetTabCurrentCommand extends BaseConnectorCommand {
 	public static commandName: string = 'set.tab';
 
+    public getHelp(): string { return 'set.tab [tabTitleOrURL]'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		const tab = (ConnectorContext.instance.browserTabs || []).find(
 			(t) => t.id.toString() === parameters[1] || t.title === parameters[1] || t.url === parameters[1]

@@ -10,6 +10,8 @@ import { BaseServerMessageTransporter } from '@autochrome/core/messaging/base-se
 export class GetConnectionListCommand extends BaseConnectorCommand {
 	public static commandName: string = 'get.connections';
 
+    public getHelp(): string { return 'get.connections'; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		const connections: string[] =
 			Array.from(

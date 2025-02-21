@@ -9,6 +9,8 @@ import { ConnectorContext } from '../connector-context';
 export class ExecuteCommandFileCommand extends BaseConnectorCommand {
 	public static commandName: string = 'execute.file';
 
+    public getHelp(): string { return 'execute.file [pathToCommandFile] [exit] - Executes a file with commands, add "exit" to close the Connector if any error occurs. '; }
+
 	public async invoke(parameters: string[]): Promise<void> {
 		const file = parameters[1];
 		const exitOnError = parameters[2]  === 'exit';

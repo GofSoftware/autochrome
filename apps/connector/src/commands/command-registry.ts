@@ -20,6 +20,7 @@ import { CloseTabCommand } from './close-tab.command';
 import { WaitTimeCommand } from './wait-time.command';
 import { WaitConnectionCommand } from './wait-connection.command';
 import { WaitProgramsCommand } from './wait-programs.command';
+import { BaseConnectorCommand } from './base-connector-command';
 
 export class CommandRegistry {
 	private static commandRegistryInstance: CommandRegistry;
@@ -58,6 +59,10 @@ export class CommandRegistry {
 	public async invoke(parameters: string[]): Promise<void> {
 		try {
 			const commandName = parameters[0].toLowerCase();
+            if (commandName === 'help' || commandName === '\\?' || commandName === '?') {
+                this.displayHelp();
+                return;
+            }
 			const command = this.registry.has(commandName) ? this.registry.get(commandName) : new UnknownCommand();
 			await command!.invoke(parameters);
 		} catch (error) {
@@ -68,4 +73,10 @@ export class CommandRegistry {
 	private register(name: string, command: IConnectorCommand): void {
 		this.registry.set(name,  command);
 	}
+
+    private displayHelp(): void {
+        this.registry.forEach((command: BaseConnectorCommand) => {
+            console.log('\t' + command.getHelp());
+        })
+    }
 }

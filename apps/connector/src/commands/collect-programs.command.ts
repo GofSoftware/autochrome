@@ -16,14 +16,16 @@ import { ProgramLoader } from '../config/program-loader';
 export class CollectProgramsCommand extends BaseConnectorCommand {
 	public static commandName: string = 'collect.programs';
 
-	public async invoke(parameters: string[]): Promise<void> {
+    public getHelp(): string { return 'collect.programs [path] [pattern]'; }
+
+    public async invoke(parameters: string[]): Promise<void> {
 		const path = parameters[1];
-		const search = parameters[2];
-		if (path == null || search == null) {
-			Logger.instance.error('Path and search are required.');
+		const pattern = parameters[2];
+		if (path == null || pattern == null) {
+			Logger.instance.error('Path and pattern are required.');
 			return;
 		}
-		ProgramLoader.instance.collectPrograms(path, search);
+		ProgramLoader.instance.collectPrograms(path, pattern);
 		Logger.instance.log(`${parameters[0]} done.`);
 	}
 }

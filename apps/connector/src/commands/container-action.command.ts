@@ -7,7 +7,9 @@ import {
 export class ContainerActionCommand extends BaseConnectorCommand {
 	public static commandName: string = 'container.action';
 
-	public async invoke(parameters: string[]): Promise<void> {
+    public getHelp(): string { return 'container.action [action] [containerId]'; }
+
+    public async invoke(parameters: string[]): Promise<void> {
 		if (parameters.length < 2) {
 			throw new Error(`Please specify an action type and optionally container id.`);
 		}
