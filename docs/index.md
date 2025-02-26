@@ -65,7 +65,7 @@ This is an example of the program:
       {
         "name": "AutoActionFocus",
         "description": "Focus the search input.",
-        "selector": "input#search",
+        "selector": "input.ytSearchboxComponentInput",
         "smoothMouse": true
       },
       {
@@ -76,7 +76,7 @@ This is an example of the program:
       {
         "name": "AutoActionEnterText",
         "description": "Enter the search text",
-        "selector": "input#search",
+        "selector": "input.ytSearchboxComponentInput",
         "text": "Gods of software"
       },
       {
@@ -87,7 +87,7 @@ This is an example of the program:
       {
         "name": "AutoActionClick",
         "description": "Click on the search button.",
-        "selector": "#search-icon-legacy",
+        "selector": "button.ytSearchboxComponentSearchButton",
         "smoothMouse": true,
         "wait": false
       },
