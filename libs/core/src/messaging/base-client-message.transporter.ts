@@ -18,9 +18,11 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 	private connectMessageId: string | null = null;
 
 	public abstract sendMessage(message: IAutoMessage<T>): Promise<void>;
+
 	public abstract buildMessage<Y extends IAutoMessageData>(data: Y, noResponse: boolean): IAutoMessage<IAutoMessageData>;
 
 	public connect(): void {
+		this.closeConnection();
 		const message = AutoMessageBuilder.create({type: AutoMessageType.AsyncMessageClientConnect}, false, this.clientId);
 		this.connectMessageId = message.id;
 		this.sendMessage(message as any).then(/*Do not wait*/);
@@ -35,7 +37,7 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 			return;
 		}
 		this.connection.close();
-        Logger.instance.log(`BaseClientMessageTransporter: The client with id ${this.connection.clientId} has been closed.`);
+		Logger.instance.log(`BaseClientMessageTransporter: The client with id ${this.connection.clientId} has been closed.`);
 		this.connection = null;
 		this.$connected.next(false);
 	}
@@ -63,7 +65,7 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 				{
 					type: AutoMessageType.AsyncMessageResult,
 					ok: true,
-					originalMessageId: message.id,
+					originalMessageId: message.id
 				},
 				false,
 				this.clientId
@@ -97,8 +99,7 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 
 		this.connection = ConnectorConnection.create(remoteClientId);
 
+		Logger.instance.log(`BaseClientMessageTransporter: A new client with id ${remoteClientId} has been accepted.`);
 		this.$connected.next(true);
-
-        Logger.instance.log(`BaseClientMessageTransporter: A new client with id ${remoteClientId} has been accepted.`);
 	}
 }
