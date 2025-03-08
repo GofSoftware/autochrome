@@ -1,7 +1,7 @@
 <img class="logo-icon" src="../images/icon-32.png">
 <div class="close-window"><button class="program-button program-square-button-small" title="Close" (click)="onCloseClick()">x</button></div>
 <div class="title">
-    Autochrome
+    Autochrome <span class="connection-indicator" [title]="connectionTitle()" [ngClass]="{connected: connected()}"></span>
 </div>
 <ul class="tabs">
     <li><a (click)="tab.set(Tabs.ProgramContent)" [ngClass]="{active: tab() === Tabs.ProgramContent}">Program</a></li>

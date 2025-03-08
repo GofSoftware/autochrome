@@ -59,6 +59,6 @@ export class TeamcityReporterContainerUpdateHandler {
 	}
 
 	private escape(value: string | null | undefined): string {
-		return (value || '').replaceAll('\'', '`');
+		return (value || '').replaceAll('\'', '`').replaceAll('\r', '').replaceAll('\n', ' ');
 	}
 }

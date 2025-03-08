@@ -5,6 +5,20 @@
   color: #811010;
   padding: 15px 10px 15px 45px;
   background-color: #def1ff;
+
+  .connection-indicator {
+    width: 10px;
+    display: inline-block;
+    height: 10px;
+    background-color: #811010;
+    border-radius: 10px;
+    box-shadow: 0 0 3px red;
+  }
+
+  .connected {
+    background-color: darkgreen!important;
+    box-shadow: 0 0 3px green!important;
+  }
 }
 
 .logo-icon {

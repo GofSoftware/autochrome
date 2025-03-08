@@ -1,11 +1,10 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Logger } from '@autochrome/core/common/logger';
 import { FormsModule } from '@angular/forms';
 import { ProgramItemComponent } from './components/program-item/program-item.component';
 import { EventDisposableComponent } from './components/event-disposable.component';
 import { AppService } from './business/app.service';
-import { IAutoMessageViewDataLog } from '@autochrome/core/messaging/i-auto-message';
 import { ProgramContentComponent } from './components/program-content/program-content.component';
 import { LogPanelComponent } from './components/log-panel/log-panel.component';
 import { NgClass, NgIf } from '@angular/common';
@@ -28,6 +27,8 @@ export class AppComponent extends EventDisposableComponent implements OnInit, On
 
 	public isLoading = signal<boolean>(true);
 	public tab = signal<Tabs>(Tabs.ProgramContent);
+	public connected = signal<boolean>(false);
+	public connectionTitle = computed<string>(() => this.connected() ? 'Connected' : 'Disconnected');
 
 	public Tabs = Tabs;
 
@@ -49,6 +50,9 @@ export class AppComponent extends EventDisposableComponent implements OnInit, On
 		try {
 			// await new Promise((resolve)=>{ setTimeout(resolve, 5000); });
 			await AppService.instance.init();
+      this.unsubscribeAndRegisterNamed(AppService.instance.connected$.subscribe((connected: boolean) => {
+        this.connected.set(connected);
+      }), 'AppService.instance.connected$');
 		} catch (error) {
 			Logger.instance.error('Error: ', error);
 		} finally {

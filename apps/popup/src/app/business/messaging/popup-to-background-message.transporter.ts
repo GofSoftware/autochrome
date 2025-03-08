@@ -15,7 +15,7 @@ export class PopupToBackgroundMessageTransporter<T extends IAutoMessageViewData 
 
 	private messageListener = (message: IAutoMessage<T>, sender: chrome.runtime.MessageSender) => {
 		this.processMessage(message, sender);
-	}
+	};
 
 	constructor() {
 		super();
