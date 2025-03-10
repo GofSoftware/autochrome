@@ -25,7 +25,7 @@ export class PopupToBackgroundMessageTransporter<T extends IAutoMessageViewData 
 
 	public async dispose(): Promise<void> {
 		super.dispose();
-		chrome.runtime.onMessage.removeListener(this.messageListener)
+		chrome.runtime.onMessage.removeListener(this.messageListener);
 	}
 
 	public async sendMessage(message: IAutoMessage<T>): Promise<void> {

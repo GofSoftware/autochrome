@@ -1,12 +1,12 @@
 import {
-  AutoMessageType,
-  IAutoMessage,
-  IAutoMessageAsyncMessageResult, IAutoMessageData
+	AutoMessageType,
+	IAutoMessage,
+	IAutoMessageAsyncMessageResult, IAutoMessageContentDataPing, IAutoMessageData
 } from './i-auto-message';
 import { Logger } from '../common/logger';
 import { IMessageProcessor } from './i-message-processor';
 import { IClientMessageTransporter, IServerMessageTransporter } from './i-client-message-transporter';
-import { from, Subscription, switchMap } from 'rxjs';
+import { filter, from, Subscription, switchMap } from 'rxjs';
 import { IMessageSenderWithNoResponse } from './i-message-sender';
 
 const WATCH_DOG_TIMEOUT = 60000;
@@ -27,7 +27,6 @@ export class MessageManager<T extends IAutoMessageData> implements IMessageSende
   }
 
   private waitForResponse = new Map<string, IWaitResponseHandler>();
-  private connectorStateSubscription: Subscription | null = null;
   private messageSubscription: Subscription | null = null;
 
   private constructor(public processor: IMessageProcessor, public transporter: IServerMessageTransporter<T> | IClientMessageTransporter<T>) {
@@ -68,10 +67,6 @@ export class MessageManager<T extends IAutoMessageData> implements IMessageSende
 
   public async dispose(): Promise<void> {
     this.transporter.dispose();
-    if (this.connectorStateSubscription != null) {
-      this.connectorStateSubscription.unsubscribe();
-      this.connectorStateSubscription = null;
-    }
     if (this.messageSubscription != null) {
       this.messageSubscription.unsubscribe();
       this.messageSubscription = null;

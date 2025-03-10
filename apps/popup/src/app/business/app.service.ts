@@ -70,6 +70,7 @@ export class AppService extends EventDisposable {
 
 		setInterval(() => {
 			if (!this.$connected.value) {
+				Logger.instance.log('Popup is not connected, trying to reconnect.');
 				(this.messageManager?.transporter as PopupToBackgroundMessageTransporter).connect();
 			}
 		}, 2000);

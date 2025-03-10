@@ -6,6 +6,7 @@ import { LogSeverity } from '@autochrome/core/common/i-logger';
 
 export enum AutoMessageType {
 	Ping = 'Ping',
+	Pong = 'Pong',
 	CompleteProgramListUpdate = 'CompleteProgramListUpdate',
 	ContainerClearAll = 'ContainerClearAll',
 	ContainerNew = 'ContainerNew',
@@ -138,7 +139,8 @@ export interface IAutoMessageContentDataAwake extends IAutoMessageContentData<Au
 }
 
 export interface IAutoMessageContentDataPing extends IAutoMessageContentData<AutoMessageType.Ping> {
-	reason: string;
+}
+export interface IAutoMessageContentDataPong extends IAutoMessageContentData<AutoMessageType.Pong> {
 }
 
 export type AutoMessageViewDataType =
@@ -157,7 +159,9 @@ export type AutoMessageViewDataType =
 	IAutoMessageAsyncMessageClientConnect |
 	IAutoMessageViewDataGetBrowserTabList |
 	IAutoMessageViewDataCloseBrowserTab |
-    IAutoMessageViewDataBrowserTabList;
+    IAutoMessageViewDataBrowserTabList |
+	IAutoMessageContentDataPong |
+	IAutoMessageContentDataPing;
 
 export type AutoMessageContentDataType =
 	IAutoMessageContentDataProgramAction |
@@ -165,6 +169,7 @@ export type AutoMessageContentDataType =
 	IAutoMessageContentDataProgramInterrupt |
 	IAutoMessageAsyncMessageClientConnect |
 	IAutoMessageContentDataPing |
+	IAutoMessageContentDataPong |
 	IAutoMessageContentDataAwake;
 
 // export type AutoMessageAllDataTypes = AutoMessageViewDataType | AutoMessageContentDataType;
