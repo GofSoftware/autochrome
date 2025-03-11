@@ -31,7 +31,7 @@
         "name": "AutoActionEnterText",
         "description": "Enter the search text",
         "selector": "input.ytSearchboxComponentInput",
-        "text": "Gods of software"
+        "text": "@godsofsoftware"
       },
       {
         "name": "AutoActionWait",

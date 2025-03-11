@@ -29,7 +29,7 @@ export class TeamcityReporterContainerUpdateHandler {
 				) {
 					console.log(`##teamcity[testSuiteStarted name='${this.escape(containerInfo.programName)}']`);
 				} else {
-					console.log(`##teamcity[testStdOut name='${this.escape(containerInfo.programName)}' out='[${this.escape(containerInfo.activeActionId)}] ${this.escape(containerInfo.activeActionName)} ${this.escape(containerInfo.activeActionDescription)}']`);
+					console.log(`##teamcity[testStdOut name='${this.escape(containerInfo.programName)}' out='${this.escape(containerInfo.activeActionId)} ${this.escape(containerInfo.activeActionName)} ${this.escape(containerInfo.activeActionDescription)}']`);
 				}
 				break;
 			case ProgramContainerStatus.Completed:
@@ -59,6 +59,6 @@ export class TeamcityReporterContainerUpdateHandler {
 	}
 
 	private escape(value: string | null | undefined): string {
-		return (value || '').replaceAll('\'', '`').replaceAll('\r', '').replaceAll('\n', ' ');
+		return (value || '').replaceAll('\'', '`').replaceAll('\r', '').replaceAll('\n', ' ').replaceAll('[', '|[').replaceAll(']', '|]');
 	}
 }

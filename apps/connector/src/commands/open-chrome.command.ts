@@ -8,7 +8,8 @@ export class OpenChromeCommand extends BaseConnectorCommand {
     public getHelp(): string { return 'open.chrome [URL?] [FullPathToChrome]'; }
 
 	public async invoke(parameters: string[]): Promise<void> {
-		await new Promise<void>((resolve, reject) => {
+		// Do not wait, it looks like callback should only invoke at the end of the process life.
+		new Promise<void>((resolve, reject) => {
 			try {
 				const url = parameters[1] || '';
 				const chromePath = parameters[2] ? decodeURIComponent(parameters[2]) : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
@@ -24,6 +25,8 @@ export class OpenChromeCommand extends BaseConnectorCommand {
 			} catch (error) {
 				reject(error);
 			}
+		}).catch((error) => {
+				Logger.instance.error('open.chrome error', error || '_null_');
 		});
 		Logger.instance.log(`${parameters[0]} done.`);
 	}
