@@ -27,9 +27,12 @@ export class ExecuteCommandFileCommand extends BaseConnectorCommand {
 					}
 				}
 			} catch (error) {
-				Logger.instance.error(error);
 				if (exitOnError) {
+					Logger.instance.error(error);
+					Logger.instance.log(`Exit On Error - ${exitOnError}`)
 					await ConnectorContext.instance.close(1);
+				} else {
+					throw error;
 				}
 			}
 		} else {

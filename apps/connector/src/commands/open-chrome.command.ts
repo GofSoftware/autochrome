@@ -11,7 +11,7 @@ export class OpenChromeCommand extends BaseConnectorCommand {
 		await new Promise<void>((resolve, reject) => {
 			try {
 				const url = parameters[1] || '';
-				const chromePath = decodeURIComponent(parameters[2]) || 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
+				const chromePath = parameters[2] ? decodeURIComponent(parameters[2]) : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
 				childProc.exec(`"${chromePath}" ${url}`, (error, stdout, stderr) => {
 					if (error) {
 						reject(error);

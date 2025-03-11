@@ -6,24 +6,26 @@ import { statSync } from 'node:fs';
 import { OptionParser } from '@autochrome/core/common/option-parser';
 
 export interface IConfig {
-    host: string;
-    port: number;
-    userInput: boolean;
+	host: string;
+	port: number;
+	userInput: boolean;
 	connectorLogSeverity: LogSeverity;
 	backgroundLogSeverity: LogSeverity;
 	logFile: string | null;
 	teamcity: boolean;
 	configFile: string | null;
 	commandFile: string | null;
+	exitOnError: boolean;
 }
 
 export class Config implements IConfig {
-    private static configInstance: Config;
-    public static get instance(): Config {
-        return Config.configInstance || (Config.configInstance = new Config());
-    }
+	private static configInstance: Config;
 
-	public host = "localhost";
+	public static get instance(): Config {
+		return Config.configInstance || (Config.configInstance = new Config());
+	}
+
+	public host = 'localhost';
 	public port = 3101;
 	public userInput = true;
 	public connectorLogSeverity: LogSeverity = LogSeverity.log;
@@ -32,17 +34,18 @@ export class Config implements IConfig {
 	public teamcity: boolean = false;
 	public configFile: string | null = null;
 	public commandFile: string | null = null;
+	public exitOnError: boolean = true;
 
 	public configure(): void {
 		const options = this.processArgv();
-		this.readFile(options)
-        Object.assign(this, options);
-    }
+		this.readFile(options);
+		Object.assign(this, options);
+	}
 
-    private processArgv(): Partial<IConfig> {
-        const args = process.argv.filter((arg: string, index: number) => {
-            return index >= 2;
-        });
+	private processArgv(): Partial<IConfig> {
+		const args = process.argv.filter((arg: string, index: number) => {
+			return index >= 2;
+		});
 
 		const options: Partial<IConfig> = {};
 
@@ -51,62 +54,65 @@ export class Config implements IConfig {
 		});
 
 		return options;
-    }
+	}
 
-    private setOption(name: string, value: string, options: Partial<IConfig>): void {
-        switch (name) {
-            case 'host':
-                options.host = value as string;
-                break;
-            case 'port':
-                options.port = OptionParser.parseInteger(value);
-                break;
-            case 'connectorLogSeverity':
-                options.connectorLogSeverity = this.convertSeverity(value);
-                break;
-            case 'backgroundLogSeverity':
-                options.backgroundLogSeverity = this.convertSeverity(value);
-                break;
-            case 'logFile':
-                options.logFile = value;
-                break;
+	private setOption(name: string, value: string, options: Partial<IConfig>): void {
+		switch (name) {
+			case 'host':
+				options.host = value as string;
+				break;
+			case 'port':
+				options.port = OptionParser.parseInteger(value);
+				break;
+			case 'connectorLogSeverity':
+				options.connectorLogSeverity = this.convertSeverity(value);
+				break;
+			case 'backgroundLogSeverity':
+				options.backgroundLogSeverity = this.convertSeverity(value);
+				break;
+			case 'logFile':
+				options.logFile = value;
+				break;
 			case 'teamcity':
 				options.teamcity = OptionParser.parseBoolean(value, true);
 				break;
-            case 'userInput':
-                options.userInput = OptionParser.parseBoolean(value, true);
-                break;
+			case 'userInput':
+				options.userInput = OptionParser.parseBoolean(value, true);
+				break;
 			case 'configFile':
 				options.configFile = value;
 				break;
 			case 'commandFile':
 				options.commandFile = value;
 				break;
-            default:
-                Logger.instance.warn(`Config: unknown option ${name}`);
-        }
-    }
+			case 'exitOnError':
+				options.exitOnError = OptionParser.parseBoolean(value, true);
+				break;
+			default:
+				Logger.instance.warn(`Config: unknown option ${name}`);
+		}
+	}
 
-    private convertSeverity(value: string | null): LogSeverity {
-        switch (value?.toLowerCase()) {
-            case 'debug':
-                return LogSeverity.debug;
-            case 'log':
-                return LogSeverity.log;
-            case 'warn':
-                return LogSeverity.warn;
-            case 'error':
-                return LogSeverity.error;
-            default:
-                console.warn(`Unknown log-severity: ${value}, falling back to 'Warning'`);
-                return LogSeverity.log;
-        }
-    }
+	private convertSeverity(value: string | null): LogSeverity {
+		switch (value?.toLowerCase()) {
+			case 'debug':
+				return LogSeverity.debug;
+			case 'log':
+				return LogSeverity.log;
+			case 'warn':
+				return LogSeverity.warn;
+			case 'error':
+				return LogSeverity.error;
+			default:
+				console.warn(`Unknown log-severity: ${value}, falling back to 'Warning'`);
+				return LogSeverity.log;
+		}
+	}
 
 	private readFile(options: Partial<IConfig>): void {
 		const configFile = options.configFile || './connector.config.json';
 		const resolvedFile = resolve(configFile);
-		const stat = statSync(resolvedFile, {throwIfNoEntry: false});
+		const stat = statSync(resolvedFile, { throwIfNoEntry: false });
 		if (stat) {
 			try {
 				const contents = readFileSync(resolvedFile, { encoding: 'utf8' });

@@ -28,6 +28,7 @@ ConnectorContext.instance.messageManager.transporter.connected$.pipe(filter((val
 });
 
 ConnectorContext.instance.close = async (code: number) => {
+	Logger.instance.log('Context Close is called.');
 	await ConnectorContext.instance.messageManager.dispose();
 	process.exit(code);
 }
@@ -38,7 +39,7 @@ if (Config.instance.userInput) {
 
 if (Config.instance.commandFile) {
 	(async () => {
-		await CommandRegistry.instance.invoke(['execute.file', Config.instance.commandFile!, 'exit']);
+		await CommandRegistry.instance.invoke(['execute.file', Config.instance.commandFile!, Config.instance.exitOnError ? 'exit' : '']);
 		await ConnectorContext.instance.close(0)
 	})();
 }

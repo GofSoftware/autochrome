@@ -57,17 +57,13 @@ export class CommandRegistry {
 	}
 
 	public async invoke(parameters: string[]): Promise<void> {
-		try {
-			const commandName = parameters[0].toLowerCase();
-            if (commandName === 'help' || commandName === '\\?' || commandName === '?') {
-                this.displayHelp();
-                return;
-            }
-			const command = this.registry.has(commandName) ? this.registry.get(commandName) : new UnknownCommand();
-			await command!.invoke(parameters);
-		} catch (error) {
-			Logger.instance.error(error);
+		const commandName = parameters[0].toLowerCase();
+		if (commandName === 'help' || commandName === '\\?' || commandName === '?') {
+			this.displayHelp();
+			return;
 		}
+		const command = this.registry.has(commandName) ? this.registry.get(commandName) : new UnknownCommand();
+		await command!.invoke(parameters);
 	}
 
 	private register(name: string, command: IConnectorCommand): void {
