@@ -44,4 +44,8 @@ export class ConnectorMessageProcessor<T extends AutoMessageViewDataType> implem
 				Logger.instance.warn(`MessageManager.processMessage: Unknown autoMessage type ${message.data.type}`);
 		}
 	}
+
+	public getJUnitXmlResult(): string {
+		return this.severalContainersUpdateHandler.getJUnitXmlResult();
+	}
 }

@@ -8,6 +8,8 @@ import { ConnectorContext } from './connector-context';
 import { ConnectorWebSocketServerMessageTransporter } from './messaging/connector-web-socket-server-message.transporter';
 import * as process from 'process';
 import { filter } from 'rxjs';
+import { resolve, sep } from 'path';
+import { writeFile } from 'fs/promises';
 import { CommandRegistry } from './commands/command-registry';
 
 Logger.instance.prefix = 'Connector';
@@ -29,6 +31,12 @@ ConnectorContext.instance.messageManager.transporter.connected$.pipe(filter((val
 
 ConnectorContext.instance.close = async (code: number) => {
 	Logger.instance.log('Context Close is called.');
+	if (Config.instance.teamcity) {
+		const testResult =
+			(ConnectorContext.instance.messageManager.processor as ConnectorMessageProcessor<AutoMessageViewDataType>).getJUnitXmlResult();
+		const file = resolve(Config.instance.testOutputFolder || ('.' + sep)) + sep + 'test-result.xml';
+		await writeFile(file, testResult);
+	}
 	await ConnectorContext.instance.messageManager.dispose();
 	process.exit(code);
 }

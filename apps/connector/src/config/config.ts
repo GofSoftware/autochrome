@@ -16,6 +16,7 @@ export interface IConfig {
 	configFile: string | null;
 	commandFile: string | null;
 	exitOnError: boolean;
+	testOutputFolder: string | null;
 }
 
 export class Config implements IConfig {
@@ -35,6 +36,7 @@ export class Config implements IConfig {
 	public configFile: string | null = null;
 	public commandFile: string | null = null;
 	public exitOnError: boolean = true;
+	public testOutputFolder: string | null = null;
 
 	public configure(): void {
 		const options = this.processArgv();
@@ -84,6 +86,9 @@ export class Config implements IConfig {
 				break;
 			case 'commandFile':
 				options.commandFile = value;
+				break;
+			case 'testOutputFolder':
+				options.testOutputFolder = value;
 				break;
 			case 'exitOnError':
 				options.exitOnError = OptionParser.parseBoolean(value, true);

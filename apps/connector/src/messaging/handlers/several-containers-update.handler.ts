@@ -7,6 +7,7 @@ import { Config } from '../../config/config';
 import { TeamcityReporterContainerUpdateHandler } from './teamcity-reporter-container-update-handler';
 import { ConnectorContext } from '../../connector-context';
 import { Logger } from '@autochrome/core/common/logger';
+import { JUnitReporterContainerUpdateHandler } from './j-unit-reporter-container-update-handler';
 
 export class SeveralContainersUpdateHandler implements IMessageHandler<IAutoMessage<IAutoMessageViewDataSeveralContainersUpdate>> {
 	public static create(): SeveralContainersUpdateHandler {
@@ -14,12 +15,15 @@ export class SeveralContainersUpdateHandler implements IMessageHandler<IAutoMess
 	}
 
 	private teamcityHandler: TeamcityReporterContainerUpdateHandler | null = null;
+	private jUnitXmlReportHandler: JUnitReporterContainerUpdateHandler | null = null;
 
 	public async process(message: IAutoMessage<IAutoMessageViewDataSeveralContainersUpdate>): Promise<void> {
 		if (Config.instance.teamcity) {
 			(this.teamcityHandler || (this.teamcityHandler = TeamcityReporterContainerUpdateHandler.create())).handle(message.data);
+			(this.jUnitXmlReportHandler || (this.jUnitXmlReportHandler = JUnitReporterContainerUpdateHandler.create())).handle(message.data);
 		} else {
 			this.teamcityHandler = null;
+			this.jUnitXmlReportHandler = null;
 		}
 
 		// Logger.instance.log(
@@ -37,5 +41,9 @@ export class SeveralContainersUpdateHandler implements IMessageHandler<IAutoMess
 				Object.assign(currentInfoMap.get(containerInfo.id)!, containerInfo);
 			}
 		}
+	}
+
+	public getJUnitXmlResult(): string {
+		return this.jUnitXmlReportHandler ? this.jUnitXmlReportHandler.getReport() : '';
 	}
 }
