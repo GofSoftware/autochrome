@@ -15,15 +15,15 @@ export class SeveralContainersUpdateHandler implements IMessageHandler<IAutoMess
 	}
 
 	private teamcityHandler: TeamcityReporterContainerUpdateHandler | null = null;
-	private jUnitXmlReportHandler: JUnitReporterContainerUpdateHandler | null = null;
+	// private jUnitXmlReportHandler: JUnitReporterContainerUpdateHandler | null = null;
 
 	public async process(message: IAutoMessage<IAutoMessageViewDataSeveralContainersUpdate>): Promise<void> {
 		if (Config.instance.teamcity) {
 			(this.teamcityHandler || (this.teamcityHandler = TeamcityReporterContainerUpdateHandler.create())).handle(message.data);
-			(this.jUnitXmlReportHandler || (this.jUnitXmlReportHandler = JUnitReporterContainerUpdateHandler.create())).handle(message.data);
+			// (this.jUnitXmlReportHandler || (this.jUnitXmlReportHandler = JUnitReporterContainerUpdateHandler.create())).handle(message.data);
 		} else {
 			this.teamcityHandler = null;
-			this.jUnitXmlReportHandler = null;
+			// this.jUnitXmlReportHandler = null;
 		}
 
 		// Logger.instance.log(
@@ -43,7 +43,7 @@ export class SeveralContainersUpdateHandler implements IMessageHandler<IAutoMess
 		}
 	}
 
-	public getJUnitXmlResult(): string {
-		return this.jUnitXmlReportHandler ? this.jUnitXmlReportHandler.getReport() : '';
-	}
+	// public getJUnitXmlResult(): string {
+	// 	return this.jUnitXmlReportHandler ? this.jUnitXmlReportHandler.getReport() : '';
+	// }
 }

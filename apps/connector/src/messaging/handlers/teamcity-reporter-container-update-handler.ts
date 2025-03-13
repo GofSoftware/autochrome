@@ -28,15 +28,18 @@ export class TeamcityReporterContainerUpdateHandler {
 					this.inProgressMap.get(containerInfo.id)!.status !== ProgramContainerStatus.InProgress
 				) {
 					console.log(`##teamcity[testSuiteStarted name='${this.escape(containerInfo.programName)}']`);
+					console.log(`##teamcity[testStarted name='${this.escape(containerInfo.programName)}' captureStandardOutput='true']`);
 				} else {
 					console.log(`##teamcity[testStdOut name='${this.escape(containerInfo.programName)}' out='${this.escape(containerInfo.activeActionId)} ${this.escape(containerInfo.activeActionName)} ${this.escape(containerInfo.activeActionDescription)}']`);
 				}
 				break;
 			case ProgramContainerStatus.Completed:
+				console.log(`##teamcity[testFinished name='${this.escape(containerInfo.programName)}' duration='1000']`);
 				console.log(`##teamcity[testSuiteFinished name='${this.escape(containerInfo.programName)}']`);
 				break;
 			case ProgramContainerStatus.Error:
 				console.log(`##teamcity[testFailed name='${this.escape(containerInfo.programName)}' message='${this.escape(containerInfo.error)}']`);
+				console.log(`##teamcity[testFinished name='${this.escape(containerInfo.programName)}' duration='1000']`);
 				console.log(`##teamcity[testSuiteFinished name='${this.escape(containerInfo.programName)}']`);
 				break;
 			case ProgramContainerStatus.Paused:

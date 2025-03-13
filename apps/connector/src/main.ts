@@ -31,12 +31,12 @@ ConnectorContext.instance.messageManager.transporter.connected$.pipe(filter((val
 
 ConnectorContext.instance.close = async (code: number) => {
 	Logger.instance.log('Context Close is called.');
-	if (Config.instance.teamcity) {
-		const testResult =
-			(ConnectorContext.instance.messageManager.processor as ConnectorMessageProcessor<AutoMessageViewDataType>).getJUnitXmlResult();
-		const file = resolve(Config.instance.testOutputFolder || ('.' + sep)) + sep + 'test-result.xml';
-		await writeFile(file, testResult);
-	}
+	// if (Config.instance.teamcity) {
+	// 	const testResult =
+	// 		(ConnectorContext.instance.messageManager.processor as ConnectorMessageProcessor<AutoMessageViewDataType>).getJUnitXmlResult();
+	// 	const file = resolve(Config.instance.testOutputFolder || ('.' + sep)) + sep + 'test-result.xml';
+	// 	await writeFile(file, testResult);
+	// }
 	await ConnectorContext.instance.messageManager.dispose();
 	process.exit(code);
 }

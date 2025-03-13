@@ -88,14 +88,14 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 		}
 
 		if (message.data.type === AutoMessageType.Pong) {
-			Logger.instance.debug(`Pong from ${message.clientId}`);
+			// Logger.instance.debug(`Pong from ${message.clientId}`);
 			this.clearPing();
 			this.ping();
 			return false;
 		}
 
 		if (message.data.type === AutoMessageType.Ping) {
-			Logger.instance.debug(`Ping from ${message.clientId}`);
+			// Logger.instance.debug(`Ping from ${message.clientId}`);
 			const pingMessage = AutoMessageBuilder.create<IAutoMessageContentDataPong>({type: AutoMessageType.Pong}, false, this.clientId);
 			this.sendMessage(pingMessage as IAutoMessage<T>).then(/*no wait*/);
 			return false;

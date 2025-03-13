@@ -45,7 +45,7 @@ export class ConnectorMessageProcessor<T extends AutoMessageViewDataType> implem
 		}
 	}
 
-	public getJUnitXmlResult(): string {
-		return this.severalContainersUpdateHandler.getJUnitXmlResult();
-	}
+	// public getJUnitXmlResult(): string {
+	// 	return this.severalContainersUpdateHandler.getJUnitXmlResult();
+	// }
 }
