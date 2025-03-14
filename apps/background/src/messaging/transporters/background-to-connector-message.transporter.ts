@@ -108,6 +108,6 @@ export class BackgroundToConnectorMessageTransporter<T extends IAutoMessageViewD
 		if (!this.settings.enableConnectorLogging) {
 			return;
 		}
-		Logger.instance.log(message, ...params);
+		Logger.instance.debug(message, ...params);
 	}
 }

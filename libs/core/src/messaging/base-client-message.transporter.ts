@@ -126,7 +126,7 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 
 		this.connection = ConnectorConnection.create(remoteClientId);
 
-		Logger.instance.log(`BaseClientMessageTransporter: A new client with id ${remoteClientId} has been accepted.`);
+		Logger.instance.debug(`BaseClientMessageTransporter: A new client with id ${remoteClientId} has been accepted.`);
 		this.ping();
 		this.$connected.next(true);
 	}

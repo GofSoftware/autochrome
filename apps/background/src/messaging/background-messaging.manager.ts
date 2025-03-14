@@ -103,7 +103,7 @@ export class BackgroundMessagingManager extends EventDisposable {
                     Array.from(
                         (this.contentMessageManager!.transporter as BackgroundToContentServerMessageTransporter).clientTransporters.values()
                     ).map((v) => (v.transporter as BackgroundToContentClientMessageTransporter).tabId.toString())
-                Logger.instance.log(
+                Logger.instance.debug(
                     `BackgroundMessageManager: clientConnected "${client?.clientId}-${client?.state}" registeredTabIds: `,
                     this.backgroundMessagingContext.registeredContentTabIds
                 );
