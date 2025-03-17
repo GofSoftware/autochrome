@@ -15,7 +15,7 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 	public connected$: Observable<boolean | null> = this.$connected.asObservable();
 	public clientConnected$: Observable<{clientId: string, state: boolean} | null> = this.$clientConnected.asObservable();
 
-	public clientTransporters = new Map<string, {transporter: IClientMessageTransporter<T>, subscription: Subscription}>();
+	public clientTransporters = new Map<string, {transporter: IClientMessageTransporter<T>, closeThisClient: () => void}>();
 
 	public dispose(): void {
 		this.closeConnections();
@@ -58,21 +58,49 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 	}
 
 	protected registerClientTransporter(transporter: IClientMessageTransporter<T>): void {
-		const subscription = transporter.message$.subscribe((message) => this.$message.next(message));
-		const connectionWatchdog = setTimeout(() => {
-			Logger.instance.warn(`New connection handshake timeout.`);
-			subscription.unsubscribe();
-			transporter.dispose();
-		}, 10000);
+		let subscription: Subscription | null = transporter.message$.subscribe((message) => this.$message.next(message));
+
         let remoteClientId: string | null = null;
+
+		let connectionWatchdog: number | null = setTimeout(() => {
+			Logger.instance.warn(`New connection handshake timeout.`);
+			closeThisClient();
+		}, 10000) as unknown as number;
+
+		const closeThisClient = () => {
+			if (subscription) {
+				subscription.unsubscribe();
+				subscription = null;
+			}
+			if (remoteClientId != null) {
+				const cId = remoteClientId;
+				remoteClientId = null;
+				this.closeConnection(cId);
+				this.$clientConnected.next({clientId: cId, state: false});
+			}
+
+			if (this.clientTransporters.size === 0) {
+				this.$connected.next(false);
+			}
+
+			if (connectionWatchdog) {
+				clearTimeout(connectionWatchdog);
+				connectionWatchdog = null;
+			}
+
+			if (transporter) {
+				transporter.dispose();
+			}
+		}
+
 		transporter.connected$.subscribe((connected) => {
             if (connected == null) {
                 return;
             }
 			if (connected) {
-				clearTimeout(connectionWatchdog);
+				clearTimeout(connectionWatchdog!);
 				remoteClientId = transporter.connection!.clientId;
-				this.clientTransporters.set(remoteClientId, { transporter, subscription });
+				this.clientTransporters.set(remoteClientId, { transporter, closeThisClient });
 
                 this.$clientConnected.next({clientId: remoteClientId, state: true});
 
@@ -80,14 +108,7 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 					this.$connected.next(true);
 				}
 			} else {
-                if (remoteClientId != null) {
-                    this.closeConnection(remoteClientId);
-                    this.$clientConnected.next({clientId: remoteClientId, state: false});
-                }
-
-				if (this.clientTransporters.size === 0) {
-					this.$connected.next(false);
-				}
+				closeThisClient();
 			}
 		});
 	}
@@ -98,8 +119,7 @@ export abstract class BaseServerMessageTransporter<T extends IAutoMessageData> i
 		}
 		const item = this.clientTransporters.get(clientId)!;
 		try {
-			item.subscription.unsubscribe();
-			item.transporter.dispose();
+			item.closeThisClient();
 		} catch (error) {
 			Logger.instance.error('Error: ', error);
 		} finally {
