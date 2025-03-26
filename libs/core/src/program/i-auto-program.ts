@@ -5,6 +5,7 @@ export interface IAutoProgram {
     name: string;
     description: string;
     version: number;
+	excluded: boolean;
     rootAction: IAutoAction;
     procedures: IAutoProcedure[];
 }

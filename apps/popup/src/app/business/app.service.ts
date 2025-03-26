@@ -83,6 +83,7 @@ export class AppService extends EventDisposable {
 					return connected != null;
 				}),
 				switchMap(async (connected) => {
+					this.$connected.next(connected === true);
 					if (connected) {
 						const [settings, programList, browserTabs] = await Promise.all([
 							await PopupToBackgroundLinkFacade.instance.getGlobalSettings(),
@@ -93,7 +94,6 @@ export class AppService extends EventDisposable {
 						dataStream.$programItems.next(programList);
 						dataStream.$browserTabs.next(browserTabs);
 					}
-					this.$connected.next(connected === true);
 				})
 			).subscribe(),
 			'messageManager.transporter.connected$'

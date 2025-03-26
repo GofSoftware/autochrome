@@ -23,6 +23,7 @@ export class ProgramContentComponent extends EventDisposableComponent implements
 	public browserTabList = signal<{id: string; label: string}[]>([]);
 	public browserTabValue = signal<string | null>(null);
 	public programItems = signal<IProgramContainerInfo[]>([]);
+	public loading = signal<boolean>(false);
 
 	public ngOnInit(): void {
 		this.registerSubscription(AppService.instance.programItems$.subscribe((items) => {
@@ -63,9 +64,17 @@ export class ProgramContentComponent extends EventDisposableComponent implements
     }
 
 	public async onFileChange(event: Event) {
+		this.loading.set(true);
+
 		const fileList: FileList = (event.target as any).files;
+		const files = [];
+		for (let i = 0; i < fileList.length; i++){
+			files.push(fileList[i]);
+		}
+		files.sort((a, b) => a.name.localeCompare(b.name));
+
 		try {
-			for (let i = 0; i < fileList.length; i++) {
+			for (let i = 0; i < files.length; i++) {
 				Logger.instance.log(`Adding a new program: ${fileList[i].name}`);
 				const content = await this.loadFileContent(fileList[i]);
 				if (content != null) {
@@ -75,7 +84,10 @@ export class ProgramContentComponent extends EventDisposableComponent implements
 			}
 			(document.getElementById('file-selector') as HTMLInputElement).value = '';
 		} catch (error: any) {
-			alert(error?.message);
+			console.error(error);
+			alert(error?.message ?? 'File upload error...');
+		} finally {
+			this.loading.set(false);
 		}
 	}
 

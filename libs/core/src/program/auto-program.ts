@@ -12,15 +12,16 @@ export class AutoProgram implements IAutoProgram {
 			'',
 			AUTO_PROGRAM_CURRENT_VERSION,
 			AutoActionFactory.instance.fromJson({name: AutoActionName.AutoActionEmpty}),
-			[]
+			[],
+			false
 		);
 	}
 
-	public static fromString(serializedProgram: string): AutoProgram {
-		return AutoProgram.fromJson(JSON.parse(serializedProgram));
+	public static fromString(serializedProgram: string, globalProcedures: AutoProcedure[]): AutoProgram {
+		return AutoProgram.fromJson(JSON.parse(serializedProgram), globalProcedures);
 	}
 
-	public static fromJson(programJson: IAutoProgram): AutoProgram {
+	public static fromJson(programJson: IAutoProgram, globalProcedures: AutoProcedure[]): AutoProgram {
 
 		if (programJson?.version !== 1) {
 			throw new Error(`Unknown program version: ${programJson?.version}`);
@@ -32,7 +33,12 @@ export class AutoProgram implements IAutoProgram {
 
 		AutoActionFactory.instance.reset();
 
+		(globalProcedures || []).forEach((procedure) => AutoActionFactory.instance.setProcedure(procedure));
+
 		const procedures = (programJson.procedures || []).map((procedure) => {
+			if (AutoActionFactory.instance.hasGlobalProcedure(procedure.name)) {
+				throw new Error(`Program "${programJson.name}" has procedure with the same name as the global one: "${procedure.name}"`);
+			}
 			AutoActionFactory.instance.setProcedure(procedure);
 			return AutoProcedure.fromJson(procedure);
 		});
@@ -42,7 +48,8 @@ export class AutoProgram implements IAutoProgram {
 			programJson.description,
 			programJson.version,
 			AutoActionFactory.instance.fromJson(programJson.rootAction),
-			procedures
+			procedures,
+			programJson.excluded || false
 		);
 
 		const idSet = new Set<string>();
@@ -64,6 +71,7 @@ export class AutoProgram implements IAutoProgram {
 		public version: number,
 		public rootAction: AutoAction,
 		public procedures: AutoProcedure[] = [],
+		public excluded: boolean,
 		public error: string | null = null
 	) {
 	}
@@ -84,7 +92,8 @@ export class AutoProgram implements IAutoProgram {
 			description: this.description,
 			version: this.version,
 			rootAction: this.rootAction?.toJson() || null,
-			procedures: (this.procedures || []).map((procedure) => procedure.toJson())
+			procedures: (this.procedures || []).map((procedure) => procedure.toJson()),
+			excluded: this.excluded
 		};
 	}
 }

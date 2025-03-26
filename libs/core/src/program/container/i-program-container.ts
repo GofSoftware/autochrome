@@ -15,6 +15,7 @@ export interface IProgramContainerInfo {
 	activeActionDescription: string;
 	totalActions: number;
 	activeActionIndex: number;
+	excluded: boolean;
 }
 
 export interface IProgramContainer extends IProgramContainerInfo {

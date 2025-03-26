@@ -8,6 +8,10 @@
   background: #fff4e3;
   position: relative;
 
+  &.excluded {
+	  background: #dddddd;
+  }
+
   &.not-active {
     height: 35px;
     div.description {

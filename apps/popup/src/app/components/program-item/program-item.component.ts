@@ -41,6 +41,7 @@ export class ProgramItemComponent extends EventDisposableComponent implements On
 	public isSuccess = signal<boolean>(false);
 	public hasError = signal<boolean>(false);
 	public isProgressBarVisible = signal<boolean>(false);
+	public excluded = signal<boolean>(false);
 
     private enabledTabs: IBrowserTab[] = [];
 
@@ -51,14 +52,16 @@ export class ProgramItemComponent extends EventDisposableComponent implements On
 				untracked(() => {
 					this.update();
 				});
+				this.unsubscribeAndRegisterNamed(AppService.instance.browserTabs$.subscribe((tabs) => {
+					this.enabledTabs = tabs;
+					if (this.item() != null) {
+						untracked(() => {
+							this.update();
+						});
+					}
+				}), 'AppService.instance.browserTabs$');
 			}
 		});
-        this.unsubscribeAndRegisterNamed(AppService.instance.browserTabs$.subscribe((tabs) => {
-            this.enabledTabs = tabs;
-            if (this.item() != null) {
-                this.update();
-            }
-        }), 'AppService.instance.browserTabs$');
 	}
 
 	public async onCloseButtonClick() {
@@ -116,6 +119,7 @@ export class ProgramItemComponent extends EventDisposableComponent implements On
 			this.item().status === ProgramContainerStatus.InProgress
 		);
 		this.isActive.set(this.isProgressBarVisible() || this.isSelected());
+		this.excluded.set(this.item().excluded);
 	}
 
 	private calcElementsVisibility(): IElementsVisibility {

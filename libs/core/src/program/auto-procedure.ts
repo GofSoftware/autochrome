@@ -12,7 +12,7 @@ export class AutoProcedure implements IAutoProcedure {
 		if (procedureJson.action == null) {
 			throw new Error(`AutoProcedure.fromJson - action is required`);
 		}
-		return new AutoProcedure(procedureJson.name, procedureJson.description, procedureJson.action);
+		return new AutoProcedure(procedureJson.name, procedureJson.description, procedureJson.global, procedureJson.action);
 	}
 
 	public static instantiateAction( procedureRootAction: IAutoAction, parentId: string, parameters: IAutoParameter[] ): AutoAction {
@@ -36,20 +36,22 @@ export class AutoProcedure implements IAutoProcedure {
 		rootAction.traverse((action: AutoAction) => {
 			switch (action.name) {
 				case AutoActionName.AutoActionCase:
-				case AutoActionName.AutoActionCaseParameter:
-					const caseAction = action as AutoActionCase;
-					if (!idMap.has(caseAction.elseActionId) || !idMap.has(caseAction.thenActionId)) {
-						throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for elseActionId: ${caseAction.elseActionId} or thenActionId: ${caseAction.thenActionId}`);
+				case AutoActionName.AutoActionCaseParameter: {
+						const caseAction = action as AutoActionCase;
+						if (!idMap.has(caseAction.elseActionId) || !idMap.has(caseAction.thenActionId)) {
+							throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for elseActionId: ${caseAction.elseActionId} or thenActionId: ${caseAction.thenActionId}`);
+						}
+						caseAction.elseActionId = idMap.get(caseAction.elseActionId)!;
+						caseAction.thenActionId = idMap.get(caseAction.thenActionId)!;
 					}
-					caseAction.elseActionId = idMap.get(caseAction.elseActionId)!;
-					caseAction.thenActionId = idMap.get(caseAction.thenActionId)!;
 					break;
-				case AutoActionName.AutoActionGoTo:
-					const goToAction = action as AutoActionGoTo;
-					if (!idMap.has(goToAction.goToActionId)) {
-						throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for goToActionId: ${goToAction.goToActionId}`);
+				case AutoActionName.AutoActionGoTo: {
+						const goToAction = action as AutoActionGoTo;
+						if (!idMap.has(goToAction.goToActionId)) {
+							throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for goToActionId: ${goToAction.goToActionId}`);
+						}
+						goToAction.goToActionId = idMap.get(goToAction.goToActionId)!;
 					}
-					goToAction.goToActionId = idMap.get(goToAction.goToActionId)!;
 					break;
 			}
 			return true;
@@ -59,20 +61,24 @@ export class AutoProcedure implements IAutoProcedure {
 	}
 
 	public action: AutoAction;
+	public global: boolean;
 
 	constructor(
 		public name: string,
 		public description: string,
+		global: boolean | undefined,
 		action: IAutoAction
 	) {
 		this.action = AutoActionFactory.instance.fromJson(action)
+		this.global = global ?? false;
 	}
 
 	public toJson(): IAutoProcedure {
 		return {
 			name: this.name,
 			description: this.description,
-			action: this.action?.toJson(),
+			global: this.global,
+			action: this.action?.toJson()
 		};
 	}
 }

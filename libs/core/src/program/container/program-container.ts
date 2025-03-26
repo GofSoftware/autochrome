@@ -6,7 +6,7 @@ export class ProgramContainer implements IProgramContainer {
 
 	public static create(serializedProgram: string, tabId: number | null): ProgramContainer {
 		return new ProgramContainer(
-			Guid.v4(), serializedProgram, tabId, ProgramContainerStatus.New, 0, null, null, 0, 0, '', '', '', '', 0, 0
+			Guid.v4(), serializedProgram, tabId, ProgramContainerStatus.New, 0, null, null, 0, 0, '', '', '', '', 0, 0, false
 		);
 	}
 
@@ -26,7 +26,8 @@ export class ProgramContainer implements IProgramContainer {
 			programContainer.activeActionName,
 			programContainer.activeActionDescription,
 			programContainer.totalActions,
-			programContainer.activeActionIndex
+			programContainer.activeActionIndex,
+			programContainer.excluded
 		);
 	}
 
@@ -45,7 +46,8 @@ export class ProgramContainer implements IProgramContainer {
 		public activeActionName: string,
 		public activeActionDescription: string,
 		public totalActions: number,
-		public activeActionIndex: number
+		public activeActionIndex: number,
+		public excluded: boolean
 	) {
 	}
 
@@ -70,7 +72,8 @@ export class ProgramContainer implements IProgramContainer {
 			activeActionName: this.activeActionName,
 			activeActionDescription: this.activeActionDescription,
 			totalActions: this.totalActions,
-			activeActionIndex: this.activeActionIndex
+			activeActionIndex: this.activeActionIndex,
+			excluded: this.excluded
 		};
 	}
 }

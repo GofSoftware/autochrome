@@ -1,4 +1,5 @@
 import {
+	AutoMessageType,
 	IAutoMessage, IAutoMessageContentData, IAutoMessageData
 } from '@autochrome/core/messaging/i-auto-message';
 import { BaseServerMessageTransporter } from '@autochrome/core/messaging/base-server-message.transporter';
@@ -42,7 +43,10 @@ export class BackgroundToContentServerMessageTransporter<T extends IAutoMessageC
 			return;
 		}
 		if (!this.clientTransporters.has(message.clientId)) {
-            this.closeExistingTransporterForTab(sender?.tab?.id)
+			if (message.data.type !== AutoMessageType.AsyncMessageClientConnect) {
+				return;
+			}
+            this.closeExistingTransporterForTab(sender?.tab?.id);
 			const transporter = BackgroundToContentClientMessageTransporter.create<T>(sender?.tab?.id!);
 			this.tabIdToClientIdMap.set(tabId, message.clientId);
 			this.registerClientTransporter(transporter);

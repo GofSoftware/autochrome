@@ -1,4 +1,4 @@
-<div class="uploaded-program" [ngClass]="{'not-active': !isActive()}">
+<div class="uploaded-program" [ngClass]="{'not-active': !isActive(), 'excluded': excluded()}">
     <div class="close-button">
         <button class="program-button program-square-button-small" title="Remove the item" (click)="onCloseButtonClick()">x</button>
     </div>

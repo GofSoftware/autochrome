@@ -8,7 +8,7 @@
     <li><a (click)="tab.set(Tabs.Settings)" [ngClass]="{active: tab() === Tabs.Settings}">Settings</a></li>
     <li><a (click)="tab.set(Tabs.LogPanel)" [ngClass]="{active: tab() === Tabs.LogPanel}">&nbsp;&nbsp;&nbsp;Log&nbsp;&nbsp;&nbsp;</a></li>
 </ul>
-<app-program-content *ngIf="tab() === Tabs.ProgramContent"></app-program-content>
+<app-program-content *ngIf="tab() === Tabs.ProgramContent" style="position: relative;"></app-program-content>
 <app-settings *ngIf="tab() === Tabs.Settings"></app-settings>
 <app-log-panel *ngIf="tab() === Tabs.LogPanel"></app-log-panel>
 

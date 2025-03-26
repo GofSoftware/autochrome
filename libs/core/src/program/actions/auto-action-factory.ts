@@ -37,6 +37,7 @@ export class AutoActionFactory {
 
 	private registry = new Map<AutoActionName, any>();
 	private procedureMap = new Map<string, IAutoProcedure>();
+	private registeredGlobalProcedures = new Set<string>();
 	private index = 0;
 
 	private constructor() {
@@ -99,10 +100,19 @@ export class AutoActionFactory {
 
 	public reset(): void {
 		this.index = 0;
+		this.procedureMap.clear();
+		this.registeredGlobalProcedures.clear();
 	}
 
 	public setProcedure(procedure: IAutoProcedure): void {
 		this.procedureMap.set(procedure.name, procedure);
+		if (procedure.global) {
+			this.registeredGlobalProcedures.add(procedure.name);
+		}
+	}
+
+	public hasGlobalProcedure(name: string): boolean {
+		return this.registeredGlobalProcedures.has(name);
 	}
 
 	public nextIndex(): number {

@@ -87,6 +87,10 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 			return false;
 		}
 
+		if (this.connection == null || this.connection.clientId !== message.clientId) {
+			return false;
+		}
+
 		if (message.data.type === AutoMessageType.Pong) {
 			// Logger.instance.debug(`Pong from ${message.clientId}`);
 			this.clearPing();
@@ -98,10 +102,6 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 			// Logger.instance.debug(`Ping from ${message.clientId}`);
 			const pingMessage = AutoMessageBuilder.create<IAutoMessageContentDataPong>({type: AutoMessageType.Pong}, false, this.clientId);
 			this.sendMessage(pingMessage as IAutoMessage<T>).then(/*no wait*/);
-			return false;
-		}
-
-		if (this.connection == null || this.connection.clientId !== message.clientId) {
 			return false;
 		}
 
