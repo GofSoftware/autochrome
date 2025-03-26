@@ -29,7 +29,8 @@ export class WaitProgramsCommand extends BaseConnectorCommand {
 				const allDone = ConnectorContext.instance.programInfos.every((p) =>
 					p.status === ProgramContainerStatus.Stopped ||
 					p.status === ProgramContainerStatus.Completed ||
-					p.status === ProgramContainerStatus.Error
+					p.status === ProgramContainerStatus.Error ||
+					p.excluded
 				);
 				if (allDone) {
 					clearTimeout(timeout);
