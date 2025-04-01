@@ -12,12 +12,13 @@ import { IConnectorConnection } from '@autochrome/core/messaging/connnection/i-c
 import { AutoMessageBuilder } from '@autochrome/core/messaging/auto-message.builder';
 import { ConnectorConnection } from '@autochrome/core/messaging/connnection/connector-connection';
 
-const PING_TIME_INTERVAL = 1000;
-const PING_TIME_TIMEOUT = 2000;
+const PING_TIME_INTERVAL = 2000;
+const PING_TIME_TIMEOUT = 5000;
 
 export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> implements IClientMessageTransporter<T> {
 	protected $message = new Subject<IAutoMessage<T>>();
 	protected $connected = new BehaviorSubject<boolean | null>(null);
+	protected pingEnabled: boolean = true;
 
 	public message$: Observable<IAutoMessage<T>> = this.$message.pipe(filter((message) => this.preProcessMessage(message)));
 	public connected$: Observable<boolean | null> = this.$connected.asObservable();
@@ -46,6 +47,7 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 	}
 
 	public closeConnection(): void {
+		this.clearPing();
 		if (this.connection == null) {
 			return;
 		}
@@ -127,15 +129,22 @@ export abstract class BaseClientMessageTransporter<T extends IAutoMessageData> i
 		this.connection = ConnectorConnection.create(remoteClientId);
 
 		Logger.instance.debug(`BaseClientMessageTransporter: A new client with id ${remoteClientId} has been accepted.`);
-		this.ping();
 		this.$connected.next(true);
+
+		if (this.pingEnabled) {
+			this.ping();
+		}
 	}
 
 	private ping(): void {
 		this.pingTimeHandle = setTimeout(() => {
 			const pingMessage = AutoMessageBuilder.create<IAutoMessageContentDataPing>({type: AutoMessageType.Ping}, false, this.clientId);
-			this.sendMessage(pingMessage as IAutoMessage<T>).then(/*no wait*/);
+			this.sendMessage(pingMessage as IAutoMessage<T>).then(/*no wait*/).catch(() => {
+				Logger.instance.log('Ping send error');
+				this.closeConnection();
+			});
 			this.pingWatchDogHandle = setTimeout(() => {
+				Logger.instance.log('Ping timeout');
 				this.closeConnection();
 			}, PING_TIME_TIMEOUT) as unknown as number;
 		}, PING_TIME_INTERVAL) as unknown as number;

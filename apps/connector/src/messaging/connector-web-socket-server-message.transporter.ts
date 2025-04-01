@@ -23,7 +23,7 @@ export class ConnectorWebSocketServerMessageTransporter<T extends IAutoMessageVi
 			console.log(`Listening ${Config.instance.host}:${Config.instance.port}\n`);
 		});
 		this.app.app.ws('/', (ws) => {
-			this.registerClientTransporter(ConnectorWebSocketClientMessageTransporter.create<T>(ws));
+			this.registerClientTransporter(ConnectorWebSocketClientMessageTransporter.create<T>(ws, false));
 		});
 	}
 }

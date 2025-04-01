@@ -8,7 +8,7 @@ export class Config implements IConfig {
 		return Config.configInstance || (Config.configInstance = new Config());
 	}
 
-	private globalTimeoutHolder = 60000; // todo set correct timeout
+	private globalTimeoutHolder = 60000;
 
 	public applySettings(config: IConfig): void {
 		if (config.globalTimeout != null) {

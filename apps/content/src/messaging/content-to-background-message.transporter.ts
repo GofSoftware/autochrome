@@ -4,8 +4,10 @@ import { Guid } from '@autochrome/core/common/guid';
 import { AutoMessageBuilder } from '@autochrome/core/messaging/auto-message.builder';
 
 export class ContentToBackgroundMessageTransporter<T extends IAutoMessageContentData = IAutoMessageContentData> extends BaseClientMessageTransporter<T> {
-	public static create<U extends IAutoMessageContentData = IAutoMessageContentData>(): ContentToBackgroundMessageTransporter<U> {
-		return new ContentToBackgroundMessageTransporter<U>()
+	public static create<U extends IAutoMessageContentData = IAutoMessageContentData>(
+		pingEnabled: boolean = true
+	): ContentToBackgroundMessageTransporter<U> {
+		return new ContentToBackgroundMessageTransporter<U>(pingEnabled)
 	}
 
 	public clientId = ContentToBackgroundMessageTransporter.name + '_' + Guid.v4();
@@ -13,8 +15,9 @@ export class ContentToBackgroundMessageTransporter<T extends IAutoMessageContent
 	private messageListener = (message: IAutoMessage<T>, sender: chrome.runtime.MessageSender) => {
 		return this.processMessage(message, sender);
 	}
-	constructor() {
+	constructor(pingEnabled: boolean = true) {
 		super();
+		this.pingEnabled = pingEnabled;
 		chrome.runtime.onMessage.addListener(this.messageListener);
 		this.connect();
 	}

@@ -3,7 +3,7 @@ import { IRobotSettingsGlobal } from "./i-robot-settings-global";
 
 const DEFAULT_ROBOT_SETTINGS_GLOBAL: IRobotSettingsGlobal = {
 	autoPlay: true,
-    enableConnector: false,
+    enableConnector: true,
     enableConnectorLogging: true,
     connectorPort: 3101,
     connectorHost: "localhost"

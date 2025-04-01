@@ -10,9 +10,9 @@ import { Logger } from '@autochrome/core/common/logger';
 export class ConnectorWebSocketClientMessageTransporter<T extends IAutoMessageViewData = IAutoMessageViewData>
 		extends BaseClientMessageTransporter<T> {
 
-	public static create<Y extends IAutoMessageViewData = IAutoMessageViewData>(webSocket: WebSocket.WebSocket):
+	public static create<Y extends IAutoMessageViewData = IAutoMessageViewData>(webSocket: WebSocket.WebSocket, pingEnabled: boolean = true):
 		ConnectorWebSocketClientMessageTransporter<Y> {
-			return new ConnectorWebSocketClientMessageTransporter(webSocket);
+			return new ConnectorWebSocketClientMessageTransporter(webSocket, pingEnabled);
 	}
 
 	public clientId = ConnectorWebSocketClientMessageTransporter.name + '_' + Guid.v4();
@@ -20,8 +20,9 @@ export class ConnectorWebSocketClientMessageTransporter<T extends IAutoMessageVi
 	private onMessage = async (message: string) => { await this.processMessage(message); };
 	private checkStateIntervalHandle = setInterval(() => { try { this.checkState(); } catch(error) { Logger.instance.error(error)} }, 1000);
 
-	public constructor(private webSocket: WebSocket.WebSocket | null) {
+	public constructor(private webSocket: WebSocket.WebSocket | null, pingEnabled: boolean = true) {
 		super();
+		this.pingEnabled = pingEnabled;
 		if (this.webSocket != null) {
 			this.webSocket.on('message', this.onMessage);
 			this.webSocket.on('error', (error) => {
