@@ -36,7 +36,7 @@ export class ContentAutoLinkFacade extends EventDisposable {
 	public init(): void {
 		this.messageManager = MessageManager.create<AutoMessageContentDataType>(
 			ContentToBackgroundMessageProcessor.create(this.$programRequest, this.$interruptRequest),
-			ContentToBackgroundMessageTransporter.create<AutoMessageContentDataType>(false)
+			ContentToBackgroundMessageTransporter.create<AutoMessageContentDataType>()
 		);
 		this.unsubscribeAndRegisterNamed(
 			this.messageManager.transporter.connected$.pipe(

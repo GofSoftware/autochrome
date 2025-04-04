@@ -15,7 +15,7 @@ export class AutoProcedure implements IAutoProcedure {
 		return new AutoProcedure(procedureJson.name, procedureJson.description, procedureJson.global, procedureJson.action);
 	}
 
-	public static instantiateAction( procedureRootAction: IAutoAction, parentId: string, parameters: IAutoParameter[] ): AutoAction {
+	public static instantiateAction(procedureRootAction: IAutoAction, parentId: string, parameters: IAutoParameter[]): AutoAction {
 		const rootAction = AutoActionFactory.instance.fromJson(procedureRootAction);
 
 		// Set the Parameters to each action and prepend all procedure action ids with the root actionId,
@@ -39,7 +39,7 @@ export class AutoProcedure implements IAutoProcedure {
 				case AutoActionName.AutoActionCaseParameter: {
 						const caseAction = action as AutoActionCase;
 						if (!idMap.has(caseAction.elseActionId) || !idMap.has(caseAction.thenActionId)) {
-							throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for elseActionId: ${caseAction.elseActionId} or thenActionId: ${caseAction.thenActionId}`);
+							throw new Error(`"${action.name}:${action.id}" - cannot find the corresponding action id for elseActionId: ${caseAction.elseActionId} or thenActionId: ${caseAction.thenActionId}`);
 						}
 						caseAction.elseActionId = idMap.get(caseAction.elseActionId)!;
 						caseAction.thenActionId = idMap.get(caseAction.thenActionId)!;
@@ -48,7 +48,7 @@ export class AutoProcedure implements IAutoProcedure {
 				case AutoActionName.AutoActionGoTo: {
 						const goToAction = action as AutoActionGoTo;
 						if (!idMap.has(goToAction.goToActionId)) {
-							throw new Error(`${action.name}:${action.id} cannot find the corresponding action id for goToActionId: ${goToAction.goToActionId}`);
+							throw new Error(`"${action.name}:${action.id}" - cannot find the corresponding action id for goToActionId: ${goToAction.goToActionId}`);
 						}
 						goToAction.goToActionId = idMap.get(goToAction.goToActionId)!;
 					}

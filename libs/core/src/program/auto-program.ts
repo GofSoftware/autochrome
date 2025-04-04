@@ -33,7 +33,7 @@ export class AutoProgram implements IAutoProgram {
 
 		AutoActionFactory.instance.reset();
 
-		(globalProcedures || []).forEach((procedure) => AutoActionFactory.instance.setProcedure(procedure));
+		(globalProcedures || []).forEach((procedure) => AutoActionFactory.instance.setProcedure(procedure.toJson()));
 
 		const procedures = (programJson.procedures || []).map((procedure) => {
 			if (AutoActionFactory.instance.hasGlobalProcedure(procedure.name)) {
